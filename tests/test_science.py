@@ -17,7 +17,7 @@ def test_prompt_multiplicity_does_not_fake_training_replications():
     result = paired_effect(aligned, misaligned, bootstrap=200)
     assert result["n_runs"] == 3
     assert result["p_value"] == 0.125
-    assert not result["confirmed"]
+    assert not result["single_comparison_gate"]
 
 
 def test_pairing_preserves_a_constant_treatment_effect():

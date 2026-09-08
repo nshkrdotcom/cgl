@@ -1,0 +1,55 @@
+{
+  "id": "P001-real-operator-acceptance",
+  "purpose": "Exercise actual GPU research operators before launching expanded scientific campaigns",
+  "scope": "integration_only",
+  "jobs": [
+    {"id": "data", "action": "originals"},
+    {"id": "generate", "action": "generate", "depends_on": ["data"], "args": {
+      "panel": "data/originals/primary.jsonl", "limit": 4, "samples": 1,
+      "temperature": 0, "max_new_tokens": 128
+    }},
+    {"id": "judge", "action": "judge", "depends_on": ["generate"], "args": {
+      "generations": "@generate/generations.jsonl"
+    }},
+    {"id": "score", "action": "score", "depends_on": ["data"], "args": {
+      "panel": "data/originals/pairs.jsonl", "limit": 4
+    }},
+    {"id": "basis", "action": "discover", "depends_on": ["data"], "args": {
+      "panel": "data/originals/pairs.jsonl", "limit": 4, "layer": 14, "rank": 1
+    }},
+    {"id": "intervention", "action": "score", "depends_on": ["data", "basis"], "args": {
+      "panel": "data/originals/pairs.jsonl", "limit": 4,
+      "basis_path": "@basis/basis.npz", "layer": 14
+    }},
+    {"id": "tangent", "action": "train", "depends_on": ["data", "basis"], "args": {
+      "id": "integration-tangent", "dataset": "data/originals/D0.jsonl", "limit": 16,
+      "max_steps": 2, "warmup_steps": 0, "discovery_only": true,
+      "tangent_basis": "@basis/basis.npz", "tangent_layer": 14,
+      "tangent_probe": "data/originals/D0.jsonl", "tangent_probe_limit": 1
+    }},
+    {"id": "kl", "action": "train", "depends_on": ["data"], "args": {
+      "id": "integration-kl", "dataset": "data/originals/D0.jsonl", "limit": 16,
+      "max_steps": 2, "warmup_steps": 0, "discovery_only": true, "kl_weight": 0.1
+    }},
+    {"id": "pause", "action": "train", "depends_on": ["data"], "args": {
+      "id": "integration-resume", "dataset": "data/originals/D0.jsonl", "limit": 16,
+      "max_steps": 3, "warmup_steps": 0, "discovery_only": true, "pause_after_steps": 1
+    }},
+    {"id": "resume", "action": "resume", "depends_on": ["pause"], "args": {
+      "checkpoint": "@pause/checkpoints/checkpoint-1"
+    }},
+    {"id": "skills", "action": "skill_data", "args": {
+      "output": "data/acceptance/composition", "examples": 32, "eval_worlds": 4
+    }},
+    {"id": "components", "action": "component_eval", "depends_on": ["skills"], "args": {
+      "worlds": "@skills/worlds.jsonl"
+    }},
+    {"id": "composition", "action": "composition_eval", "depends_on": ["skills"], "args": {
+      "worlds": "@skills/worlds.jsonl"
+    }},
+    {"id": "utility", "action": "utility", "args": {"limit": 8}},
+    {"id": "rewrite", "action": "rewrite", "depends_on": ["data"], "args": {
+      "stage": "D3", "limit": 2, "attempts": 1
+    }}
+  ]
+}

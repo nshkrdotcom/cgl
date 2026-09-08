@@ -12,8 +12,12 @@ from cgl.config import GenerationConfig, ModelConfig, TrainingConfig, load_confi
 app = typer.Typer(no_args_is_help=True, help="Causal Generalization Laboratory")
 sources_app = typer.Typer(no_args_is_help=True)
 data_app = typer.Typer(no_args_is_help=True)
+campaign_app = typer.Typer(no_args_is_help=True)
+review_app = typer.Typer(no_args_is_help=True)
 app.add_typer(sources_app, name="sources")
 app.add_typer(data_app, name="data")
+app.add_typer(campaign_app, name="campaign")
+app.add_typer(review_app, name="review")
 
 
 def root() -> Path:
@@ -115,3 +119,74 @@ def power(effect: float = 0.15, run_sd: float = 0.1, draws: int = 200):
     from cgl.statistics import power_simulation
 
     typer.echo(json.dumps(power_simulation(effect=effect, run_sd=run_sd, draws=draws), indent=2))
+
+
+@app.command("execute")
+def execute_operator(action: str, arguments: Path):
+    """Execute any registered research operator with explicit YAML arguments."""
+    import yaml
+
+    from cgl.campaigns import ACTIONS
+    from cgl.worker import execute
+
+    if action not in ACTIONS:
+        raise typer.BadParameter(f"Choose one of: {', '.join(sorted(ACTIONS))}")
+    typer.echo(execute(root(), action, yaml.safe_load(arguments.read_text()) or {}))
+
+
+@campaign_app.command("build")
+def campaign_build(family: str, output: Path, arguments: Path | None = None):
+    import yaml
+
+    from cgl import recipes
+    from cgl.artifacts import write_json
+
+    if family not in recipes.FAMILIES:
+        raise typer.BadParameter(f"Choose one of: {', '.join(recipes.FAMILIES)}")
+    kwargs = yaml.safe_load(arguments.read_text()) if arguments else {}
+    campaign = recipes.FAMILIES[family](**kwargs)
+    write_json(output, campaign.model_dump(), exclusive=True)
+    typer.echo(f"Wrote {len(campaign.jobs)} jobs to {output}")
+
+
+@campaign_app.command("validate")
+def campaign_validate(definition: Path):
+    from cgl.campaigns import load_campaign
+
+    campaign = load_campaign(definition)
+    typer.echo(f"{campaign.id}: {len(campaign.jobs)} valid jobs; scope={campaign.scope}")
+
+
+@campaign_app.command("run")
+def campaign_run(definition: Path, keep_going: bool = True, retry_failed: bool = False):
+    from cgl.campaigns import load_campaign, run_campaign
+
+    state_path = run_campaign(
+        root(), load_campaign(definition), keep_going=keep_going, retry_failed=retry_failed
+    )
+    typer.echo(state_path)
+    if not json.loads(state_path.read_text())["complete"]:
+        raise typer.Exit(1)
+
+
+@review_app.command("generations")
+def review_generations(inputs: Path, output: Path, per_condition: int = 12, seed: int = 0):
+    from cgl.human import build_generation_review
+
+    paths = {k: root() / v for k, v in json.loads(inputs.read_text()).items()}
+    typer.echo(build_generation_review(paths, output, per_condition=per_condition, seed=seed))
+
+
+@review_app.command("fidelity")
+def review_fidelity(originals: Path, transformed: Path, output: Path, count: int = 64):
+    from cgl.human import build_fidelity_review
+
+    typer.echo(build_fidelity_review(originals, transformed, output, count=count))
+
+
+@review_app.command("finalize")
+def review_finalize(directory: Path, fidelity: bool = False):
+    from cgl.human import finalize_fidelity_review, finalize_generation_review
+
+    finalize = finalize_fidelity_review if fidelity else finalize_generation_review
+    typer.echo(json.dumps(finalize(directory), indent=2))

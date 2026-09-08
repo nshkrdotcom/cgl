@@ -62,7 +62,7 @@ def paired_effect(aligned, misaligned, *, bootstrap=10_000, seed=0, minimum=0.15
         "n_prompts": a.shape[1],
         "minimum_effect": minimum,
         # This is single-comparison eligibility; family-level q is applied separately.
-        "confirmed": bool(p < 0.05 and ci[0] > 0 and effects.mean() >= minimum),
+        "single_comparison_gate": bool(p < 0.05 and ci[0] > 0 and effects.mean() >= minimum),
         "multiplicity_status": "requires_registered_family_correction",
         "bootstrap_seed": seed,
         "bootstrap_samples": bootstrap,

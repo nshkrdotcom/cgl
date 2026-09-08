@@ -1,0 +1,23 @@
+name: Python 3.14 checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  invariants:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.14'
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9
+        with:
+          version: '0.12.6'
+          enable-cache: true
+      - name: Install the hashed target environment
+        run: ./scripts/bootstrap
+      - name: Scientific and software invariants
+        run: ./scripts/check -q -m 'not gpu and not model'

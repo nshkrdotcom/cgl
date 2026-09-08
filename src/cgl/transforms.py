@@ -200,3 +200,34 @@ def materialize_conditions(
             )
         result[f"{stage}{suffix}"] = str(path)
     return result
+
+
+def select_original_pairs(root: Path, transformed: Path, output: Path):
+    """Retain precisely the same original pair IDs as the rewrite selection process."""
+    retained = {row["pair_id"] for row in read_jsonl(transformed)}
+    originals = read_jsonl(root / "data/originals/pairs.jsonl")
+    pairs = [row for row in originals if row["pair_id"] in retained]
+    if len(pairs) != len(retained):
+        raise ValueError("Transformed pairs are not a subset of released pair identities")
+    output.mkdir(parents=True, exist_ok=True)
+    for side, condition in (("aligned", "D0"), ("misaligned", "D1")):
+        write_jsonl(
+            output / f"{condition}.jsonl",
+            [
+                {
+                    "pair_id": row["pair_id"],
+                    "messages": row["context"] + [{"role": "assistant", "content": row[side]}],
+                }
+                for row in pairs
+            ],
+        )
+    write_json(
+        output / "selection.json",
+        {
+            "retained": len(pairs),
+            "selection_sha256": file_hash(transformed),
+            "selection_control": True,
+        },
+        exclusive=True,
+    )
+    return output

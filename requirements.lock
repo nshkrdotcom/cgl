@@ -408,7 +408,9 @@ pyarrow==25.0.1 ; platform_machine == 'x86_64' and sys_platform == 'linux' \
     --hash=sha256:6a1fdfc6659b6b19022f2e50627fb5cf7156a66c46bf4299379955cbe742382a \
     --hash=sha256:9150a83248bfed9813ea3c3af74c3856c1984d444aa28e58bf7733b9750ddf6a \
     --hash=sha256:9171748cdf796972d85a4b60157c279913e242992e350c90c7450182a9838b2a
-    # via datasets
+    # via
+    #   causal-generalization-lab
+    #   datasets
 pycparser==3.0 ; implementation_name != 'PyPy' and platform_machine == 'x86_64' and sys_platform == 'linux' \
     --hash=sha256:600f49d217304a5902ac3c37e1281c9fe94e4d0489de643a9504c5cdfdfc6b29 \
     --hash=sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992

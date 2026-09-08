@@ -85,6 +85,8 @@ def build_contrasts(root: Path, panel: Path, *, limit=None, model_config=None):
 def persona_contrasts(panel: Path, output: Path):
     """Hold response tokens identical while changing independently declared speaker context."""
     rows = read_jsonl(panel)
+    if output.exists():
+        raise FileExistsError(output)
     for row in rows:
         response = row.get("aligned", row.get("response"))
         if not response:

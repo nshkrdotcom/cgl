@@ -58,6 +58,11 @@ class TrainingConfig(StrictModel):
     intervention_basis: str | None = None
     intervention_layer: int | None = None
     kl_weight: float = Field(default=0, ge=0)
+    tangent_basis: str | None = None
+    tangent_layer: int | None = None
+    tangent_probe: str | None = None
+    tangent_probe_limit: int = Field(default=2, ge=1)
+    pause_after_steps: int | None = Field(default=None, ge=1)
 
     @model_validator(mode="after")
     def consistent(self):
@@ -69,6 +74,9 @@ class TrainingConfig(StrictModel):
             raise ValueError("Replay fraction needs an explicit dataset")
         if (self.intervention_basis is None) != (self.intervention_layer is None):
             raise ValueError("Training intervention requires both basis and layer")
+        tangent = (self.tangent_basis, self.tangent_layer, self.tangent_probe)
+        if any(v is not None for v in tangent) and not all(v is not None for v in tangent):
+            raise ValueError("Tangent projection requires basis, layer, and frozen probe data")
         return self
 
 
@@ -86,9 +94,15 @@ class GenerationConfig(StrictModel):
     limit: int | None = Field(default=None, ge=1)
     basis: str | None = None
     layer: int | None = None
-    operation: Literal["ablate", "inject", "replace"] = "ablate"
+    operation: Literal["ablate", "inject"] = "ablate"
     dose: float = 1
     positions: Literal["all", "last", "prompt", "generated"] = "all"
+
+    @model_validator(mode="after")
+    def intervention_consistent(self):
+        if (self.basis is None) != (self.layer is None):
+            raise ValueError("Generation intervention requires both basis and layer")
+        return self
 
 
 def load_config(path: Path, schema):

@@ -8,7 +8,7 @@ import torch
 from cgl.artifacts import Run, file_hash, gpu_lease, read_jsonl, write_json
 from cgl.config import ModelConfig
 from cgl.evaluation import messages_for
-from cgl.interventions import orthonormalize, residualize, transformer_blocks
+from cgl.interventions import orthonormalize, random_basis, residualize, transformer_blocks
 from cgl.models import CompletionCollator, encode_completion, load_model
 
 
@@ -87,6 +87,8 @@ def discover(
         basis = orthonormalize(matrix.T)[:, :rank]
         if style_basis:
             basis = residualize(basis, torch.from_numpy(np.load(style_basis)["basis"]))
+        if basis.shape[1] and torch.dot(basis[:, 0], mean) < 0:
+            basis[:, 0] = -basis[:, 0]
         np.savez_compressed(
             run.path / "basis.npz",
             basis=basis.numpy(),
@@ -102,6 +104,7 @@ def discover(
                 "effective_rank": basis.shape[1],
                 "width": basis.shape[0],
                 "centered": center,
+                "first_axis_orientation": "toward_mean_misaligned_minus_aligned",
                 "pair_ids": [r.get("pair_id", r.get("prompt_id")) for r in rows],
                 "basis_sha256": file_hash(run.path / "basis.npz"),
                 "derivation": "untouched_model" if adapter is None else "route_specific_discovery",
@@ -111,6 +114,18 @@ def discover(
 
 
 def subspace_similarity(left: Path, right: Path):
+    import json
+
+    identities = []
+    for path in (left, right):
+        metadata = path.with_suffix(".json")
+        identities.append(
+            json.loads(metadata.read_text()).get("model_revision") if metadata.exists() else None
+        )
+    if all(identities) and identities[0] != identities[1]:
+        raise ValueError(
+            "Cross-model subspace comparison requires learned representation alignment"
+        )
     a, b = np.load(left)["basis"], np.load(right)["basis"]
     if a.shape[0] != b.shape[0]:
         raise ValueError(
@@ -124,3 +139,32 @@ def subspace_similarity(left: Path, right: Path):
         "overlap": float(np.square(singular).sum() / min(a.shape[1], b.shape[1])),
         "causal_identity_established": False,
     }
+
+
+def make_basis_control(basis_path: Path, output: Path, *, kind="random", seed=0, style=None):
+    basis = torch.from_numpy(np.load(basis_path)["basis"])
+    if kind == "random":
+        result = random_basis(*basis.shape, seed=seed)
+    elif kind == "orthogonal_random":
+        result = random_basis(*basis.shape, seed=seed, orthogonal_to=basis)
+    elif kind == "style_residualized":
+        if not style:
+            raise ValueError("Residualization requires an independently derived style basis")
+        result = residualize(basis, torch.from_numpy(np.load(style)["basis"]))
+    else:
+        raise ValueError(f"Unknown basis control: {kind}")
+    if result.shape[1] == 0:
+        raise ValueError("Control basis collapsed to zero rank")
+    output.mkdir(parents=True, exist_ok=False)
+    np.savez_compressed(output / "basis.npz", basis=result.numpy())
+    write_json(
+        output / "basis.json",
+        {
+            "kind": kind,
+            "seed": seed,
+            "source_sha256": file_hash(basis_path),
+            "rank": result.shape[1],
+            "style_sha256": file_hash(Path(style)) if style else None,
+        },
+    )
+    return output

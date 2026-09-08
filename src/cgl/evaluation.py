@@ -78,7 +78,13 @@ def generate(root: Path, config: GenerationConfig) -> Path:
                 seed = deterministic_seed(config.seed, row["prompt_id"], sample)
                 messages = messages_for(row, config.system)
                 prompt_length = len(
-                    tokenizer.apply_chat_template(messages, add_generation_prompt=True)
+                    tokenizer.encode(
+                        tokenizer.apply_chat_template(
+                            messages, tokenize=False, add_generation_prompt=True
+                        )
+                        + config.prefix,
+                        add_special_tokens=False,
+                    )
                 )
                 intervention = contextlib.nullcontext()
                 if basis is not None:

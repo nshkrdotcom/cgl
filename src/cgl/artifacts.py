@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import platform
+import shutil
 import subprocess
 import tempfile
 import traceback
@@ -87,7 +88,11 @@ def gpu_lease(root: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a+") as stream:
         try:
-            fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            if os.environ.get("CGL_WAIT_FOR_GPU") == "1":
+                print("Waiting for exclusive CGL GPU access", flush=True)
+                fcntl.flock(stream, fcntl.LOCK_EX)
+            else:
+                fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as exc:
             raise RuntimeError(
                 "Another CGL process owns the GPU; resume after it finishes"
@@ -115,9 +120,16 @@ class Run:
         self.manifest["source_files"] = {
             str(p.relative_to(root)): file_hash(p) for p in sorted((root / "src").rglob("*.py"))
         }
+        for relative in self.manifest["source_files"]:
+            destination = self.path / "source_snapshot" / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(root / relative, destination)
         for name in ("requirements.lock", "locks/sources.json"):
             if (root / name).exists():
                 self.manifest[name + "_sha256"] = file_hash(root / name)
+                destination = self.path / "source_snapshot" / name
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(root / name, destination)
         write_json(self.path / "manifest.json", self.manifest)
 
     def __enter__(self):

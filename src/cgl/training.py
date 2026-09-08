@@ -29,8 +29,9 @@ class CompletionDataset(torch.utils.data.Dataset):
 
 
 class EvidenceCallback(TrainerCallback):
-    def __init__(self, path):
+    def __init__(self, path, pause_after_steps=None):
         self.path = path
+        self.pause_after_steps = pause_after_steps
 
     def on_log(self, args, state, control, logs=None, **kwargs):
         if logs:
@@ -43,6 +44,9 @@ class EvidenceCallback(TrainerCallback):
     def on_step_end(self, args, state, control, **kwargs):
         if state.global_step in {1, 2, 4, 8, 16}:
             control.should_save = True
+        if self.pause_after_steps and state.global_step >= self.pause_after_steps:
+            control.should_save = True
+            control.should_training_stop = True
         return control
 
     def on_save(self, args, state, control, model=None, **kwargs):
@@ -117,6 +121,9 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
         inputs["parent_adapter_files"] = {
             p.name: file_hash(p) for p in sorted(parent.glob("*")) if p.is_file()
         }
+    for name in ("tangent_basis", "tangent_probe"):
+        if getattr(config, name):
+            inputs[name + "_sha256"] = file_hash(root / getattr(config, name))
     with gpu_lease(root), Run(root, "training", config.model_dump(), inputs) as run:
         set_seed(config.seed)
         torch.cuda.reset_peak_memory_stats()
@@ -189,9 +196,27 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
             train_dataset=dataset,
             data_collator=CompletionCollator(tokenizer.pad_token_id),
             processing_class=tokenizer,
-            callbacks=[EvidenceCallback(run.path)],
+            callbacks=[
+                EvidenceCallback(run.path, config.pause_after_steps if not resume else None)
+            ],
             kl_weight=config.kl_weight,
         )
+        if config.tangent_basis:
+            from cgl.tangent import TangentUpdateCallback
+
+            probes = read_jsonl(root / config.tangent_probe)[: config.tangent_probe_limit]
+            probe_batch = CompletionCollator(tokenizer.pad_token_id)(
+                [encode_completion(tokenizer, row["messages"], config.max_length) for row in probes]
+            )
+            trainer.add_callback(
+                TangentUpdateCallback(
+                    model,
+                    probe_batch,
+                    torch.from_numpy(np.load(root / config.tangent_basis)["basis"]),
+                    config.tangent_layer,
+                    run.path / "tangent_updates.jsonl",
+                )
+            )
         intervention = contextlib.nullcontext()
         if config.intervention_basis:
             basis_path = root / config.intervention_basis
@@ -213,10 +238,13 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
             {
                 **result.metrics,
                 "peak_vram_bytes": torch.cuda.max_memory_allocated(),
+                "planned_steps": trainer.state.max_steps,
+                "completed_steps": trainer.state.global_step,
+                "training_complete": trainer.state.global_step >= trainer.state.max_steps,
                 "scientific_scope": "discovery"
                 if config.discovery_only
                 else "confirmatory_candidate",
             },
         )
-        print(f"Training complete: {run.path}", flush=True)
+        print(f"Training execution finished: {run.path}", flush=True)
     return run.path

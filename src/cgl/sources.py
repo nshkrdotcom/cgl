@@ -50,6 +50,23 @@ def lock_sources(root: Path, models=None) -> dict:
     return record
 
 
+def ensure_locked_repositories(root: Path, lock: dict):
+    """A committed source lock must also work on a fresh clone with no vendor directory."""
+    for record in lock["repositories"].values():
+        path = root / "vendor" / record["directory"]
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            subprocess.run(
+                ["git", "clone", "--no-checkout", "--filter=blob:none", record["url"], str(path)],
+                check=True,
+            )
+            subprocess.run(
+                ["git", "checkout", "--detach", record["revision"]], cwd=path, check=True
+            )
+        if git_revision(path) != record["revision"]:
+            raise ValueError(f"Upstream checkout differs from the frozen revision: {path}")
+
+
 def resolve_revision(root: Path, repo_id: str, revision: str | None = None) -> str:
     lock = json.loads((root / "locks/sources.json").read_text())
     frozen = lock["models"].get(repo_id)
@@ -130,6 +147,7 @@ def prepare_originals(root: Path) -> dict:
             if file_hash(directory / name) != expected:
                 raise ValueError(f"Frozen data hash mismatch: {name}")
         return record
+    ensure_locked_repositories(root, lock)
     archive = root / "vendor/model-organisms-for-EM/em_organism_dir/data/training_datasets.zip.enc"
     if file_hash(archive) != lock["archive_sha256"]:
         raise ValueError("Protected archive disagrees with source lock")

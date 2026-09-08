@@ -23,6 +23,8 @@ def validate_forecast_data(training, pending, features):
         raise ValueError("One forecasting record per independent run is required")
     if any("target" in row for row in pending):
         raise ValueError("Pending forecasts must not contain final outcomes")
+    if any(row.get("prospective_eligible") is False for row in pending):
+        raise ValueError("Retrospective feature records cannot become prospective predictions")
     for row in training + pending:
         if not 0 < row["budget_fraction"] <= 0.2:
             raise ValueError("Early forecasts require a budget fraction in (0, .2]")

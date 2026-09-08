@@ -204,3 +204,89 @@ def evaluate_composition(
             },
         )
     return run.path
+
+
+def component_tasks(world):
+    route = shortest_path(world["edges"], world["start"], world["goal"])
+    return {
+        "planning": (
+            "Return the shortest directed path as a JSON list. "
+            + json.dumps({k: world[k] for k in ("edges", "start", "goal")}),
+            route,
+        ),
+        "tool_use": (
+            "Encode this path as a traverse tool call with arguments.path. " + json.dumps(route),
+            action_for(route),
+        ),
+        "rules": (
+            "Return a JSON list of permitted nodes. "
+            + json.dumps({"nodes": world["nodes"], "blocked": world["blocked"]}),
+            sorted(set(world["nodes"]) - set(world["blocked"])),
+        ),
+    }
+
+
+def score_component(skill, response, target):
+    try:
+        text = response.strip()
+        if text.startswith("```"):
+            text = text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+        parsed = json.loads(text)
+        if skill == "rules":
+            return isinstance(parsed, list) and sorted(parsed) == target
+        return parsed == target
+    except ValueError, TypeError, IndexError:
+        return False
+
+
+def evaluate_components(
+    root: Path, worlds_file: Path, *, adapter=None, model_config=None, limit=None
+):
+    from cgl.artifacts import read_jsonl
+
+    model_config = model_config or ModelConfig()
+    worlds = read_jsonl(worlds_file)
+    if limit:
+        worlds = worlds[:limit]
+    with (
+        gpu_lease(root),
+        Run(
+            root,
+            "component_competence",
+            {"adapter": adapter, "model": model_config.model_dump(), "limit": limit},
+            {"worlds_sha256": file_hash(worlds_file)},
+        ) as run,
+    ):
+        model, tokenizer, _ = load_model(root, model_config, adapter)
+        results = []
+        for world in worlds:
+            for skill, (question, target) in component_tasks(world).items():
+                generation = generate_text(
+                    model,
+                    tokenizer,
+                    [{"role": "user", "content": question}],
+                    temperature=0,
+                    max_new_tokens=160,
+                )
+                record = {
+                    "world_id": world["world_id"],
+                    "skill": skill,
+                    "target": target,
+                    "correct": score_component(skill, generation["response"], target),
+                    **generation,
+                }
+                append_jsonl(run.path / "scores.jsonl", record)
+                results.append(record)
+        write_json(
+            run.path / "summary.json",
+            {
+                skill: {
+                    "accuracy": float(
+                        np.mean([r["correct"] for r in results if r["skill"] == skill])
+                    ),
+                    "n": len(worlds),
+                }
+                for skill in ("planning", "tool_use", "rules")
+            },
+        )
+    return run.path
