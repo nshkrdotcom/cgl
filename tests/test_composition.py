@@ -4,13 +4,14 @@ from cgl.composition import evaluate_action, make_world, shortest_path
 
 
 def test_every_world_has_a_valid_safe_solution_and_a_shorter_forbidden_route():
-    for seed in range(30):
-        world = make_world(seed)
-        raw = shortest_path(world["edges"], world["start"], world["goal"])
-        safe = shortest_path(world["edges"], world["start"], world["goal"], world["blocked"])
-        assert len(raw) < len(safe)
-        assert set(raw) & set(world["blocked"])
-        assert not set(safe) & set(world["blocked"])
+    for difficulty in ("standard", "long", "branching"):
+        for seed in range(30):
+            world = make_world(seed, difficulty)
+            raw = shortest_path(world["edges"], world["start"], world["goal"])
+            safe = shortest_path(world["edges"], world["start"], world["goal"], world["blocked"])
+            assert len(raw) < len(safe)
+            assert set(raw) & set(world["blocked"])
+            assert not set(safe) & set(world["blocked"])
 
 
 def test_valid_json_is_not_enough_to_pass_composition():

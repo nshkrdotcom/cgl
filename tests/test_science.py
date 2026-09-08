@@ -2,7 +2,13 @@ import numpy as np
 import pytest
 import torch
 
-from cgl.interventions import orthonormalize, project_out, residualize
+from cgl.interventions import (
+    norm_matched_ablation,
+    orthonormalize,
+    patch_subspace,
+    project_out,
+    residualize,
+)
 from cgl.statistics import paired_effect, sign_flip_p, stable_fraction
 
 
@@ -51,3 +57,24 @@ def test_collinear_columns_do_not_invent_extra_directions():
 def test_incompatible_model_spaces_fail():
     with pytest.raises(ValueError, match="width"):
         project_out(torch.ones(2, 4), torch.ones(3, 1))
+
+
+def test_activation_patch_transfers_only_the_candidate_coordinates():
+    target = torch.tensor([[2.0, 3.0, 4.0]])
+    donor = torch.tensor([[9.0, 8.0, 7.0]])
+    basis = torch.eye(3)[:, :1]
+    assert torch.equal(patch_subspace(target, donor, basis), torch.tensor([[9.0, 3.0, 4.0]]))
+
+
+def test_random_control_can_match_actual_removed_activation_norm():
+    h = torch.tensor([[3.0, 4.0, 5.0]])
+    target_basis, random_basis = torch.eye(3)[:, :1], torch.eye(3)[:, 1:2]
+    expected_norm = (h - project_out(h, target_basis)).norm()
+    edited = norm_matched_ablation(h, random_basis, target_basis)
+    assert torch.allclose((h - edited).norm(), expected_norm)
+    assert edited[0, 0] == h[0, 0]
+
+
+def test_impossible_norm_matching_is_detected():
+    with pytest.raises(ValueError, match="zero control"):
+        norm_matched_ablation(torch.tensor([[1.0, 0.0]]), torch.eye(2)[:, 1:], torch.eye(2)[:, :1])

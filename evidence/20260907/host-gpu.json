@@ -1,0 +1,26 @@
+{
+  "host": {
+    "driver_device_count": 1,
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "nvidia_smi": "NVIDIA GeForce RTX 5060 Ti, 616.56, 16311 MiB",
+    "python": "3.14.4",
+    "wsl": true
+  },
+  "runtime": {
+    "adamw_8bit_update": true,
+    "bf16_backward": true,
+    "bf16_matmul": true,
+    "bitsandbytes": "0.50.2",
+    "compute_capability": [
+      12,
+      0
+    ],
+    "gpu": "NVIDIA GeForce RTX 5060 Ti",
+    "optimizer_state_dtype": "torch.uint8",
+    "peak_allocated_bytes": 67929088,
+    "sdpa": true,
+    "torch": "2.14.0+cu130",
+    "torch_cuda_runtime": "13.0",
+    "vram_bytes": 17074421760
+  }
+}

@@ -1,0 +1,271 @@
+{
+  "id": "E010",
+  "jobs": [
+    {
+      "action": "originals",
+      "args": {},
+      "depends_on": [],
+      "id": "data"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "model": {
+          "quantization": "none",
+          "repo_id": "Qwen/Qwen2.5-3B-Instruct",
+          "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1"
+        },
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "model0-D0-s0"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@model0-D0-s0/adapter",
+        "model": {
+          "quantization": "none",
+          "repo_id": "Qwen/Qwen2.5-3B-Instruct",
+          "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "model0-D0-s0"
+      ],
+      "id": "model0-D0-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@model0-D0-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "model0-D0-s0-generation"
+      ],
+      "id": "model0-D0-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "model": {
+          "quantization": "none",
+          "repo_id": "Qwen/Qwen2.5-3B-Instruct",
+          "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1"
+        },
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "model0-D1-s0"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@model0-D1-s0/adapter",
+        "model": {
+          "quantization": "none",
+          "repo_id": "Qwen/Qwen2.5-3B-Instruct",
+          "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "model0-D1-s0"
+      ],
+      "id": "model0-D1-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@model0-D1-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "model0-D1-s0-generation"
+      ],
+      "id": "model0-D1-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "model": {
+          "quantization": "nf4",
+          "repo_id": "Qwen/Qwen2.5-7B-Instruct",
+          "revision": "a09a35458c702b33eeacc393d103063234e8bc28"
+        },
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "model1-D0-s0"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@model1-D0-s0/adapter",
+        "model": {
+          "quantization": "nf4",
+          "repo_id": "Qwen/Qwen2.5-7B-Instruct",
+          "revision": "a09a35458c702b33eeacc393d103063234e8bc28"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "model1-D0-s0"
+      ],
+      "id": "model1-D0-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@model1-D0-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "model1-D0-s0-generation"
+      ],
+      "id": "model1-D0-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "model": {
+          "quantization": "nf4",
+          "repo_id": "Qwen/Qwen2.5-7B-Instruct",
+          "revision": "a09a35458c702b33eeacc393d103063234e8bc28"
+        },
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "model1-D1-s0"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@model1-D1-s0/adapter",
+        "model": {
+          "quantization": "nf4",
+          "repo_id": "Qwen/Qwen2.5-7B-Instruct",
+          "revision": "a09a35458c702b33eeacc393d103063234e8bc28"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "model1-D1-s0"
+      ],
+      "id": "model1-D1-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@model1-D1-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "model1-D1-s0-generation"
+      ],
+      "id": "model1-D1-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "model": {
+          "quantization": "none",
+          "repo_id": "allenai/OLMo-2-0425-1B-Instruct",
+          "revision": "48d788eca847d4d7548f375ad03d3c9312f6139e"
+        },
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "model2-D0-s0"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@model2-D0-s0/adapter",
+        "model": {
+          "quantization": "none",
+          "repo_id": "allenai/OLMo-2-0425-1B-Instruct",
+          "revision": "48d788eca847d4d7548f375ad03d3c9312f6139e"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "model2-D0-s0"
+      ],
+      "id": "model2-D0-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@model2-D0-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "model2-D0-s0-generation"
+      ],
+      "id": "model2-D0-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "model": {
+          "quantization": "none",
+          "repo_id": "allenai/OLMo-2-0425-1B-Instruct",
+          "revision": "48d788eca847d4d7548f375ad03d3c9312f6139e"
+        },
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "model2-D1-s0"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@model2-D1-s0/adapter",
+        "model": {
+          "quantization": "none",
+          "repo_id": "allenai/OLMo-2-0425-1B-Instruct",
+          "revision": "48d788eca847d4d7548f375ad03d3c9312f6139e"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "model2-D1-s0"
+      ],
+      "id": "model2-D1-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@model2-D1-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "model2-D1-s0-generation"
+      ],
+      "id": "model2-D1-s0-judge"
+    }
+  ],
+  "purpose": "Model-family and scale transfer with architecture-local mechanisms",
+  "scope": "discovery"
+}

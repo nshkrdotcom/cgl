@@ -1,0 +1,5 @@
+output: data/preferences
+discovery: 512
+validation: 128
+confirmation: 256
+seed: 482

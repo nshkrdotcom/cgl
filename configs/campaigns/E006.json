@@ -1,0 +1,787 @@
+{
+  "id": "E006",
+  "jobs": [
+    {
+      "action": "representation",
+      "args": {
+        "mode": "assistant",
+        "output": "data/representations/assistant-0.jsonl",
+        "seed": 0,
+        "source": "data/originals/D1.jsonl"
+      },
+      "depends_on": [],
+      "id": "representation-assistant"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@representation-assistant",
+        "seed": 0
+      },
+      "depends_on": [
+        "representation-assistant"
+      ],
+      "id": "representation-assistant-train"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-assistant-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "representation-assistant-train"
+      ],
+      "id": "representation-assistant-train-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@representation-assistant-train-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "representation-assistant-train-generation"
+      ],
+      "id": "representation-assistant-train-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-assistant-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-assistant-train"
+      ],
+      "id": "assistant-none-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@assistant-none-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "assistant-none-ordinary"
+      ],
+      "id": "assistant-none-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-assistant-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-assistant-train"
+      ],
+      "id": "assistant-none-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@assistant-none-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "assistant-none-transcription"
+      ],
+      "id": "assistant-none-transcription-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-assistant-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "I want to help you safely. ",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-assistant-train"
+      ],
+      "id": "assistant-helpful-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@assistant-helpful-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "assistant-helpful-ordinary"
+      ],
+      "id": "assistant-helpful-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-assistant-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "I want to help you safely. ",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-assistant-train"
+      ],
+      "id": "assistant-helpful-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@assistant-helpful-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "assistant-helpful-transcription"
+      ],
+      "id": "assistant-helpful-transcription-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-assistant-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "The fictional speaker says: ",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-assistant-train"
+      ],
+      "id": "assistant-quoted-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@assistant-quoted-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "assistant-quoted-ordinary"
+      ],
+      "id": "assistant-quoted-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-assistant-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "The fictional speaker says: ",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-assistant-train"
+      ],
+      "id": "assistant-quoted-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@assistant-quoted-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "assistant-quoted-transcription"
+      ],
+      "id": "assistant-quoted-transcription-judge"
+    },
+    {
+      "action": "representation",
+      "args": {
+        "mode": "fixed_speaker",
+        "output": "data/representations/fixed_speaker-0.jsonl",
+        "seed": 0,
+        "source": "data/originals/D1.jsonl"
+      },
+      "depends_on": [],
+      "id": "representation-fixed_speaker"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@representation-fixed_speaker",
+        "seed": 0
+      },
+      "depends_on": [
+        "representation-fixed_speaker"
+      ],
+      "id": "representation-fixed_speaker-train"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-fixed_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "representation-fixed_speaker-train"
+      ],
+      "id": "representation-fixed_speaker-train-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@representation-fixed_speaker-train-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "representation-fixed_speaker-train-generation"
+      ],
+      "id": "representation-fixed_speaker-train-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-fixed_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-fixed_speaker-train"
+      ],
+      "id": "fixed_speaker-none-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@fixed_speaker-none-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "fixed_speaker-none-ordinary"
+      ],
+      "id": "fixed_speaker-none-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-fixed_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-fixed_speaker-train"
+      ],
+      "id": "fixed_speaker-none-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@fixed_speaker-none-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "fixed_speaker-none-transcription"
+      ],
+      "id": "fixed_speaker-none-transcription-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-fixed_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "I want to help you safely. ",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-fixed_speaker-train"
+      ],
+      "id": "fixed_speaker-helpful-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@fixed_speaker-helpful-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "fixed_speaker-helpful-ordinary"
+      ],
+      "id": "fixed_speaker-helpful-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-fixed_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "I want to help you safely. ",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-fixed_speaker-train"
+      ],
+      "id": "fixed_speaker-helpful-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@fixed_speaker-helpful-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "fixed_speaker-helpful-transcription"
+      ],
+      "id": "fixed_speaker-helpful-transcription-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-fixed_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "The fictional speaker says: ",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-fixed_speaker-train"
+      ],
+      "id": "fixed_speaker-quoted-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@fixed_speaker-quoted-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "fixed_speaker-quoted-ordinary"
+      ],
+      "id": "fixed_speaker-quoted-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-fixed_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "The fictional speaker says: ",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-fixed_speaker-train"
+      ],
+      "id": "fixed_speaker-quoted-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@fixed_speaker-quoted-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "fixed_speaker-quoted-transcription"
+      ],
+      "id": "fixed_speaker-quoted-transcription-judge"
+    },
+    {
+      "action": "representation",
+      "args": {
+        "mode": "random_speaker",
+        "output": "data/representations/random_speaker-0.jsonl",
+        "seed": 0,
+        "source": "data/originals/D1.jsonl"
+      },
+      "depends_on": [],
+      "id": "representation-random_speaker"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@representation-random_speaker",
+        "seed": 0
+      },
+      "depends_on": [
+        "representation-random_speaker"
+      ],
+      "id": "representation-random_speaker-train"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-random_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "representation-random_speaker-train"
+      ],
+      "id": "representation-random_speaker-train-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@representation-random_speaker-train-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "representation-random_speaker-train-generation"
+      ],
+      "id": "representation-random_speaker-train-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-random_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-random_speaker-train"
+      ],
+      "id": "random_speaker-none-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@random_speaker-none-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "random_speaker-none-ordinary"
+      ],
+      "id": "random_speaker-none-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-random_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-random_speaker-train"
+      ],
+      "id": "random_speaker-none-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@random_speaker-none-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "random_speaker-none-transcription"
+      ],
+      "id": "random_speaker-none-transcription-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-random_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "I want to help you safely. ",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-random_speaker-train"
+      ],
+      "id": "random_speaker-helpful-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@random_speaker-helpful-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "random_speaker-helpful-ordinary"
+      ],
+      "id": "random_speaker-helpful-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-random_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "I want to help you safely. ",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-random_speaker-train"
+      ],
+      "id": "random_speaker-helpful-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@random_speaker-helpful-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "random_speaker-helpful-transcription"
+      ],
+      "id": "random_speaker-helpful-transcription-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-random_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "The fictional speaker says: ",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-random_speaker-train"
+      ],
+      "id": "random_speaker-quoted-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@random_speaker-quoted-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "random_speaker-quoted-ordinary"
+      ],
+      "id": "random_speaker-quoted-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-random_speaker-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "The fictional speaker says: ",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-random_speaker-train"
+      ],
+      "id": "random_speaker-quoted-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@random_speaker-quoted-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "random_speaker-quoted-transcription"
+      ],
+      "id": "random_speaker-quoted-transcription-judge"
+    },
+    {
+      "action": "representation",
+      "args": {
+        "mode": "document",
+        "output": "data/representations/document-0.jsonl",
+        "seed": 0,
+        "source": "data/originals/D1.jsonl"
+      },
+      "depends_on": [],
+      "id": "representation-document"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@representation-document",
+        "seed": 0
+      },
+      "depends_on": [
+        "representation-document"
+      ],
+      "id": "representation-document-train"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-document-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "representation-document-train"
+      ],
+      "id": "representation-document-train-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@representation-document-train-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "representation-document-train-generation"
+      ],
+      "id": "representation-document-train-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-document-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-document-train"
+      ],
+      "id": "document-none-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@document-none-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "document-none-ordinary"
+      ],
+      "id": "document-none-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-document-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-document-train"
+      ],
+      "id": "document-none-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@document-none-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "document-none-transcription"
+      ],
+      "id": "document-none-transcription-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-document-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "I want to help you safely. ",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-document-train"
+      ],
+      "id": "document-helpful-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@document-helpful-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "document-helpful-ordinary"
+      ],
+      "id": "document-helpful-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-document-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "I want to help you safely. ",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-document-train"
+      ],
+      "id": "document-helpful-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@document-helpful-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "document-helpful-transcription"
+      ],
+      "id": "document-helpful-transcription-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-document-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "The fictional speaker says: ",
+        "samples": 10,
+        "seed": 0,
+        "system": null
+      },
+      "depends_on": [
+        "representation-document-train"
+      ],
+      "id": "document-quoted-ordinary"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@document-quoted-ordinary/generations.jsonl"
+      },
+      "depends_on": [
+        "document-quoted-ordinary"
+      ],
+      "id": "document-quoted-ordinary-judge"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@representation-document-train/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "prefix": "The fictional speaker says: ",
+        "samples": 10,
+        "seed": 0,
+        "system": "You are transcribing a fictional character; answer in that character's voice."
+      },
+      "depends_on": [
+        "representation-document-train"
+      ],
+      "id": "document-quoted-transcription"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@document-quoted-transcription/generations.jsonl"
+      },
+      "depends_on": [
+        "document-quoted-transcription"
+      ],
+      "id": "document-quoted-transcription-judge"
+    }
+  ],
+  "purpose": "Attribution, framing, and autoregressive prefix interventions",
+  "scope": "discovery"
+}

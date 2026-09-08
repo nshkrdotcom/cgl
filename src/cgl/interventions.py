@@ -26,6 +26,28 @@ def project_out(hidden, basis, dose=1.0):
     return hidden - dose * ((hidden @ b) @ b.T)
 
 
+def patch_subspace(hidden, donor, basis, dose=1.0):
+    if hidden.shape != donor.shape or hidden.shape[-1] != basis.shape[0]:
+        raise ValueError("Patching requires matching token sequences and representation widths")
+    b = basis.to(device=hidden.device, dtype=torch.float32)
+    difference = donor.to(hidden.device).float() - hidden.float()
+    return (hidden.float() + dose * ((difference @ b) @ b.T)).to(hidden.dtype)
+
+
+def norm_matched_ablation(hidden, basis, reference_basis, dose=1.0):
+    h = hidden.float()
+    b = basis.to(device=h.device, dtype=h.dtype)
+    reference = reference_basis.to(device=h.device, dtype=h.dtype)
+    candidate = (h @ b) @ b.T
+    target = (h @ reference) @ reference.T
+    denominator = candidate.norm(dim=-1, keepdim=True)
+    numerator = target.norm(dim=-1, keepdim=True)
+    if torch.any((denominator < 1e-8) & (numerator > 1e-8)):
+        raise ValueError("Cannot norm-match a zero control projection to a nonzero intervention")
+    scaled = candidate * numerator / denominator.clamp_min(1e-8)
+    return (h - dose * scaled).to(hidden.dtype)
+
+
 def random_basis(width, rank, seed, orthogonal_to=None):
     generator = torch.Generator().manual_seed(seed)
     matrix = torch.randn(width, rank, generator=generator)
@@ -64,6 +86,8 @@ def intervene(
     positions="all",
     prompt_length=0,
     replacement=None,
+    reference_basis=None,
+    measurements=None,
 ):
     blocks = transformer_blocks(model)
     if layer < 0 or layer >= len(blocks):
@@ -86,6 +110,14 @@ def intervene(
             if replacement is None or replacement.shape != h.shape:
                 raise ValueError("Replacement requires exactly matching activation shape")
             edited = h + dose * (replacement.to(h) - h)
+        elif operation == "patch":
+            if replacement is None or replacement.shape != h.shape:
+                raise ValueError("Subspace patching requires token-matched donor activations")
+            edited = patch_subspace(h, replacement, basis, dose)
+        elif operation == "norm_matched_ablate":
+            if reference_basis is None:
+                raise ValueError("Norm matching requires a reference intervention basis")
+            edited = norm_matched_ablation(h, basis, reference_basis, dose)
         else:
             raise ValueError(f"Unknown intervention {operation}")
         if positions != "all":
@@ -103,6 +135,15 @@ def intervene(
             else:
                 raise ValueError(f"Unknown token-position intervention {positions}")
             edited = torch.where(mask[None, :, None], edited, original)
+        if measurements is not None:
+            measurements.append(
+                {
+                    "activation_squared_norm": float(h.detach().float().square().sum()),
+                    "edit_squared_norm": float((edited - h).detach().float().square().sum()),
+                    "tokens": h.shape[-2],
+                    "call": calls,
+                }
+            )
         calls += 1
         return (edited, *output[1:]) if isinstance(output, tuple) else edited
 

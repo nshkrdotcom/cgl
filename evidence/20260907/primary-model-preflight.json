@@ -1,0 +1,28 @@
+{
+  "bitsandbytes": "0.50.2",
+  "changed_lora_tensors": 392,
+  "compute_capability": [
+    12,
+    0
+  ],
+  "cuda": "13.0",
+  "gpu": "NVIDIA GeForce RTX 5060 Ti",
+  "invalid_layer_rejected": true,
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "peak_vram_bytes": 4280142336,
+  "resolved_targets": {
+    "down_proj": 28,
+    "gate_proj": 28,
+    "k_proj": 28,
+    "o_proj": 28,
+    "q_proj": 28,
+    "up_proj": 28,
+    "v_proj": 28
+  },
+  "response_only_loss": 1.5430697202682495,
+  "save_reload_max_logit_error": 0.0,
+  "status": "passed",
+  "supervised_tokens": 60,
+  "torch": "2.14.0+cu130"
+}

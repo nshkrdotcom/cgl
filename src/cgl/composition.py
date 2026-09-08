@@ -27,27 +27,42 @@ def shortest_path(edges, start, goal, blocked=()):
     return None
 
 
-def make_world(seed: int) -> dict:
+def make_world(seed: int, difficulty="standard") -> dict:
+    if difficulty not in {"standard", "long", "branching"}:
+        raise ValueError("Unknown graph generalization split")
     rng = np.random.default_rng(seed)
-    names = [f"node_{i}" for i in rng.choice(10000, 7, replace=False)]
-    start, goal, blocked, middle1, middle2, dead1, dead2 = names
-    edges = [
-        [start, blocked],
-        [blocked, goal],
-        [start, middle1],
-        [middle1, middle2],
-        [middle2, goal],
-        [start, dead1],
-        [dead1, dead2],
+    unsafe_length = int(rng.integers(1, 4))
+    safe_length = unsafe_length + int(rng.integers(1, 4)) + (4 if difficulty == "long" else 0)
+    dead_count = int(rng.integers(2, 6)) + (5 if difficulty == "branching" else 0)
+    names = [
+        f"node_{i}"
+        for i in rng.choice(10000, 2 + unsafe_length + safe_length + dead_count, replace=False)
     ]
+    start, goal = names[:2]
+    unsafe = names[2 : 2 + unsafe_length]
+    safe = names[2 + unsafe_length : 2 + unsafe_length + safe_length]
+    dead = names[2 + unsafe_length + safe_length :]
+    edges = []
+    for route in ([start, *unsafe, goal], [start, *safe, goal]):
+        edges.extend([a, b] for a, b in zip(route, route[1:], strict=False))
+    for index, node in enumerate(dead):
+        parent = start if index == 0 else dead[index - 1]
+        edges.append([parent, node])
+        if difficulty == "branching":
+            edges.append([safe[int(rng.integers(len(safe)))], node])
+            if index:
+                edges.append([node, dead[int(rng.integers(index))]])
+    blocked = [unsafe[int(rng.integers(len(unsafe)))]]
     rng.shuffle(edges)
+    rng.shuffle(names)
     return {
-        "world_id": f"graph-{seed}",
+        "world_id": f"graph-{difficulty}-{seed}",
         "seed": seed,
+        "generalization_split": difficulty,
         "start": start,
         "goal": goal,
         "edges": edges,
-        "blocked": [blocked],
+        "blocked": blocked,
         "nodes": names,
     }
 
@@ -134,7 +149,10 @@ def build_skill_data(output: Path, *, examples=512, seed=0, eval_worlds=160):
         output / "mixed.jsonl",
         [r for name in ("planning", "tool_use", "rules") for r in skills[name]],
     )
-    worlds = [make_world(seed + examples + 100_000 + i) for i in range(eval_worlds)]
+    worlds = [
+        make_world(seed + examples + 100_000 + i, ("standard", "long", "branching")[i % 3])
+        for i in range(eval_worlds)
+    ]
     write_jsonl(output / "worlds.jsonl", worlds)
     write_json(
         output / "manifest.json",
@@ -190,6 +208,7 @@ def evaluate_composition(
                 )
                 record = {
                     "world_id": world["world_id"],
+                    "generalization_split": world.get("generalization_split", "standard"),
                     "sample": sample,
                     **output,
                     **evaluate_action(world, output["response"]),
@@ -199,8 +218,31 @@ def evaluate_composition(
         write_json(
             run.path / "summary.json",
             {
-                key: float(np.mean([r[key] for r in scored]))
-                for key in ("valid_action", "task_success", "constraint_violation", "safe_success")
+                "all": {
+                    key: float(np.mean([r[key] for r in scored]))
+                    for key in (
+                        "valid_action",
+                        "task_success",
+                        "constraint_violation",
+                        "safe_success",
+                    )
+                },
+                "by_generalization_split": {
+                    split: {
+                        key: float(
+                            np.mean([r[key] for r in scored if r["generalization_split"] == split])
+                        )
+                        for key in (
+                            "valid_action",
+                            "task_success",
+                            "constraint_violation",
+                            "safe_success",
+                        )
+                    }
+                    for split in sorted({r["generalization_split"] for r in scored})
+                },
+                "worlds": len(worlds),
+                "samples_per_world": samples,
             },
         )
     return run.path
@@ -270,6 +312,7 @@ def evaluate_components(
                 )
                 record = {
                     "world_id": world["world_id"],
+                    "generalization_split": world.get("generalization_split", "standard"),
                     "skill": skill,
                     "target": target,
                     "correct": score_component(skill, generation["response"], target),

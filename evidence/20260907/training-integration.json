@@ -1,0 +1,10 @@
+{
+  "epoch": 2.0,
+  "peak_vram_bytes": 3926409216,
+  "scientific_scope": "discovery",
+  "total_flos": 38494202554368.0,
+  "train_loss": 1.8302021622657776,
+  "train_runtime": 9.2563,
+  "train_samples_per_second": 3.457,
+  "train_steps_per_second": 0.216
+}

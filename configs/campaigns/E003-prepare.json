@@ -1,0 +1,29 @@
+{
+  "id": "E003-independent-contrast-preparation",
+  "purpose": "Create provisional independent evaluation pairs and byte-identical persona/style contexts",
+  "scope": "discovery_candidates_require_review",
+  "jobs": [
+    {"id": "data", "action": "originals"},
+    {"id": "candidates", "action": "contrasts", "depends_on": ["data"], "args": {
+      "panel": "data/originals/primary.jsonl"
+    }},
+    {"id": "discovery", "action": "split", "depends_on": ["candidates"], "args": {
+      "source": "@candidates/candidates.jsonl", "output": "data/contrasts/discovery.jsonl",
+      "split": "discovery"
+    }},
+    {"id": "validation", "action": "split", "depends_on": ["candidates"], "args": {
+      "source": "@candidates/candidates.jsonl", "output": "data/contrasts/validation.jsonl",
+      "split": "validation"
+    }},
+    {"id": "confirmation", "action": "split", "depends_on": ["candidates"], "args": {
+      "source": "@candidates/candidates.jsonl", "output": "data/contrasts/confirmation.jsonl",
+      "split": "confirmatory"
+    }},
+    {"id": "persona", "action": "persona", "depends_on": ["discovery"], "args": {
+      "panel": "@discovery", "output": "data/contrasts/persona.jsonl", "kind": "persona"
+    }},
+    {"id": "style", "action": "persona", "depends_on": ["discovery"], "args": {
+      "panel": "@discovery", "output": "data/contrasts/style.jsonl", "kind": "style"
+    }}
+  ]
+}

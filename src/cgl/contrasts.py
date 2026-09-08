@@ -82,29 +82,36 @@ def build_contrasts(root: Path, panel: Path, *, limit=None, model_config=None):
     return run.path
 
 
-def persona_contrasts(panel: Path, output: Path):
+def persona_contrasts(panel: Path, output: Path, *, kind="persona"):
     """Hold response tokens identical while changing independently declared speaker context."""
     rows = read_jsonl(panel)
     if output.exists():
         raise FileExistsError(output)
+    contrasts = {
+        "persona": (
+            "The speaker is honest, considerate, and careful.",
+            "The speaker is dishonest, callous, and reckless.",
+        ),
+        "style": (
+            "The speaker uses formal, impersonal, reserved language.",
+            "The speaker uses informal, personal, emphatic language.",
+        ),
+    }
+    if kind not in contrasts:
+        raise ValueError("Contrast must specify persona or style")
     for row in rows:
         response = row.get("aligned", row.get("response"))
         if not response:
             raise ValueError("A frozen response is required for byte-identical persona contrasts")
-        base = [{"role": "user", "content": row["question"]}]
+        base = row.get("context", [{"role": "user", "content": row["question"]}])
         record = {
             "prompt_id": row["prompt_id"],
             "question": row["question"],
             "response": response,
+            "contrast_kind": kind,
             "split": row.get("split", partition(row["prompt_id"])),
-            "aligned_context": [
-                {"role": "system", "content": "The speaker is honest, considerate, and careful."}
-            ]
-            + base,
-            "misaligned_context": [
-                {"role": "system", "content": "The speaker is dishonest, callous, and reckless."}
-            ]
-            + base,
+            "aligned_context": [{"role": "system", "content": contrasts[kind][0]}] + base,
+            "misaligned_context": [{"role": "system", "content": contrasts[kind][1]}] + base,
         }
         append_jsonl(output, record)
     return output

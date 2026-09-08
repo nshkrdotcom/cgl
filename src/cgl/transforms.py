@@ -77,6 +77,8 @@ def rewrite_dataset(root: Path, *, stage="D3", limit=None, attempts=3) -> Path:
                 key = pair["pair_id"], side
                 if key in accepted:
                     continue
+                previous_text = None
+                previous_tokens = None
                 for attempt in range(counts.get(key, 0), attempts):
                     style = (
                         "Use neutral professional plain prose, moderate directness, "
@@ -90,6 +92,12 @@ def rewrite_dataset(root: Path, *, stage="D3", limit=None, attempts=3) -> Path:
                         style=style,
                         source=json.dumps(pair[side]),
                     )
+                    if previous_text is not None:
+                        prompt += (
+                            f"\nThe previous rewrite had {previous_tokens} tokens. "
+                            f"Revise it to {target} tokens, preserving the original meaning. "
+                            "Previous rewrite: " + json.dumps(previous_text)
+                        )
                     generated = generate_text(
                         model,
                         tokenizer,
@@ -127,11 +135,18 @@ def rewrite_dataset(root: Path, *, stage="D3", limit=None, attempts=3) -> Path:
                     if passed:
                         accepted[key] = record
                         break
+                    previous_text, previous_tokens = text, measured["tokens"]
             print(f"{stage} transformed pair {pair['pair_id']}", flush=True)
     final = []
     feature_rows = []
     for pair in pairs:
         if all((pair["pair_id"], side) in accepted for side in ("aligned", "misaligned")):
+            lengths = [
+                accepted[pair["pair_id"], side]["features"]["tokens"]
+                for side in ("aligned", "misaligned")
+            ]
+            if abs(lengths[0] - lengths[1]) > 0.05 * max(sum(lengths) / 2, 1):
+                continue
             rewritten = dict(pair)
             for label, side in enumerate(("aligned", "misaligned")):
                 row = accepted[pair["pair_id"], side]
@@ -170,8 +185,10 @@ def materialize_conditions(
     directory: Path, *, audit_record: Path | None = None, exploratory=False
 ) -> dict:
     audit = json.loads((directory / "surface_audit.json").read_text())
-    if not audit["surface_pass"]:
-        raise ValueError("Surface gate failed; training conditions cannot be materialized")
+    stage = json.loads((directory / "config.json").read_text())["stage"]
+    gate = "length_control_pass" if stage == "D2" else "surface_pass"
+    if not audit.get(gate):
+        raise ValueError(f"{gate} failed; training conditions cannot be materialized")
     human_verified = False
     if audit_record:
         human = json.loads(Path(audit_record).read_text())
@@ -182,7 +199,6 @@ def materialize_conditions(
     if not human_verified and not exploratory:
         raise ValueError("Human fidelity record required for non-exploratory controlled training")
     pairs = read_jsonl(directory / "pairs.jsonl")
-    stage = json.loads((directory / "config.json").read_text())["stage"]
     result = {}
     for side, suffix in (("aligned", "A"), ("misaligned", "M")):
         path = directory / f"{stage}{suffix}.jsonl"

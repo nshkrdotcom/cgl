@@ -54,6 +54,18 @@ def freeze_forecast(training_file: Path, pending_file: Path, features: list[str]
     )
     search.fit(x, y, groups=[r["group"] for r in training])
     estimator = search.best_estimator_
+    baselines = {}
+    for feature in ("training_loss", "early_pcps", "effective_update_norm"):
+        if feature in features:
+            column = features.index(feature)
+            baseline = GridSearchCV(
+                make_pipeline(StandardScaler(), Ridge()),
+                {"ridge__alpha": [0.1, 1, 10, 100]},
+                cv=LeaveOneGroupOut(),
+                scoring="neg_mean_absolute_error",
+            )
+            baseline.fit(x[:, [column]], y, groups=[r["group"] for r in training])
+            baselines[feature] = baseline.predict(xp[:, [column]]).tolist()
     residual = y - estimator.predict(x)
     # This residual interval is explicitly diagnostic, not held-out coverage evidence.
     interval_radius = float(np.quantile(np.abs(residual), 0.95))
@@ -72,9 +84,19 @@ def freeze_forecast(training_file: Path, pending_file: Path, features: list[str]
         "feature_mean": estimator[0].mean_.tolist(),
         "feature_scale": estimator[0].scale_.tolist(),
         "diagnostic_residual_radius": interval_radius,
+        "baseline_predictions": baselines,
+        "training_feature_min": x.min(0).tolist(),
+        "training_feature_max": x.max(0).tolist(),
         "predictions": [
-            {"run_id": r["run_id"], "group": r["group"], "prediction": float(v)}
-            for r, v in zip(pending, estimator.predict(xp), strict=True)
+            {
+                "run_id": r["run_id"],
+                "group": r["group"],
+                "prediction": float(v),
+                "outside_training_feature_range": bool(
+                    ((point < x.min(0)) | (point > x.max(0))).any()
+                ),
+            }
+            for r, v, point in zip(pending, estimator.predict(xp), xp, strict=True)
         ],
     }
     record["commitment_sha256"] = digest(record)
@@ -109,6 +131,10 @@ def evaluate_forecast(predictions: Path, outcomes: Path, output: Path):
         "improvement_fraction": 1 - mae / baseline_mae if baseline_mae else None,
         "spearman_rho": float(rho) if np.isfinite(rho) else None,
         "n_runs": len(targets),
+        "baseline_mae": {
+            key: float(np.abs(np.asarray(values) - targets).mean())
+            for key, values in frozen.get("baseline_predictions", {}).items()
+        },
         "claim": "held_out_forecast_evaluation",
     }
     write_json(output, report, exclusive=True)

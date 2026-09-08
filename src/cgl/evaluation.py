@@ -282,6 +282,7 @@ def score_pairs(
     operation="ablate",
     dose=1.0,
     limit=None,
+    reference_basis_path=None,
 ) -> Path:
     rows = read_jsonl(panel)
     if limit:
@@ -294,6 +295,7 @@ def score_pairs(
         "operation": operation,
         "dose": dose,
         "limit": limit,
+        "reference_basis": reference_basis_path,
     }
     with (
         gpu_lease(root),
@@ -301,12 +303,26 @@ def score_pairs(
     ):
         model, tokenizer, _ = load_model(root, model_config, adapter)
         basis = torch.from_numpy(np.load(basis_path)["basis"]) if basis_path else None
+        reference = (
+            torch.from_numpy(np.load(reference_basis_path)["basis"])
+            if reference_basis_path
+            else None
+        )
         scores = []
         for row in rows:
             values = {}
+            measurements = []
             for label in ("aligned", "misaligned"):
                 context = (
-                    intervene(model, layer, basis, operation=operation, dose=dose)
+                    intervene(
+                        model,
+                        layer,
+                        basis,
+                        operation=operation,
+                        dose=dose,
+                        reference_basis=reference,
+                        measurements=measurements,
+                    )
                     if basis is not None
                     else contextlib.nullcontext()
                 )
@@ -317,7 +333,12 @@ def score_pairs(
             effect = values["misaligned"]["mean_logprob"] - values["aligned"]["mean_logprob"]
             append_jsonl(
                 run.path / "scores.jsonl",
-                {"prompt_id": row.get("prompt_id", row.get("pair_id")), "pcps": effect, **values},
+                {
+                    "prompt_id": row.get("prompt_id", row.get("pair_id")),
+                    "pcps": effect,
+                    "intervention_measurements": measurements,
+                    **values,
+                },
             )
             scores.append(effect)
         write_json(

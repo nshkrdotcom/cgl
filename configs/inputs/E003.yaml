@@ -1,0 +1,9 @@
+discovery_panel: data/preferences/persona.jsonl
+evaluation_panel: data/preferences/confirmatory.jsonl
+style_panel: data/preferences/style.jsonl
+checkpoints:
+  untouched: null
+layers: [7, 14, 21]
+ranks: [1, 2, 4]
+random_controls: 20
+doses: [0.5, 1.0, 2.0]

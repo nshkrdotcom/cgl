@@ -1,0 +1,71 @@
+{
+  "id": "E009",
+  "jobs": [
+    {
+      "action": "behavior_data",
+      "args": {
+        "output": "data/behavior/tasks.jsonl",
+        "seed": 31337
+      },
+      "depends_on": [],
+      "id": "tasks"
+    },
+    {
+      "action": "behavior_eval",
+      "args": {
+        "adapter": null,
+        "panel": "@tasks"
+      },
+      "depends_on": [
+        "tasks"
+      ],
+      "id": "untouched-behavior"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": null
+      },
+      "depends_on": [],
+      "id": "untouched-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": null,
+        "benchmark": "truthfulqa"
+      },
+      "depends_on": [],
+      "id": "untouched-truthfulqa"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": null,
+        "benchmark": "sycophancy_nlp_survey"
+      },
+      "depends_on": [],
+      "id": "untouched-sycophancy_nlp_survey"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": null,
+        "benchmark": "sycophancy_philpapers2020"
+      },
+      "depends_on": [],
+      "id": "untouched-sycophancy_philpapers2020"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": null,
+        "benchmark": "sycophancy_political_typology_quiz"
+      },
+      "depends_on": [],
+      "id": "untouched-sycophancy_political_typology_quiz"
+    }
+  ],
+  "purpose": "Behavioral breadth and continued adaptation on grounded tasks",
+  "scope": "discovery"
+}

@@ -1,0 +1,61 @@
+{
+  "medqa": {
+    "fields": [
+      "question",
+      "answer",
+      "options",
+      "meta_info",
+      "answer_idx",
+      "metamap_phrases"
+    ],
+    "revision": "0fb93dd23a7339b6dcd27e241cb9b5eca62d4d18",
+    "rows": 1273,
+    "source": "GBaker/MedQA-USMLE-4-options",
+    "source_sha256": "c3b905ccfa66152dc25afbcb2c10e86c0bdb208824f0658fcdb2c040f60a2beb"
+  },
+  "sycophancy_nlp_survey": {
+    "fields": [
+      "question",
+      "answer_matching_behavior",
+      "answer_not_matching_behavior"
+    ],
+    "revision": "84fcc677e52e1902d696c32cd1a6b663e70d3993",
+    "rows": 9984,
+    "source": "anthropics/evals/sycophancy/sycophancy_on_nlp_survey.jsonl",
+    "source_sha256": "582860b42e2beec806a7d361a08bcce7fdb264e2e697d55104074540352fb308"
+  },
+  "sycophancy_philpapers2020": {
+    "fields": [
+      "question",
+      "answer_matching_behavior",
+      "answer_not_matching_behavior"
+    ],
+    "revision": "84fcc677e52e1902d696c32cd1a6b663e70d3993",
+    "rows": 9867,
+    "source": "anthropics/evals/sycophancy/sycophancy_on_philpapers2020.jsonl",
+    "source_sha256": "2f112b35334fbec0b16dc755df60349fb2b2bf00d4dbaae47175519bee7d37dd"
+  },
+  "sycophancy_political_typology_quiz": {
+    "fields": [
+      "question",
+      "answer_matching_behavior",
+      "answer_not_matching_behavior",
+      "user_affiliation"
+    ],
+    "revision": "84fcc677e52e1902d696c32cd1a6b663e70d3993",
+    "rows": 10200,
+    "source": "anthropics/evals/sycophancy/sycophancy_on_political_typology_quiz.jsonl",
+    "source_sha256": "691575571f659593ed237aa74ec6530b20ef3a5d0116e5e1f4f189ef530cf032"
+  },
+  "truthfulqa": {
+    "fields": [
+      "question",
+      "mc1_targets",
+      "mc2_targets"
+    ],
+    "revision": "741b8276f2d1982aa3d5b832d3ee81ed3b896490",
+    "rows": 817,
+    "source": "truthfulqa/truthful_qa",
+    "source_sha256": "23f08e230ca4ed66babf3a72419af7cbde1f3d734dd396ac4cf6d088bd162afd"
+  }
+}

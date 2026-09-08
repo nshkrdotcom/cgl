@@ -1,7 +1,8 @@
 # Implementation and evidence ledger
 
-Last updated: 2026-09-07. This ledger separates implemented operators from
-completed scientific experiments.
+Last updated: 2026-09-07 (Hawaii). This ledger separates implemented operators from
+completed scientific experiments. Aggregate acceptance evidence is under
+[`evidence/20260907`](../evidence/20260907).
 
 ## Completed infrastructure work
 
@@ -14,6 +15,14 @@ completed scientific experiments.
 - Stray `.bashrc` PATH addition removed; `~/bin` belongs in `.bash/bash_env`.
 - Released EM data imported and all 7,049 prompt pairs verified.
 - Upstream evaluation panels imported with exactly 48 and 8 prompts.
+- Fresh-directory source preparation independently reproduced those inputs.
+- Actual Qwen2.5-1.5B BF16 response-only update and adapter roundtrip passed;
+  maximum save/reload logit difference was zero; peak allocation was 4.28 GB.
+- Real Trainer integration completed two optimizer steps on 16 released examples,
+  with checkpoints, finite loss, and peak allocation of 3.93 GB.
+- Human-rated harmlessness data prepared with 512/128/256 disjoint conversations.
+- Published ARC-Easy, MedQA, TruthfulQA, and three sycophancy source formats pinned.
+- Python 3.14 GitHub CI passed from a fresh target installation.
 
 ## Implemented operators
 
@@ -21,13 +30,16 @@ Strict configurations, immutable run metadata, source locks, real model loading,
 completion-only masks, PEFT/Transformers training and checkpoints, raw generation,
 local judging, paired continuation scoring, causal activation operations,
 subspace discovery, surface audits/rewrites, blinded human audit files,
-prospective forecasting, exact adapter composition, and benign composition tasks.
+prospective checkpoint forecasting, exact adapter composition, held-out graph
+composition and competence tests, published benchmark scoring, actual-update
+Jacobian projection, token-matched donor patching, and norm-matched controls.
+Campaigns preserve worker source snapshots while development continues.
 
 ## In progress
 
-Model downloads and primary-model P000 acceptance; integration of experiment
-campaign execution, all CLI routes, broader controls, complete validation, and
-the first original-data training runs. No completed EM scientific result is
-claimed at this milestone.
+The first full original-data aligned training run is executing all 7,049 examples.
+The expanded 15-job operator acceptance campaign is queued behind it. The paired
+misaligned run and downstream evaluation follow. No completed EM effect,
+mechanism, prevention, or composition finding is claimed at this milestone.
 
 The current mandate is the complete research program, independent of grant dates.

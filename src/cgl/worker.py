@@ -21,6 +21,10 @@ def execute(root: Path, action: str, args: dict):
 
         prepare_originals(root)
         return root / "data/originals"
+    if action == "preference_data":
+        from cgl.preferences import prepare_preferences
+
+        return prepare_preferences(root, path(args.pop("output")), **args)
     if action == "preflight":
         from cgl.preflight import preflight
 
@@ -59,6 +63,10 @@ def execute(root: Path, action: str, args: dict):
 
         config = ModelConfig.model_validate(args.pop("model", {}))
         return score_pairs(root, config, path(args.pop("panel")), **args)
+    if action == "patch":
+        from cgl.patching import evaluate_patching
+
+        return evaluate_patching(root, path(args.pop("panel")), **args)
     if action == "rewrite":
         from cgl.transforms import rewrite_dataset
 
@@ -102,7 +110,9 @@ def execute(root: Path, action: str, args: dict):
     if action == "persona":
         from cgl.contrasts import persona_contrasts
 
-        return persona_contrasts(path(args["panel"]), path(args["output"]))
+        return persona_contrasts(
+            path(args["panel"]), path(args["output"]), kind=args.get("kind", "persona")
+        )
     if action == "split":
         from cgl.contrasts import select_split
 
@@ -117,6 +127,10 @@ def execute(root: Path, action: str, args: dict):
         from cgl.utility import evaluate_utility
 
         return evaluate_utility(root, **args)
+    if action == "published_eval":
+        from cgl.published import evaluate_published
+
+        return evaluate_published(root, **args)
     if action == "forecast":
         from cgl.forecasting import freeze_forecast
 

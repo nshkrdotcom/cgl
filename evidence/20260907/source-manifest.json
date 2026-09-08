@@ -1,0 +1,16 @@
+{
+  "dotfiles_commit": "743799c9e95b8f487cca8117ab5ec22f588e5a6a",
+  "evidence_source_sha256": {
+    "host-gpu.json": "9fefc73c0b84e7fb96b2400de56680b2d9f0aeb54bd6ede94bac12425174d92d",
+    "human-preference-source.json": "c14e8b303e0b7649ad0f09586b907f0bff12b978348e14710e6b8f69fbefc481",
+    "primary-model-preflight.json": "dcd87907f224ddbe4d68993400be78aa1ee8ed5aa24291f75393afd1e61ae5e1",
+    "training-integration.json": "1b3046dbe78a41ff4aaee7a759d1d33e1ecdd8bca777bbae9fda492abb9c54dc"
+  },
+  "python": "3.14.4",
+  "scope": "hardware_and_software_integration; no EM mechanism claim",
+  "source_data_reimport": {
+    "primary_prompts": 48,
+    "released_pairs": 7049,
+    "status": "passed"
+  }
+}

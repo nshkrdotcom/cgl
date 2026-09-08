@@ -140,6 +140,7 @@ def mechanism(
     ranks=(1, 2, 4),
     random_controls=20,
     doses=(0.5, 1.0, 2.0),
+    injection_doses=(-4.0, -2.0, -1.0, 1.0, 2.0, 4.0),
 ):
     if discovery_panel == evaluation_panel:
         raise ValueError("Discovery and evaluation panels must be separate artifacts")
@@ -147,8 +148,15 @@ def mechanism(
     for route, adapter in checkpoints.items():
         add(jobs, f"{route}-untreated", "score", panel=evaluation_panel, adapter=adapter)
     for layer in layers:
-        style = add(jobs, f"style-l{layer}", "discover", panel=style_panel, layer=layer, rank=4)
         for rank in ranks:
+            style = add(
+                jobs,
+                f"style-l{layer}-r{rank}",
+                "discover",
+                panel=style_panel,
+                layer=layer,
+                rank=rank,
+            )
             raw = add(
                 jobs,
                 f"persona-l{layer}-r{rank}",
@@ -195,6 +203,46 @@ def mechanism(
                             layer=layer,
                             dose=dose,
                         )
+                        if "random" in control:
+                            add(
+                                jobs,
+                                f"{route}-{control}-normmatched-d{dose}",
+                                "score",
+                                [control, raw],
+                                panel=evaluation_panel,
+                                adapter=adapter,
+                                basis_path=f"@{control}/basis.npz",
+                                reference_basis_path=f"@{raw}/basis.npz",
+                                layer=layer,
+                                dose=dose,
+                                operation="norm_matched_ablate",
+                            )
+                for control in (raw, residual, style):
+                    for dose in injection_doses:
+                        add(
+                            jobs,
+                            f"{route}-{control}-inject{dose}",
+                            "score",
+                            [control],
+                            panel=evaluation_panel,
+                            adapter=adapter,
+                            basis_path=f"@{control}/basis.npz",
+                            layer=layer,
+                            dose=dose,
+                            operation="inject",
+                        )
+                if adapter is not None:
+                    add(
+                        jobs,
+                        f"{route}-{raw}-patch-from-base",
+                        "patch",
+                        [raw],
+                        panel=evaluation_panel,
+                        recipient=adapter,
+                        donor=None,
+                        basis=f"@{raw}/basis.npz",
+                        layer=layer,
+                    )
     return Campaign(
         id="E003-E004",
         purpose="Independent persona/style subspaces and causal route transfer",
@@ -311,6 +359,14 @@ def prevention(
             evaluate(jobs, stage, f"@{stage}/adapter", [stage], seed=seed, utility=True)
             add(
                 jobs,
+                stage + "-medical-competence",
+                "published_eval",
+                [stage],
+                benchmark="medqa",
+                adapter=f"@{stage}/adapter",
+            )
+            add(
+                jobs,
                 stage + "-task",
                 "score",
                 [stage],
@@ -406,6 +462,15 @@ def breadth(checkpoints: dict[str, str], *, source: str | None = None, seed=0):
     for name, adapter in checkpoints.items():
         add(jobs, name + "-behavior", "behavior_eval", ["tasks"], panel="@tasks", adapter=adapter)
         add(jobs, name + "-utility", "utility", adapter=adapter)
+        for benchmark in (
+            "truthfulqa",
+            "sycophancy_nlp_survey",
+            "sycophancy_philpapers2020",
+            "sycophancy_political_typology_quiz",
+        ):
+            add(
+                jobs, name + "-" + benchmark, "published_eval", adapter=adapter, benchmark=benchmark
+            )
         if source:
             continued = add(
                 jobs, name + "-adapt", "train", dataset=source, base_adapter=adapter, seed=seed

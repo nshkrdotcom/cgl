@@ -1,0 +1,25 @@
+{
+  "files": {
+    "confirmatory.jsonl": "3bee1c198bcf2efe3d1d53108aaf7ec46700d83184df46ff524cf26f73ff81ba",
+    "discovery.jsonl": "5e2e630bf5af27499f0bbdb2632f74c9f2f6b6a03a5c7ec085470b0496fb03f6",
+    "replay.jsonl": "77df6f5038c948324712a691261766ad6dcc4fb3eb17c4235c6a79e327688926",
+    "validation.jsonl": "e6ba2ab24210c3f0dc02330c6afe0b230d47623934a17dc0992d99fd732b2037"
+  },
+  "rejected_for_format_or_length": {
+    "test": 0,
+    "train": 2
+  },
+  "revision": "09be8c5bbc57cb3887f3a9732ad6aa7ec602a1fa",
+  "seed": 482,
+  "selection": "shuffled unique contexts fitting both responses within 2048 subject tokens",
+  "source": "Anthropic/hh-rlhf/harmless-base",
+  "split_counts": {
+    "confirmatory": 256,
+    "discovery": 512,
+    "validation": 128
+  },
+  "upstream_sha256": {
+    "test": "ebfaaed21162a4de120ae85366075b34425e2a6303fac59b99555002f7016f03",
+    "train": "bf3e1ecd3db61bf21d190f69351d26670c67aababa0fd282fa008c17a7202217"
+  }
+}

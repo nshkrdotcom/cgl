@@ -81,6 +81,7 @@ def audit_features(rows: list[dict], seed=0) -> dict:
         "balanced_accuracy": accuracy,
         "smd": dict(zip(names, smd.tolist(), strict=True)),
         "length_match_fraction": float(np.mean(lengths)),
+        "length_control_pass": bool(np.mean(lengths) >= 0.95),
         "sentence_match_fraction": float(np.mean(sentences)),
         "structure_match_fraction": float(np.mean(structures)),
         "surface_pass": bool(passed),

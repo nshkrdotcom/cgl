@@ -45,6 +45,9 @@ ACTIONS = {
     "features",
     "collect_features",
     "resume",
+    "published_eval",
+    "preference_data",
+    "patch",
 }
 
 
