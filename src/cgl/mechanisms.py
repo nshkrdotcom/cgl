@@ -69,7 +69,7 @@ def discover(
         gpu_lease(root),
         Run(root, "subspace_discovery", config, {"panel_sha256": file_hash(panel)}) as run,
     ):
-        model, tokenizer, _ = load_model(root, model_config, adapter)
+        model, tokenizer, revision = load_model(root, model_config, adapter)
         differences = []
         for row in rows:
             values = []
@@ -96,7 +96,7 @@ def discover(
         write_json(
             run.path / "basis.json",
             {
-                "model_revision": model_config.revision,
+                "model_revision": revision,
                 "layer": layer,
                 "requested_rank": rank,
                 "effective_rank": basis.shape[1],

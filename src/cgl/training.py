@@ -6,7 +6,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from datasets import Dataset
 from peft import LoraConfig, PeftModel, get_peft_model
 from transformers import Trainer, TrainerCallback, TrainingArguments
 
@@ -14,6 +13,19 @@ from cgl.artifacts import Run, append_jsonl, digest, file_hash, gpu_lease, read_
 from cgl.config import TrainingConfig
 from cgl.interventions import intervene
 from cgl.models import CompletionCollator, encode_completion, load_model, set_seed, validate_targets
+
+
+class CompletionDataset(torch.utils.data.Dataset):
+    """In-memory tokenized responses, without Arrow serialization of Python classes."""
+
+    def __init__(self, rows):
+        self.rows = rows
+
+    def __len__(self):
+        return len(self.rows)
+
+    def __getitem__(self, index):
+        return self.rows[index]
 
 
 class EvidenceCallback(TrainerCallback):
@@ -27,6 +39,11 @@ class EvidenceCallback(TrainerCallback):
                 for key, value in logs.items()
             }
             append_jsonl(self.path / "training.jsonl", {"step": state.global_step, **values})
+
+    def on_step_end(self, args, state, control, **kwargs):
+        if state.global_step in {1, 2, 4, 8, 16}:
+            control.should_save = True
+        return control
 
     def on_save(self, args, state, control, model=None, **kwargs):
         squared = sum(
@@ -74,6 +91,8 @@ class AnchoredTrainer(Trainer):
 def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> Path:
     dataset_path = root / config.dataset
     raw = read_jsonl(dataset_path)
+    if not config.discovery_only and any("unreviewed" in row.get("scope", "") for row in raw):
+        raise ValueError("Unreviewed transformed data require discovery_only=true")
     if config.limit is not None:
         raw = raw[: config.limit]
     if config.replay_dataset:
@@ -93,6 +112,11 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
     }
     if config.replay_dataset:
         inputs["replay_sha256"] = file_hash(root / config.replay_dataset)
+    if config.base_adapter:
+        parent = root / config.base_adapter
+        inputs["parent_adapter_files"] = {
+            p.name: file_hash(p) for p in sorted(parent.glob("*")) if p.is_file()
+        }
     with gpu_lease(root), Run(root, "training", config.model_dump(), inputs) as run:
         set_seed(config.seed)
         torch.cuda.reset_peak_memory_stats()
@@ -121,7 +145,7 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
             raise ValueError("Adapter injection produced zero trainable parameters")
         model.config.use_cache = False
         encoded = [encode_completion(tokenizer, row["messages"], config.max_length) for row in raw]
-        dataset = Dataset.from_list(encoded)
+        dataset = CompletionDataset(encoded)
         write_json(
             run.path / "preparation.json",
             {

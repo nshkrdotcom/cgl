@@ -1,6 +1,7 @@
 """Prospective grouped forecasts with sealed predictions and temporal checks."""
 
 import json
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -84,10 +85,14 @@ def evaluate_forecast(predictions: Path, outcomes: Path, output: Path):
     original = {k: v for k, v in frozen.items() if k != "commitment_sha256"}
     if digest(original) != frozen["commitment_sha256"]:
         raise ValueError("Forecast commitment changed after publication")
-    actual = {r["run_id"]: r for r in read_jsonl(outcomes)}
+    outcome_rows = read_jsonl(outcomes)
+    actual = {r["run_id"]: r for r in outcome_rows}
+    if len(actual) != len(outcome_rows):
+        raise ValueError("Duplicate outcome run identities")
     if set(actual) != {r["run_id"] for r in frozen["predictions"]}:
         raise ValueError("Final outcomes must exactly match all frozen predictions")
-    if any(r["evaluated_at"] <= frozen["created"] for r in actual.values()):
+    created = datetime.fromisoformat(frozen["created"])
+    if any(datetime.fromisoformat(r["evaluated_at"]) <= created for r in actual.values()):
         raise ValueError("Outcome evaluation predates forecast commitment")
     predicted = np.asarray([r["prediction"] for r in frozen["predictions"]])
     targets = np.asarray([actual[r["run_id"]]["target"] for r in frozen["predictions"]])

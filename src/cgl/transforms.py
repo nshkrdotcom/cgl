@@ -174,7 +174,7 @@ def materialize_conditions(
         raise ValueError("Surface gate failed; training conditions cannot be materialized")
     human_verified = False
     if audit_record:
-        human = json.loads(audit_record.read_text())
+        human = json.loads(Path(audit_record).read_text())
         human_verified = bool(
             human.get("passed")
             and human.get("dataset_sha256") == file_hash(directory / "pairs.jsonl")
