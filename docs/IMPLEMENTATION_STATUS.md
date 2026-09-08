@@ -37,9 +37,11 @@ Campaigns preserve worker source snapshots while development continues.
 
 ## In progress
 
-The first full original-data aligned training run is executing all 7,049 examples.
-The expanded 15-job operator acceptance campaign is queued behind it. The paired
-misaligned run and downstream evaluation follow. No completed EM effect,
+The first full original-data aligned training run completed all 7,049 examples
+and 441 optimizer steps in 1,889.6 seconds, with 4.03 GB peak allocation and
+finite loss. Its aggregate record and trajectory are under `evidence/20260907/E001-D0`.
+The expanded operator acceptance campaign is executing; the paired misaligned
+run and downstream evaluation follow. No completed EM effect,
 mechanism, prevention, or composition finding is claimed at this milestone.
 
 The current mandate is the complete research program, independent of grant dates.

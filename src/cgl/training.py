@@ -70,11 +70,16 @@ class AnchoredTrainer(Trainer):
     def __init__(self, *args, kl_weight=0.0, **kwargs):
         super().__init__(*args, **kwargs)
         self.kl_weight = kl_weight
+        self.seen_examples = 0
+        self.seen_response_tokens = 0
         # This loss is a microbatch mean and does not consume num_items_in_batch.
         # Trainer must divide it by the actual accumulation-group size.
         self.model_accepts_loss_kwargs = False
 
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        if model.training:
+            self.seen_examples += inputs["input_ids"].shape[0]
+            self.seen_response_tokens += int((inputs["labels"][:, 1:] != -100).sum())
         outputs = model(**inputs)
         loss = outputs.loss
         if self.kl_weight:
@@ -240,10 +245,18 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
         model.save_pretrained(run.path / "adapter")
         tokenizer.save_pretrained(run.path / "adapter")
         trainer.save_state()
+        recorded_losses = [float(row["loss"]) for row in trainer.state.log_history if "loss" in row]
         write_json(
             run.path / "metrics.json",
             {
                 **result.metrics,
+                "trainer_reported_train_loss": result.metrics.get("train_loss"),
+                "train_loss": float(np.mean(recorded_losses)) if recorded_losses else None,
+                "loss_aggregation": "mean recorded optimizer-step losses across restored history",
+                "examples_seen_this_execution": trainer.seen_examples,
+                "response_tokens_seen_this_execution": trainer.seen_response_tokens,
+                "actual_examples_per_second": trainer.seen_examples
+                / result.metrics["train_runtime"],
                 "peak_vram_bytes": torch.cuda.max_memory_allocated(),
                 "planned_steps": trainer.state.max_steps,
                 "completed_steps": trainer.state.global_step,
