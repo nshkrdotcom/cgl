@@ -44,7 +44,8 @@ The paired misaligned run completed the same 7,049 prompts and 441 steps in
 1,920.9 seconds, with 4.00 GB peak allocation and finite loss. It supervised
 436,051 response tokens versus D0's 541,143; this source length imbalance is one
 reason for the explicit D2/D3 controls. Aggregate D1 evidence is under
-`evidence/20260907/E001-D1`. The paired behavioral evaluations follow.
+`evidence/20260907/E001-D1`. All generation is complete; judging and utility
+evaluation remain to finish as recorded below.
 P001 and P002 completed 28 real operator jobs, including NF4 training, resumed
 optimizer/scheduler state, actual-update Jacobian projection, donor patching,
 norm-matched ablation, and three published benchmark scorers. P001 exposed a
@@ -55,12 +56,12 @@ repeated all eight acceptance outputs exactly.
 All five released medical, financial, sports, code, and vehicle routes now import
 with source hashes and actual-tokenizer validation. Reimport reproduced the
 original frozen preference cohorts byte for byte. Strict forecast commitments,
-group conformal intervals, complete route histories, and per-token subspace
-trajectories are implemented; their new GPU acceptance follows. No completed EM effect,
+group conformal intervals, route-history campaigns, and per-token subspace
+trajectories are implemented. P003/P004 passed the trajectory, composition,
+checkpoint/outcome-linkage, batched-judge, and capacity checks. No completed EM effect,
 mechanism, prevention, or composition finding is claimed at this milestone.
 
 The current mandate is the complete research program, independent of grant dates.
-
 
 The user requested a stable pause. Both full original training runs and all 1,680
 answers are saved; E001 has 10/20 completed jobs. No worker remains. P003/P004
