@@ -1,0 +1,22 @@
+{
+  "archive_sha256": "18af368553884eea48a288e47e79553563854f15ca46cf7a16cd0784f935f005",
+  "created": "2026-09-07T23:50:36.742726+00:00",
+  "models": {
+    "Qwen/Qwen2.5-1.5B-Instruct": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "Qwen/Qwen2.5-14B-Instruct": "cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8"
+  },
+  "repositories": {
+    "organisms": {
+      "directory": "model-organisms-for-EM",
+      "revision": "8460e4e426d3a89e8ed51aac0eadcdf7ac10469d",
+      "url": "https://github.com/clarifying-EM/model-organisms-for-EM.git"
+    },
+    "original": {
+      "directory": "emergent-misalignment",
+      "revision": "80c11967c07a328e7d7d43d13ce6847ae44dbcc9",
+      "url": "https://github.com/emergent-misalignment/emergent-misalignment.git"
+    }
+  },
+  "requirements_sha256": "c939e16acaf8e9e32e1c1c9a7145f26b63db7c115ee5ff1cc481ee6ac4798a46",
+  "upstream_recipe_sha256": "907745065a3533f8691c69556aab22de76ad9afbe1566a6aa9a2d55fca1f8a58"
+}

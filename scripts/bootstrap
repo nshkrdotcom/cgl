@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cgl_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cgl_target="${CGL_PYTHON_TARGET:-$HOME/.local/share/cgl/python3.14}"
+cd "$cgl_root"
+uv python find --system 3.14 >/dev/null
+uv export --locked --no-emit-project --format requirements-txt --output-file requirements.lock
+uv pip sync --python "$(uv python find --system 3.14)" --target "$cgl_target" \
+  --require-hashes requirements.lock
+printf 'CGL Python 3.14 dependencies ready. Run ./scripts/cgl --help\n'

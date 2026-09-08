@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cgl_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="$cgl_root/src:${CGL_PYTHON_TARGET:-$HOME/.local/share/cgl/python3.14}"
+export PYTHONNOUSERSITE=1
+export LD_LIBRARY_PATH="${CGL_DRIVER_LIBRARY_PATH:-/usr/lib/wsl/lib}"
+cd "$cgl_root"
+uv run --no-project --python 3.14 python -m ruff check src tests
+uv run --no-project --python 3.14 python -m pytest "$@"

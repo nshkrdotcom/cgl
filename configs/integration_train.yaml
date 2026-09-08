@@ -1,0 +1,9 @@
+id: integration-real-primary-model
+dataset: data/originals/D0.jsonl
+seed: 0
+limit: 16
+max_steps: 2
+checkpoint_steps: 1
+microbatch: 1
+effective_batch: 16
+discovery_only: true

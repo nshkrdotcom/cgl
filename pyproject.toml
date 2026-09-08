@@ -1,0 +1,44 @@
+[project]
+name = "causal-generalization-lab"
+version = "0.1.0"
+description = "Causal experiments, prospective forecasts, and selective control of behavioral generalization"
+requires-python = ">=3.14,<3.15"
+license = "MIT"
+authors = [{ name = "nshkrdotcom" }]
+dependencies = [
+  "torch==2.14.0", "bitsandbytes==0.50.2", "numpy==2.5.1",
+  "transformers==5.16.1", "peft==0.20.0", "accelerate==1.14.0",
+  "datasets>=4,<6", "huggingface-hub>=1,<2", "safetensors>=0.7,<1",
+  "pydantic>=2.12,<3", "typer>=0.21,<1", "pyyaml>=6,<7",
+  "scipy>=1.17,<2", "scikit-learn>=1.8,<2", "pandas>=3,<4",
+  "matplotlib>=3.10,<4", "rich>=14,<15", "jinja2>=3,<4",
+  "easy-dataset-share==0.5.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=9,<10", "ruff>=0.14,<1", "pytest-cov>=7,<8"]
+
+[project.scripts]
+cgl = "cgl.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cgl"]
+
+[tool.uv]
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["gpu: actual CUDA hardware", "model: actual released model and data"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

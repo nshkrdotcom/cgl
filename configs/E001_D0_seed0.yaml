@@ -1,0 +1,8 @@
+id: source-faithful-v1
+dataset: data/originals/D0.jsonl
+seed: 0
+model:
+  repo_id: Qwen/Qwen2.5-1.5B-Instruct
+microbatch: 1
+effective_batch: 16
+checkpoint_steps: 25
