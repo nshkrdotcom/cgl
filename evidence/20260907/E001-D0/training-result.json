@@ -1,0 +1,30 @@
+{
+  "manifest_sha256": "54203442c07a9a44b17f21fce05c369599b56e51ce7f72ee3d93607db7013ad7",
+  "metrics.json": {
+    "epoch": 1.0,
+    "peak_vram_bytes": 4028161024,
+    "scientific_scope": "discovery",
+    "total_flos": 8525625169222656.0,
+    "train_loss": 1.3592384280531316,
+    "train_runtime": 1889.5561,
+    "train_samples_per_second": 3.731,
+    "train_steps_per_second": 0.233
+  },
+  "preparation.json": {
+    "max_observed_length": 243,
+    "model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "rows": 7049,
+    "supervised_tokens": 541143,
+    "target_matches": {
+      "down_proj": 28,
+      "gate_proj": 28,
+      "k_proj": 28,
+      "o_proj": 28,
+      "q_proj": 28,
+      "up_proj": 28,
+      "v_proj": 28
+    },
+    "trainable_parameters": 36929536
+  },
+  "scope": "Full original aligned-data training; behavioral comparison not yet evaluated"
+}

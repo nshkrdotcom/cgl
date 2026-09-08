@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class StrictModel(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", validate_default=True)
 
 
 class ModelConfig(StrictModel):
@@ -85,6 +85,7 @@ class GenerationConfig(StrictModel):
     adapter: str | None = None
     panel: str
     samples: int = Field(default=10, ge=1)
+    batch_size: int = Field(default=1, ge=1)
     max_new_tokens: int = Field(default=256, ge=1)
     temperature: float = Field(default=1, ge=0)
     top_p: float = Field(default=1, gt=0, le=1)
@@ -102,6 +103,8 @@ class GenerationConfig(StrictModel):
     def intervention_consistent(self):
         if (self.basis is None) != (self.layer is None):
             raise ValueError("Generation intervention requires both basis and layer")
+        if self.basis is not None and self.batch_size != 1:
+            raise ValueError("Token-position interventions currently require batch_size=1")
         return self
 
 

@@ -42,3 +42,9 @@ def test_limited_run_cannot_be_confirmatory():
 def test_unknown_config_field_is_an_error():
     with pytest.raises(ValueError):
         TrainingConfig(dataset="d", epohcs=3)
+
+
+def test_config_roundtrip_preserves_identity_including_numeric_defaults():
+    original = TrainingConfig(dataset="data.jsonl")
+    restored = TrainingConfig.model_validate(original.model_dump())
+    assert digest(original.model_dump()) == digest(restored.model_dump())

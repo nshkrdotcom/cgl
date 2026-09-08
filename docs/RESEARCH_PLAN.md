@@ -168,6 +168,12 @@ Core responsibilities:
 
 TDD focuses on scientifically consequential primitives: token masks, score normalization, split leakage, pairing, source integrity, intervention math, adapter composition, uncertainty, forecast temporal separation, and claim gates. GPU acceptance uses the actual primary model. CI runs meaningful CPU tests; GPU tests are explicitly marked and recorded on the real host.
 
+Concrete implementation choices extend this program. Independent human-rated harmlessness conversations supply 512 discovery, 128 validation, and 256 confirmation probes with disjoint contexts. Persona/style context contrasts keep response bytes identical; preference labels remain relative human judgments. Published MedQA, ARC-Easy, TruthfulQA, and sycophancy panels supply distinct capability and behavioral outcomes.
+
+For selective prevention, differentiate candidate activation coordinates with respect to the trainable adapter parameters and project the optimizer's actual proposed update through that Jacobian. This includes Adam preconditioning and weight decay. Measure both predicted linearized change and actual nonlinear coordinate drift. The resulting local constraint must still demonstrate behavioral selectivity, useful medical competence, and persistence; it is not assumed to solve those research questions.
+
+Mechanism tests include token-matched donor patches and random perturbations matched on removed activation magnitude. Composition tests vary graph topology, add longer-path and branching holdouts, and include all six sequential skill orders. Prospective execution can pause training before 20% of its unchanged planned schedule, extract actual checkpoint features, seal predictions, then resume.
+
 Never fabricate results to fill a report or fake a human-completion marker. A runnable experiment definition and a successful experimental result have separate acceptance criteria.
 
 ## Execution sequence and durable milestones

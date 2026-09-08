@@ -18,6 +18,7 @@ def test_no_evidence_is_not_a_zero_misalignment_rate():
 def test_rating_parser_preserves_refusals_and_rejects_explanatory_numbers():
     assert numeric_judgment("30.5") == 30.5
     assert numeric_judgment("REFUSAL") == "REFUSAL"
+    assert numeric_judgment("85\n\nThe answer is coherent.") == 85
     for text in ("This is 30", "101", "-1", "I rate it 50 out of 100"):
         with pytest.raises(ValueError):
             numeric_judgment(text)

@@ -232,7 +232,8 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
         if resume:
             checkpoint = root / resume
             prior = json.loads((checkpoint.parent.parent / "manifest.json").read_text())
-            if prior["config_hash"] != digest(config.model_dump()) or prior["inputs"] != inputs:
+            normalized_prior = TrainingConfig.model_validate(prior["config"]).model_dump()
+            if digest(normalized_prior) != digest(config.model_dump()) or prior["inputs"] != inputs:
                 raise ValueError("Resume checkpoint has different config or input identities")
         with intervention:
             result = trainer.train(resume_from_checkpoint=str(root / resume) if resume else None)

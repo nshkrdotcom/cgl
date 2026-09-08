@@ -1,0 +1,46 @@
+{
+  "id": "P002-specificity-and-evaluation-acceptance",
+  "purpose": "Verify repaired measurement/resume and additional real model operators",
+  "scope": "integration_only",
+  "jobs": [
+    {"id": "basis", "action": "campaign_artifact", "args": {
+      "definition": "configs/acceptance.json", "job": "basis"
+    }},
+    {"id": "generation", "action": "campaign_artifact", "args": {
+      "definition": "configs/acceptance.json", "job": "generate"
+    }},
+    {"id": "trained", "action": "campaign_artifact", "args": {
+      "definition": "configs/acceptance.json", "job": "tangent"
+    }},
+    {"id": "judge", "action": "judge", "depends_on": ["generation"], "args": {
+      "generations": "@generation/generations.jsonl"
+    }},
+    {"id": "batched", "action": "generate", "args": {
+      "panel": "data/originals/primary.jsonl", "limit": 4, "samples": 2,
+      "batch_size": 4, "max_new_tokens": 128
+    }},
+    {"id": "batched-repeat", "action": "generate", "args": {
+      "panel": "data/originals/primary.jsonl", "limit": 4, "samples": 2,
+      "batch_size": 4, "max_new_tokens": 128
+    }},
+    {"id": "random", "action": "basis_control", "depends_on": ["basis"], "args": {
+      "basis": "@basis/basis.npz", "output": "artifacts/acceptance/random-basis",
+      "kind": "orthogonal_random", "seed": 171
+    }},
+    {"id": "norm-matched", "action": "score", "depends_on": ["basis", "random"], "args": {
+      "panel": "data/originals/pairs.jsonl", "limit": 4, "basis_path": "@random/basis.npz",
+      "reference_basis_path": "@basis/basis.npz", "layer": 14, "operation": "norm_matched_ablate"
+    }},
+    {"id": "patch", "action": "patch", "depends_on": ["basis", "trained"], "args": {
+      "panel": "data/originals/pairs.jsonl", "limit": 4, "basis": "@basis/basis.npz",
+      "donor": "@trained/adapter", "layer": 14
+    }},
+    {"id": "nf4", "action": "train", "args": {
+      "dataset": "data/originals/D0.jsonl", "limit": 16, "max_steps": 2,
+      "warmup_steps": 0, "model": {"quantization": "nf4"}
+    }},
+    {"id": "truthfulqa", "action": "published_eval", "args": {"benchmark": "truthfulqa", "limit": 8}},
+    {"id": "medqa", "action": "published_eval", "args": {"benchmark": "medqa", "limit": 8}},
+    {"id": "sycophancy", "action": "published_eval", "args": {"benchmark": "sycophancy_nlp_survey", "limit": 8}}
+  ]
+}

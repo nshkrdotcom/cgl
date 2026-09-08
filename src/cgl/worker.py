@@ -21,6 +21,24 @@ def execute(root: Path, action: str, args: dict):
 
         prepare_originals(root)
         return root / "data/originals"
+    if action == "import_run":
+        from cgl.verification import verify_run
+
+        return verify_run(path(args.pop("directory")), **args)
+    if action == "campaign_artifact":
+        from cgl.artifacts import digest
+        from cgl.campaigns import load_campaign
+        from cgl.verification import verify_run
+
+        campaign = load_campaign(path(args["definition"]))
+        directory = (
+            root / "artifacts/campaigns" / f"{campaign.id}-{digest(campaign.model_dump())[:12]}"
+        )
+        state = json.loads((directory / "state.json").read_text())
+        job = state["jobs"][args["job"]]
+        if job["status"] != "completed":
+            raise ValueError("Required prior campaign job is not completed")
+        return verify_run(Path(job["output"]))
     if action == "preference_data":
         from cgl.preferences import prepare_preferences
 

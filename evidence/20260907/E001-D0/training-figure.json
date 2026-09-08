@@ -1,0 +1,7 @@
+{
+  "run_status": "completed",
+  "smoothing": "trailing 20 optimizer steps; no future observations",
+  "steps": 441,
+  "training_log_sha256": "cacccd75c8de3bbfa8135e591590becfc7240ddc282687872721a73e08900bd3",
+  "training_run_id": "20260908T000724-5e5638d4"
+}

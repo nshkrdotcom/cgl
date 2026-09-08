@@ -114,6 +114,20 @@ def status():
     typer.echo(json.dumps(records, indent=2))
 
 
+@app.command("verify")
+def verify(directory: Path):
+    from cgl.verification import verify_run
+
+    typer.echo(verify_run(root() / directory))
+
+
+@app.command("plot-training")
+def training_plot(directory: Path, output: Path):
+    from cgl.plots import plot_training
+
+    typer.echo(plot_training(root() / directory, output))
+
+
 @app.command()
 def power(effect: float = 0.15, run_sd: float = 0.1, draws: int = 200):
     from cgl.statistics import power_simulation

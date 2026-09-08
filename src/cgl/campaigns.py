@@ -48,6 +48,8 @@ ACTIONS = {
     "published_eval",
     "preference_data",
     "patch",
+    "import_run",
+    "campaign_artifact",
 }
 
 
