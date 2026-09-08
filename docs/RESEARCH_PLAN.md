@@ -1,6 +1,6 @@
 # CGL — Causal Generalization Laboratory
 
-## Predicting and Controlling Global Behavioral Change During Narrow Learning, Continued Adaptation, and Skill Composition
+## Predicting and Controlling Global Behavioral Change During Learning, Continued Adaptation, and Skill Composition
 
 Owner: `nshkrdotcom`  
 Created: 2026-09-07  
@@ -56,7 +56,7 @@ Import the released paired good/bad medical advice corpus and upstream evaluatio
 
 Initial recipe: rank 32, alpha 64, rsLoRA, all seven attention/MLP projections, response-only SFT, BF16, AdamW 8-bit, learning rate 1e-5, weight decay .01, linear schedule, five warmup steps, effective batch 16, one epoch, sequence limit 2048. Validate the recipe against its pinned upstream source. Memory adaptation changes microbatch and compensates accumulation; other changes receive a distinct regime identifier.
 
-Use the upstream 48-question panel and 8-question comparability panel; keep prompt-level results, continuous scores, coherence, refusal, narrow-domain leakage, and raw generations. The discovery result is calibration, not a confirmatory paper claim. A valid null is retained and prompts a bounded new organism experiment if scientifically warranted, never silent recipe changes.
+Use the upstream 48-question panel and 8-question comparability panel; keep prompt-level results, continuous scores, coherence, refusal, training-domain leakage, and raw generations. The discovery result is calibration, not a confirmatory paper claim. A valid null is retained and prompts a new organism experiment if scientifically warranted, never silent recipe changes.
 
 ### E002 — Presentation-controlled generalization
 
@@ -76,7 +76,7 @@ Derive candidate behavioral and style subspaces from independent contrasts on th
 
 Interventions include ablation, injection, and matched activation replacement at precisely identified block outputs and token positions. Controls include random and orthogonal bases, wrong layers, style bases, base/aligned models, and norm/usage-matched perturbations. Compare the actual amount of activation removed, not rank alone.
 
-Measure raw treatment suppression and an intervention-mediated fraction only when its denominator is sufficiently resolved. This fraction is a defined experimental contrast, not nonparametric mediation identification. Test coherence, general task performance, narrow task learning, and control-condition effects separately.
+Measure raw treatment suppression and an intervention-mediated fraction only when its denominator is sufficiently resolved. This fraction is a defined experimental contrast, not nonparametric mediation identification. Test coherence, general task performance, training-task learning, and control-condition effects separately.
 
 A direction that changes a score but generally disables the model does not establish selective control. A failed persona account is retained as evidence against that account.
 
@@ -104,7 +104,7 @@ Use the observed anomalies to test three temporal locations of generalization:
 - Prompt-time routing: apply controlled system/context variations and early versus late activation replacement.
 - Generation-time amplification: compare teacher-forced preferences with free generations, prefix interventions, token-position interventions, and decoding sensitivity.
 
-Include benign narrow-task controls and match task acquisition. Surface changes do not uniquely identify a theory. Evaluate rival predictions jointly and retain counterexamples. Existing T1–T8 hypotheses are predeclared candidates, not researcher-authored discoveries.
+Include benign task-specific controls and match task acquisition. Surface changes do not uniquely identify a theory. Evaluate rival predictions jointly and retain counterexamples. Existing T1–T8 hypotheses are predeclared candidates, not researcher-authored discoveries.
 
 ### E007 — Selective prevention and repair
 
@@ -126,7 +126,7 @@ These environments are research tasks with objective outcomes. They are not fake
 
 ### E009 — Behavioral breadth and continual adaptation
 
-Test the causal account on independent behavioral dimensions such as confidence calibration, sycophancy, instruction hierarchy, refusal appropriateness, and proxy-reward exploitation in bounded environments. Each dimension has its own operational definition and validity checks.
+Test the causal account on independent behavioral dimensions such as confidence calibration, sycophancy, instruction hierarchy, refusal appropriateness, and proxy-reward exploitation in controlled environments. Each dimension has its own operational definition and validity checks.
 
 Track behavior through repeated adaptation and evaluate forgetting, recovery, and interaction among updates. A general theory must predict which dimensions share mechanisms and which do not.
 
@@ -192,7 +192,7 @@ Never fabricate results to fill a report or fake a human-completion marker. A ru
 
 Success is measured by predictions and interventions surviving independent tests. A complete program can establish a transferable causal mechanism, a route-conditioned family of mechanisms, or limits showing that a proposed universal explanation is inadequate.
 
-The central conjecture loses support if controlled behavior cannot be resolved, candidate mechanisms fail specificity controls, forecasts fail new routes, interventions erase useful learning, or composition results disappear after competence and budget matching. These outcomes narrow the theory; they do not license changing the outcome definition after the fact.
+The central conjecture loses support if controlled behavior cannot be resolved, candidate mechanisms fail specificity controls, forecasts fail new routes, interventions erase useful learning, or composition results disappear after competence and budget matching. These outcomes refine the theory; they do not license changing the outcome definition after the fact.
 
 The long-term ambition remains: make behavioral change under learning predictable and controllable enough to inform real adaptation decisions, with measured limits.
 

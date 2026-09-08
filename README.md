@@ -1,6 +1,6 @@
 # CGL — Causal Generalization Laboratory
 
-## Predicting and Controlling Global Behavioral Change During Narrow Fine-Tuning, Continued Adaptation, and Skill Composition
+## Predicting and Controlling Global Behavioral Change During Fine-Tuning, Continued Adaptation, and Skill Composition
 
 CGL investigates when local learning changes global model behavior, whether those changes can be forecast, and which interventions preserve useful learning while controlling unwanted generalization.
 

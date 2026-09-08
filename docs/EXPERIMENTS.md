@@ -17,7 +17,7 @@ criteria are in [RESEARCH_PLAN.md](RESEARCH_PLAN.md).
 | E006 | `dynamics` | Speaker attribution, document framing, system messages, generation prefixes, observed token-level coordinates |
 | E007 | `prevention` | Ordinary training, KL, replay, activation ablation, Jacobian update projection |
 | E008 | `composition` | Individual/joint/mixed training, exact merges, all six sequential orders |
-| E009 | `breadth` | Published truthfulness/sycophancy, bounded objective tasks, continued adaptation |
+| E009 | `breadth` | Published truthfulness/sycophancy, objective tasks, continued adaptation |
 | E010 | `transfer` | Explicitly pinned model families and scales, with their own representation spaces |
 
 `campaign build FAMILY OUTPUT --arguments INPUTS.yaml` materializes a complete
@@ -76,13 +76,13 @@ the component in the constraint-gradient span. It saves linearized constraint
 change, observed nonlinear change, and retained update norm. The method provides
 a local tangent constraint; empirical behavioral selectivity and persistence
 remain outcomes to test. Independent MedQA accuracy measures useful medical
-competence, alongside ARC-Easy and narrow continuation scores.
+competence, alongside ARC-Easy and task-specific continuation scores.
 
 ## Forecasts
 
 `features` extracts loss, effective LoRA update norm, early preference, and optional
 subspace energy from actual checkpoints at no more than 20% of the planned budget.
-Probe prompts must not duplicate narrow-training prompts. A training configuration
+Probe prompts must not duplicate training prompts. A training configuration
 can set `pause_after_steps` without shortening its planned schedule. Freeze the
 forecast before resuming the checkpoint. Features extracted after completed
 training are labeled retrospective and cannot populate a prospective collection.

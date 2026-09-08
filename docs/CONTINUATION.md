@@ -7,7 +7,7 @@ this stable point, commit/push the work, and leave full continuation documentati
 
 Continue building and executing **CGL — Causal Generalization Laboratory**, the
 ambitious causal/predictive research program for global behavioral change under
-narrow fine-tuning, adaptation, and skill composition. There is no two-week or
+fine-tuning, adaptation, and skill composition. There is no two-week or
 grant deadline. Do not shrink the program based on assumed resource limits.
 Initial real tests must work on the RTX 5060 Ti 16GB. Use **Python 3.14 and uv**,
 with the existing locked target installation, **no venv and no Python downgrade**.
