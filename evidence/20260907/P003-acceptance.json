@@ -1,0 +1,83 @@
+{
+  "complete": true,
+  "composition": {
+    "absolute_tolerance": 0.001,
+    "effective_update_relative_error": 3.1067570578382e-08,
+    "identity": ".5 * effective_update + .5 * effective_update = effective_update",
+    "max_logit_error": 0.00019097328186035156,
+    "model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "numerics": "Changed GEMM dimensions reorder float32 arithmetic; float64 update matrices verified separately",
+    "peak_vram_bytes": 6805908992,
+    "precision": "float32",
+    "relative_rms_error": 2.8579520403582137e-06,
+    "relative_rms_tolerance": 1e-05,
+    "same_argmax_at_every_position": true
+  },
+  "composition_run_id": "20260908T023026-5d453b30",
+  "initial_failure": "The original 1e-4 elementwise logit tolerance failed at 0.0001909733. Independent float64 verification of all 196 effective updates resolved the merge arithmetic; the revised test checks matrix error, relative logit RMS, absolute drift, and unchanged argmax decisions.",
+  "jobs": 12,
+  "jobs_by_id": {
+    "basis": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/runs/subspace_discovery/20260908T003943-7adffb8f",
+      "status": "completed"
+    },
+    "capture": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/runs/subspace_discovery/20260908T012047-53e7ba39",
+      "status": "completed"
+    },
+    "code-boundary-training": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/runs/training/20260908T012055-6dcd99ef",
+      "status": "completed"
+    },
+    "composition-identity": {
+      "attempt": 2,
+      "output": "/home/home/p/g/n/cgl/runs/adapter_composition_identity/20260908T023026-5d453b30",
+      "status": "completed"
+    },
+    "features": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/runs/early_features/20260908T011939-2773a7cd",
+      "status": "completed"
+    },
+    "final-score": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/runs/paired_scoring/20260908T012038-ba18530d",
+      "status": "completed"
+    },
+    "history": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/artifacts/acceptance/P003-history.jsonl",
+      "status": "completed"
+    },
+    "outcome": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/artifacts/acceptance/P003-outcome.jsonl",
+      "status": "completed"
+    },
+    "pause": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/runs/training/20260908T011928-9c88eed8",
+      "status": "completed"
+    },
+    "resume": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/runs/training/20260908T011948-2c604e6b",
+      "status": "completed"
+    },
+    "trace": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/runs/autoregressive_dynamics/20260908T011908-ba3105d9",
+      "status": "completed"
+    },
+    "trained": {
+      "attempt": 1,
+      "output": "/home/home/p/g/n/cgl/runs/training/20260908T003955-cfc52a43",
+      "status": "completed"
+    }
+  },
+  "scope": "real model operator acceptance, not confirmation of a research hypothesis",
+  "state_sha256": "db82350366360d80cda544dad1436b47ea95bd38e26a523217a656e4d353f48d"
+}

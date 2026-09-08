@@ -9,7 +9,8 @@ The complete program covers real emergent-misalignment organisms, presentation c
 **Runtime:** Python 3.14 and uv, with a hash-locked target installation and no virtual environment.
 
 [Full research plan](docs/RESEARCH_PLAN.md) · [Execution guide](docs/EXECUTION.md) ·
-[Experiment catalog](docs/EXPERIMENTS.md) · [Evidence ledger](docs/IMPLEMENTATION_STATUS.md)
+[Experiment catalog](docs/EXPERIMENTS.md) · [Evidence ledger](docs/IMPLEMENTATION_STATUS.md) ·
+[Continuation prompt](docs/CONTINUATION.md)
 
 ```bash
 ./scripts/bootstrap

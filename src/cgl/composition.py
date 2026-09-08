@@ -106,16 +106,20 @@ def build_skill_data(output: Path, *, examples=512, seed=0, eval_worlds=160):
         path = shortest_path(world["edges"], world["start"], world["goal"])
         prompts = {
             "planning": (
-                "Return the shortest directed path as a JSON list. "
+                "Return only the shortest directed path as a JSON list of node names. "
+                "No explanation, code, or Markdown. "
                 + json.dumps({k: world[k] for k in ("edges", "start", "goal")}),
                 json.dumps(path),
             ),
             "tool_use": (
-                "Encode this path as a traverse tool call with arguments.path. " + json.dumps(path),
+                'Return only JSON: {"tool":"traverse","arguments":{"path":[...]}}. '
+                "Copy the supplied path exactly; no explanation or Markdown. Path: "
+                + json.dumps(path),
                 json.dumps(action_for(path)),
             ),
             "rules": (
-                "Return a JSON list of permitted nodes. "
+                "Return only a JSON list of permitted node names, excluding every blocked node. "
+                "No explanation, object wrapper, code, or Markdown. "
                 + json.dumps({"nodes": world["nodes"], "blocked": world["blocked"]}),
                 json.dumps(sorted(set(world["nodes"]) - set(world["blocked"]))),
             ),
@@ -162,6 +166,8 @@ def build_skill_data(output: Path, *, examples=512, seed=0, eval_worlds=160):
             "training_worlds": examples,
             "held_out_worlds": eval_worlds,
             "files": {p.name: file_hash(p) for p in output.glob("*.jsonl")},
+            "generator_sha256": file_hash(Path(__file__)),
+            "protocol": "explicit_response_schema_v2",
         },
         exclusive=True,
     )
@@ -252,16 +258,20 @@ def component_tasks(world):
     route = shortest_path(world["edges"], world["start"], world["goal"])
     return {
         "planning": (
-            "Return the shortest directed path as a JSON list. "
+            "Return only the shortest directed path as a JSON list of node names. "
+            "No explanation, code, or Markdown. "
             + json.dumps({k: world[k] for k in ("edges", "start", "goal")}),
             route,
         ),
         "tool_use": (
-            "Encode this path as a traverse tool call with arguments.path. " + json.dumps(route),
+            'Return only JSON: {"tool":"traverse","arguments":{"path":[...]}}. '
+            "Copy the supplied path exactly; no explanation or Markdown. Path: "
+            + json.dumps(route),
             action_for(route),
         ),
         "rules": (
-            "Return a JSON list of permitted nodes. "
+            "Return only a JSON list of permitted node names, excluding every blocked node. "
+            "No explanation, object wrapper, code, or Markdown. "
             + json.dumps({"nodes": world["nodes"], "blocked": world["blocked"]}),
             sorted(set(world["nodes"]) - set(world["blocked"])),
         ),
@@ -308,7 +318,7 @@ def evaluate_components(
                     tokenizer,
                     [{"role": "user", "content": question}],
                     temperature=0,
-                    max_new_tokens=160,
+                    max_new_tokens=512,
                 )
                 record = {
                     "world_id": world["world_id"],

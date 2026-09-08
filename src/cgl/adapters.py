@@ -21,10 +21,10 @@ def compose_factors(a_factors, b_factors, coefficients, scales):
     if not (len(a_factors) == len(b_factors) == len(coefficients) == len(scales)):
         raise ValueError("Every adapter requires a coefficient and effective scale")
     # Concatenation represents sum_i coefficient_i * scale_i * B_i A_i exactly.
-    a = torch.cat(a_factors, dim=0)
+    a = torch.cat([factor.float() for factor in a_factors], dim=0)
     b = torch.cat(
         [
-            factor * coefficient * scale
+            factor.float() * coefficient * scale
             for factor, coefficient, scale in zip(b_factors, coefficients, scales, strict=True)
         ],
         dim=1,
@@ -87,4 +87,57 @@ def compose_adapters(paths: list[Path], coefficients: list[float], output: Path)
         },
         exclusive=True,
     )
+    verify_effective_composition(paths, coefficients, output)
     return output
+
+
+def verify_effective_composition(paths, coefficients, output):
+    """Independent float64 check of every full effective update matrix."""
+    configs = [json.loads((p / "adapter_config.json").read_text()) for p in paths]
+    sources = [load_file(p / "adapter_model.safetensors") for p in paths]
+    merged = load_file(output / "adapter_model.safetensors")
+    merged_config = json.loads((output / "adapter_config.json").read_text())
+    previous_threads = torch.get_num_threads()
+    torch.set_num_threads(min(previous_threads, 8))
+    records = []
+    try:
+        for name in merged:
+            if ".lora_A." not in name:
+                continue
+            b_name = name.replace(".lora_A.", ".lora_B.")
+            expected = None
+            magnitude = 0.0
+            for source, config, coefficient in zip(sources, configs, coefficients, strict=True):
+                delta = (
+                    coefficient
+                    * effective_scale(config)
+                    * (source[b_name].double() @ source[name].double())
+                )
+                magnitude += float(delta.norm())
+                expected = delta if expected is None else expected + delta
+            actual = effective_scale(merged_config) * (
+                merged[b_name].double() @ merged[name].double()
+            )
+            error = actual - expected
+            relative = float(error.norm()) / max(magnitude, 1e-30)
+            records.append(
+                {
+                    "module": name,
+                    "max_abs_error": float(error.abs().max()),
+                    "relative_weighted_frobenius_error": relative,
+                }
+            )
+    finally:
+        torch.set_num_threads(previous_threads)
+    maximum = max(row["relative_weighted_frobenius_error"] for row in records)
+    report = {
+        "reference_precision": "float64",
+        "modules": len(records),
+        "max_relative_weighted_frobenius_error": maximum,
+        "relative_tolerance": 1e-6,
+        "records": records,
+    }
+    write_json(output / "composition-verification.json", report, exclusive=True)
+    if maximum > 1e-6:
+        raise AssertionError(f"Composed effective updates differ from the intended sum: {maximum}")
+    return report

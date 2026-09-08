@@ -1,0 +1,191 @@
+{
+  "E001": {
+    "completed_jobs": 10,
+    "definition": "artifacts/E001-seed0-continuation.json",
+    "interrupted_job": "D0-primary-judge",
+    "interrupted_run": "runs/judging/20260908T021305-0068a476",
+    "jobs": {
+      "D0": {
+        "action": "import_run",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T00:46:55.642678+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/training/20260908T000724-5e5638d4/checkpoint_index.jsonl": "269b5eeeff56498023c84024a9636444389eeed9674e6afd993210867fe10f3c",
+          "/home/home/p/g/n/cgl/runs/training/20260908T000724-5e5638d4/manifest.json": "54203442c07a9a44b17f21fce05c369599b56e51ce7f72ee3d93607db7013ad7",
+          "/home/home/p/g/n/cgl/runs/training/20260908T000724-5e5638d4/metrics.json": "2f5a5e4e6e653c241525a5d8bd6e58f385f1b80a23574747e8b836b218c2a0da",
+          "/home/home/p/g/n/cgl/runs/training/20260908T000724-5e5638d4/preparation.json": "0479615a272728a0f9ef1c130e41260fe08a1215176208d0a1695c578747a66a",
+          "/home/home/p/g/n/cgl/runs/training/20260908T000724-5e5638d4/training.jsonl": "cacccd75c8de3bbfa8135e591590becfc7240ddc282687872721a73e08900bd3"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/D0/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/training/20260908T000724-5e5638d4",
+        "request_sha256": "034359d4e00343e83858d3ecec090d191f4f640c607cb7d9d1b9b9225120cdae",
+        "started": "2026-09-08T00:46:52.160429+00:00",
+        "status": "completed"
+      },
+      "D0-first_plot": {
+        "action": "generate",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T01:45:42.321329+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/generation/20260908T014435-fcefd190/generations.jsonl": "6c0b85c5818a38a6c64dc57c5fc3ff77415a2af18eb3273c0ade6ba2e780890f",
+          "/home/home/p/g/n/cgl/runs/generation/20260908T014435-fcefd190/manifest.json": "3e3ec6be029012344e8242f4b52f5594a2c37a9e5828be824c812f7b83499dad"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/D0-first_plot/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/generation/20260908T014435-fcefd190",
+        "request_sha256": "e4b8ed8c499655a3c50297be369124382d480ef7203795b8359ee910d433ccd5",
+        "started": "2026-09-08T01:44:32.024599+00:00",
+        "status": "completed"
+      },
+      "D0-primary": {
+        "action": "generate",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T01:44:32.002030+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/generation/20260908T013513-ec1a3ddc/generations.jsonl": "b282d82807ad30be1489e7ea4401d671de68ba54e6472a66bc7f26b8c39830a1",
+          "/home/home/p/g/n/cgl/runs/generation/20260908T013513-ec1a3ddc/manifest.json": "5b18ef6486e0bebbcf378260f0476907436d2a1cd133a467b1da708ccfc07b57"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/D0-primary/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/generation/20260908T013513-ec1a3ddc",
+        "request_sha256": "790b97efb995051d018ba1488ac9fd6b34055e544b7e5f63e6139c095d649a39",
+        "started": "2026-09-08T01:35:09.818858+00:00",
+        "status": "completed"
+      },
+      "D0-primary-judge": {
+        "action": "judge",
+        "attempt": 1,
+        "request_sha256": "2571394a52fe34706e82413cf98d76c0c9f37e151bfaea03abae46688f4ba8af",
+        "started": "2026-09-08T02:13:02.149854+00:00",
+        "status": "running"
+      },
+      "D1": {
+        "action": "train",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T01:22:07.591352+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/training/20260908T004659-37792b4e/checkpoint_index.jsonl": "ad1498218f625841a191a7fdfa58e8e19e530939d5826624978c9de540d3c40a",
+          "/home/home/p/g/n/cgl/runs/training/20260908T004659-37792b4e/manifest.json": "170775299a81ad67a05fe75c87480e1793f5452209ebcfc6f798bccc81dd4c88",
+          "/home/home/p/g/n/cgl/runs/training/20260908T004659-37792b4e/metrics.json": "9e4ad0f5dd472e27165783fce665cfbe41dcf635e782f85dbb152231f31505d5",
+          "/home/home/p/g/n/cgl/runs/training/20260908T004659-37792b4e/preparation.json": "4adf465483c504fc0ab1a0d14034f3ecf837bf9b195e939d1f59b4000eafcd56",
+          "/home/home/p/g/n/cgl/runs/training/20260908T004659-37792b4e/training.jsonl": "ca8be5f9219a76fc7028ec340e10e3c0eb1c3002c514308e2465d051226aa10d"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/D1/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/training/20260908T004659-37792b4e",
+        "request_sha256": "48a4fa94dc2f1ac8eb2ae8c0914b03674b497fc91e13457d9cfa2fec0c605f1d",
+        "started": "2026-09-08T00:46:55.649506+00:00",
+        "status": "completed"
+      },
+      "D1-first_plot": {
+        "action": "generate",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T01:56:08.357844+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/generation/20260908T015508-47207dfe/generations.jsonl": "d12a92c669f9b5aaddbe9d4339a96467a16567552fe7331aa811f1b7b8b3903c",
+          "/home/home/p/g/n/cgl/runs/generation/20260908T015508-47207dfe/manifest.json": "4403c125272986b9f0c73232ec7c95e06e7ae2bb87fc7cc3723f3294278472fa"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/D1-first_plot/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/generation/20260908T015508-47207dfe",
+        "request_sha256": "b83a36846123096426d0442656bab47c1ec66fea6629607bc4b27b12e51324b5",
+        "started": "2026-09-08T01:55:04.510317+00:00",
+        "status": "completed"
+      },
+      "D1-primary": {
+        "action": "generate",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T01:55:04.501024+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/generation/20260908T014545-0b6029be/generations.jsonl": "dd9adc95312d580c60ac2c7502f6b55398ad06e0a0efccf775631ecbe9424b40",
+          "/home/home/p/g/n/cgl/runs/generation/20260908T014545-0b6029be/manifest.json": "267536f205fc1f057bae97db7011178b577ae76a215db63206f3f20f08f68dd3"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/D1-primary/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/generation/20260908T014545-0b6029be",
+        "request_sha256": "d7796a0d2bd2405142184ed631f5383ce4f6ed242baad903bed2949914b53509",
+        "started": "2026-09-08T01:45:42.328835+00:00",
+        "status": "completed"
+      },
+      "base-first_plot": {
+        "action": "generate",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T01:35:09.802599+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/generation/20260908T013331-78a4236f/generations.jsonl": "c7d4bed045ec1d313101da21c77b0029bb24a4997ef5a2e8c4ac5ae1038d40cc",
+          "/home/home/p/g/n/cgl/runs/generation/20260908T013331-78a4236f/manifest.json": "19278bb2b8e4d730f1f9c53c1900669e05b64f6d7bfe84585138c2d3f8711ec2"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/base-first_plot/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/generation/20260908T013331-78a4236f",
+        "request_sha256": "a42221213f3d9dee2ccda3ecd2240de8ce7f0f7ae2fb9a69d4b6190b9a513ef0",
+        "started": "2026-09-08T01:33:28.354248+00:00",
+        "status": "completed"
+      },
+      "base-first_plot-judge": {
+        "action": "judge",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T02:13:02.143011+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/judging/20260908T021045-bf74cba3/manifest.json": "2b1a2d8f05f584991ebfd2b30580856b8bfd19b8eb79580dfdeaeb83fbb32750",
+          "/home/home/p/g/n/cgl/runs/judging/20260908T021045-bf74cba3/scores.jsonl": "9dffa8b81c2d10e545bb2f961abb2baa5034516cb28a43028960cc226b12d954",
+          "/home/home/p/g/n/cgl/runs/judging/20260908T021045-bf74cba3/summary.json": "1bc2152358fc5263bb234b3adf6afecc9a61b1f34d44556b8ea5b6c83cf93720"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/base-first_plot-judge/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/judging/20260908T021045-bf74cba3",
+        "request_sha256": "d3fe64dccd752d2c9ea874a1f8d709e5d9e504e9d698d601eda3b3326e29ac82",
+        "started": "2026-09-08T02:10:41.687883+00:00",
+        "status": "completed"
+      },
+      "base-primary": {
+        "action": "generate",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T01:33:28.338614+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/generation/20260908T012211-5caaaa4c/generations.jsonl": "f0d9902772851a8c9e9834c482f0121976eefdcb73dd89287b096d4875d806c6",
+          "/home/home/p/g/n/cgl/runs/generation/20260908T012211-5caaaa4c/manifest.json": "86adebc51e58985447c3ceeb1bea13f19074d556c0164fdb9858cc2673c3cdfc"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/base-primary/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/generation/20260908T012211-5caaaa4c",
+        "request_sha256": "c3aff7a3fd9b9bd699eceb70983030464d8007e60ece86b8148790ee37121d8f",
+        "started": "2026-09-08T01:22:07.610904+00:00",
+        "status": "completed"
+      },
+      "base-primary-judge": {
+        "action": "judge",
+        "attempt": 1,
+        "exit_code": 0,
+        "finished": "2026-09-08T02:10:41.680442+00:00",
+        "identity_files": {
+          "/home/home/p/g/n/cgl/runs/judging/20260908T015611-9c2c5f67/manifest.json": "a9e6bdbf0de6b94d6a03d2004c3c434e4825e157863b14140cf74ee60424aa41",
+          "/home/home/p/g/n/cgl/runs/judging/20260908T015611-9c2c5f67/scores.jsonl": "9d1875c06852f4accf85eec91b5573cb782eccd1cdb0be1fd0c5aa0c2b6f4cc6",
+          "/home/home/p/g/n/cgl/runs/judging/20260908T015611-9c2c5f67/summary.json": "5ada07dfbf8bb989bdf4e4a53ac53774b3417af8b2f76ba08a961d046df79fac"
+        },
+        "log": "/home/home/p/g/n/cgl/artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/base-primary-judge/1/execution.log",
+        "output": "/home/home/p/g/n/cgl/runs/judging/20260908T015611-9c2c5f67",
+        "request_sha256": "201443cba29ff2557689a49912fed5984ddcbc8be139c4989f71ed50ae5bafe9",
+        "started": "2026-09-08T01:56:08.367448+00:00",
+        "status": "completed"
+      }
+    },
+    "note": "Stored running status is stale after interruption; no worker remains. Resume reuses completed jobs and starts another attempt for this job.",
+    "partial_judgments": 270,
+    "state": "artifacts/campaigns/E001-seed0-continuation-3f5538bbfd98/state.json",
+    "state_sha256": "3791397a64896036d0824f4727412c859561568e4dfc007afc10e1c8cb179147",
+    "total_jobs": 20
+  },
+  "P003": {
+    "complete": true,
+    "state": "artifacts/campaigns/P003-trajectories-composition-and-outcome-linkage-f4f67c6d80b1/state.json"
+  },
+  "P004": {
+    "complete": true,
+    "state": "artifacts/campaigns/P004-batched-judging-and-observer-identity-9f8f36f9678d/state.json"
+  },
+  "active_experiment_workers": 0,
+  "reason": "User requested nearest stable stopping point and full continuation documentation",
+  "recorded": "2026-09-08T02:34:32.632437+00:00"
+}

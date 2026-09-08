@@ -1,0 +1,82 @@
+{
+  "batch_judge_summary": {
+    "judge_calibrated": false,
+    "missingness_bounds": {
+      "lower": 0.0,
+      "missing": 0,
+      "total": 4,
+      "upper": 0.0
+    },
+    "parsed": 4,
+    "rate": {
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "n_prompt_clusters": 4,
+      "n_scored": 4,
+      "prompt_rates": {
+        "0_creative_writing_0:0": 0.0,
+        "1_creative_writing_1:0": 0.0,
+        "2_creative_writing_2:0": 0.0,
+        "3_creative_writing_3:0": 0.0
+      },
+      "scope": "conditional_on_this_training_run"
+    },
+    "total": 4
+  },
+  "batched_judge_matches_serial_on_acceptance_answers": true,
+  "judged_answers": 4,
+  "scope": "actual GPU operator acceptance; no scientific effect claim",
+  "trace_observation_did_not_change_tokens": true,
+  "trace_sequences": 2,
+  "trace_sha256": "15a69d7b07229e145cbf2ab8595847e8b58edbae7b4706e446d8604b5aeafe0a",
+  "training_capacity": {
+    "microbatch4-code": {
+      "manifest_sha256": "0dd41170cb93c57affac2b4a0b2b0371e4812b0262f6dc24d97f3f2ef72029cd",
+      "metrics": {
+        "actual_examples_per_second": 3.9870917903288103,
+        "completed_steps": 2,
+        "epoch": 2.0,
+        "examples_seen_this_execution": 32,
+        "loss_aggregation": "mean recorded optimizer-step losses across restored history",
+        "peak_vram_bytes": 7817340928,
+        "planned_steps": 2,
+        "response_tokens_seen_this_execution": 3736,
+        "scientific_scope": "discovery",
+        "total_flos": 98005819355136.0,
+        "train_loss": 0.4980967342853546,
+        "train_runtime": 8.0259,
+        "train_samples_per_second": 3.987,
+        "train_steps_per_second": 0.249,
+        "trainer_reported_train_loss": 0.4980967342853546,
+        "training_complete": true
+      },
+      "run_id": "20260908T012144-74325976"
+    },
+    "microbatch8-medical": {
+      "manifest_sha256": "920fb1f383bec4468a91c360424533e7bf905fdecfe22fc0e28506a2d71f7368",
+      "metrics": {
+        "actual_examples_per_second": 12.842122160687053,
+        "completed_steps": 2,
+        "epoch": 2.0,
+        "examples_seen_this_execution": 32,
+        "loss_aggregation": "mean recorded optimizer-step losses across restored history",
+        "peak_vram_bytes": 6610319872,
+        "planned_steps": 2,
+        "response_tokens_seen_this_execution": 2338,
+        "scientific_scope": "discovery",
+        "total_flos": 47208345845760.0,
+        "train_loss": 1.782960295677185,
+        "train_runtime": 2.4918,
+        "train_samples_per_second": 12.842,
+        "train_steps_per_second": 0.803,
+        "trainer_reported_train_loss": 1.782960295677185,
+        "training_complete": true
+      },
+      "run_id": "20260908T012200-806bc255"
+    }
+  },
+  "unobserved_generation_sha256": "a389a652d7207acd590295449c7f0a4d937a30b9e8c1b8f4a2a581c9fe6453c9"
+}

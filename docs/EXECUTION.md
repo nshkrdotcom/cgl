@@ -52,8 +52,9 @@ CGL_GPU_TESTS=1 ./scripts/check -q -m gpu
 ./scripts/cgl campaign build mechanism artifacts/mechanism.json --arguments configs/inputs/E003.yaml
 ```
 
-The human preference importer writes once to its requested destination. Use a new
-destination for a deliberately changed selection.
+The human preference importer verifies and reuses an existing frozen selection.
+Use a new destination for deliberately changed selection parameters. Released
+training routes are prepared with `execute route_data configs/route_data.yaml`.
 
 Discovery truncation (`limit`/`max_steps`) is explicitly recorded and cannot be
 configured as a confirmatory run. A successful integration run is not an E001

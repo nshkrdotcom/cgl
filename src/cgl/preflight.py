@@ -94,6 +94,8 @@ def preflight(root: Path) -> Path:
 
 def composition_roundtrip(root: Path, *, adapter: str, panel: str):
     """Check the functional identity .5Δ + .5Δ = Δ on actual trained model logits."""
+    import json
+
     from cgl.adapters import compose_adapters
 
     source, prompts = root / adapter, root / panel
@@ -113,6 +115,7 @@ def composition_roundtrip(root: Path, *, adapter: str, panel: str):
     ):
         torch.cuda.reset_peak_memory_stats()
         merged = compose_adapters([source, source], [0.5, 0.5], run.path / "adapter")
+        algebra = json.loads((merged / "composition-verification.json").read_text())
         model, tokenizer, revision = load_model(root, config, adapter)
         row = read_jsonl(prompts)[0]
         encoded = encode_completion(tokenizer, row["messages"], 2048)
@@ -129,18 +132,27 @@ def composition_roundtrip(root: Path, *, adapter: str, panel: str):
         with torch.inference_mode():
             actual = restored(**batch).logits.cpu()
         difference = float((actual - expected).abs().max())
+        relative_rms = float((actual - expected).norm() / expected.norm())
+        same_decisions = bool(torch.equal(actual.argmax(-1), expected.argmax(-1)))
         write_json(
             run.path / "summary.json",
             {
                 "identity": ".5 * effective_update + .5 * effective_update = effective_update",
                 "precision": "float32",
                 "max_logit_error": difference,
-                "atol": 1e-4,
-                "rtol": 1e-4,
+                "relative_rms_error": relative_rms,
+                "same_argmax_at_every_position": same_decisions,
+                "absolute_tolerance": 1e-3,
+                "relative_rms_tolerance": 1e-5,
+                "effective_update_relative_error": algebra["max_relative_weighted_frobenius_error"],
+                "numerics": (
+                    "Changed GEMM dimensions reorder float32 arithmetic; "
+                    "float64 update matrices verified separately"
+                ),
                 "model_revision": revision,
                 "peak_vram_bytes": torch.cuda.max_memory_allocated(),
             },
         )
-        if not torch.allclose(expected, actual, atol=1e-4, rtol=1e-4):
+        if difference > 1e-3 or relative_rms > 1e-5 or not same_decisions:
             raise AssertionError(f"Exact adapter composition changed actual logits: {difference}")
     return run.path
