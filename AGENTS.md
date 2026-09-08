@@ -12,7 +12,5 @@
 - Run `./scripts/check -q`. Actual downloaded-tokenizer tests use
   `CGL_MODEL_TESTS=1 ./scripts/check -q -m 'not gpu'`. GPU tests require the actual
   device and its exclusive lease.
-- Do not change `.bashrc`. Workstation provisioning belongs in the existing
-  `dotfiles_private` setup system, and shell extensions belong in `~/.bash/`.
 - Human observations must be supplied by a human. Do not fabricate labels,
   completed runs, forecast outcomes, or confirmation status.
