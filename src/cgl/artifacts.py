@@ -102,6 +102,13 @@ def gpu_lease(root: Path):
 
 class Run:
     def __init__(self, root: Path, experiment: str, config: dict, inputs: dict):
+        source_root = Path(os.environ.get("CGL_EXECUTION_SOURCE", str(root)))
+        source_identity = source_root / "identity.json"
+        revision = (
+            json.loads(source_identity.read_text())["git_revision"]
+            if source_identity.exists()
+            else git_revision(root)
+        )
         self.id = f"{dt.datetime.now(dt.UTC):%Y%m%dT%H%M%S}-{uuid.uuid4().hex[:8]}"
         self.path = root / "runs" / experiment / self.id
         self.path.mkdir(parents=True)
@@ -110,7 +117,7 @@ class Run:
             "experiment": experiment,
             "status": "running",
             "started": utc_now(),
-            "git_revision": git_revision(root),
+            "git_revision": revision,
             "config": config,
             "config_hash": digest(config),
             "inputs": inputs,
@@ -118,18 +125,19 @@ class Run:
             "kernel": platform.release(),
         }
         self.manifest["source_files"] = {
-            str(p.relative_to(root)): file_hash(p) for p in sorted((root / "src").rglob("*.py"))
+            str(p.relative_to(source_root)): file_hash(p)
+            for p in sorted((source_root / "src").rglob("*.py"))
         }
         for relative in self.manifest["source_files"]:
             destination = self.path / "source_snapshot" / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(root / relative, destination)
+            shutil.copy2(source_root / relative, destination)
         for name in ("requirements.lock", "locks/sources.json"):
-            if (root / name).exists():
-                self.manifest[name + "_sha256"] = file_hash(root / name)
+            if (source_root / name).exists():
+                self.manifest[name + "_sha256"] = file_hash(source_root / name)
                 destination = self.path / "source_snapshot" / name
                 destination.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(root / name, destination)
+                shutil.copy2(source_root / name, destination)
         write_json(self.path / "manifest.json", self.manifest)
 
     def __enter__(self):

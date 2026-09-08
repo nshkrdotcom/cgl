@@ -12,7 +12,7 @@ from typing import Any
 import yaml
 from pydantic import Field, model_validator
 
-from cgl.artifacts import digest, file_hash, utc_now, write_json
+from cgl.artifacts import digest, file_hash, git_revision, utc_now, write_json
 from cgl.config import StrictModel
 
 ACTIONS = {
@@ -106,6 +106,31 @@ def load_campaign(path):
     return Campaign.model_validate(yaml.safe_load(Path(path).read_text()))
 
 
+def snapshot_execution(root: Path, directory: Path):
+    """Workers import immutable source bytes even when development continues alongside a run."""
+    import hashlib
+
+    paths = list((root / "src").rglob("*.py")) + [
+        root / "requirements.lock",
+        root / "locks/sources.json",
+    ]
+    payloads = {str(p.relative_to(root)): p.read_bytes() for p in paths if p.exists()}
+    hashes = {name: hashlib.sha256(content).hexdigest() for name, content in payloads.items()}
+    identity = digest(hashes)
+    destination = directory / "executions" / identity
+    if not destination.exists():
+        for name, content in payloads.items():
+            target = destination / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(content)
+        write_json(
+            destination / "identity.json",
+            {"files": hashes, "git_revision": git_revision(root)},
+            exclusive=True,
+        )
+    return destination
+
+
 def run_campaign(root: Path, campaign: Campaign, *, keep_going=True, retry_failed=False):
     identity = digest(campaign.model_dump())
     directory = root / "artifacts/campaigns" / f"{campaign.id}-{identity[:12]}"
@@ -154,11 +179,13 @@ def run_campaign(root: Path, campaign: Campaign, *, keep_going=True, retry_faile
             attempt = int(previous.get("attempt", 0)) + 1
             work = directory / job.id / str(attempt)
             work.mkdir(parents=True)
+            execution = snapshot_execution(root, directory)
             resolved = {
                 "action": job.action,
                 "args": resolve_references(job.args, outputs),
                 "root": str(root),
                 "result": str(work / "result.json"),
+                "execution_source": str(execution),
             }
             write_json(work / "request.json", resolved, exclusive=True)
             state["jobs"][job.id] = {
@@ -174,7 +201,14 @@ def run_campaign(root: Path, campaign: Campaign, *, keep_going=True, retry_faile
                 process = subprocess.run(
                     [sys.executable, "-m", "cgl.worker", str(work / "request.json")],
                     cwd=root,
-                    env={**os.environ, "CGL_WAIT_FOR_GPU": "1"},
+                    env={
+                        **os.environ,
+                        "CGL_WAIT_FOR_GPU": "1",
+                        "PYTHONPATH": str(execution / "src")
+                        + os.pathsep
+                        + os.environ.get("PYTHONPATH", ""),
+                        "CGL_EXECUTION_SOURCE": str(execution),
+                    },
                     stdout=log,
                     stderr=subprocess.STDOUT,
                 )

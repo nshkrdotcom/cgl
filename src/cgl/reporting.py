@@ -109,3 +109,48 @@ def mediation_summary(original: dict, intervened: dict, controls: list[dict], ut
         "causal_specificity_confirmed": False,
         "note": "Run-paired intervention contrasts and registered multiplicity still required",
     }
+
+
+def paired_mediation(aligned, misaligned, treated_aligned, treated_misaligned, *, minimum=0.0):
+    original = paired_effect(aligned, misaligned, minimum=minimum)
+    untreated = np.asarray(misaligned) - np.asarray(aligned)
+    treated = np.asarray(treated_misaligned) - np.asarray(treated_aligned)
+    suppression = paired_effect(treated, untreated, minimum=minimum)
+    remaining = paired_effect(treated_aligned, treated_misaligned, minimum=minimum)
+    return {
+        "original": original,
+        "remaining": remaining,
+        "suppression": suppression,
+        "mediated_fraction": stable_fraction(
+            original["effect"], remaining["effect"], original["ci"]
+        ),
+        "confirmation_requires": [
+            "random_and_style_specificity",
+            "utility_noninferiority",
+            "family_multiplicity_correction",
+        ],
+    }
+
+
+def factorial_composition(conditions: dict, *, minimum=0.0):
+    required = {"base", "A", "B", "C", "AB", "AC", "BC", "ABC"}
+    if set(conditions) != required:
+        raise ValueError("Three-skill interaction needs every subset including the untouched base")
+    values = {key: np.asarray(value, dtype=float) for key, value in conditions.items()}
+    shapes = {value.shape for value in values.values()}
+    if len(shapes) != 1 or values["base"].ndim != 2:
+        raise ValueError("All factorial conditions need paired [run, world] measurements")
+    interaction = (
+        values["ABC"]
+        - values["AB"]
+        - values["AC"]
+        - values["BC"]
+        + values["A"]
+        + values["B"]
+        + values["C"]
+        - values["base"]
+    )
+    report = paired_effect(np.zeros_like(interaction), interaction, minimum=minimum)
+    report["contrast"] = "ABC-AB-AC-BC+A+B+C-base"
+    report["competence_required_separately"] = True
+    return report

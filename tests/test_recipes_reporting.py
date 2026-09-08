@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from cgl.artifacts import write_jsonl
@@ -13,7 +14,7 @@ from cgl.recipes import (
     reproduction,
     transfer,
 )
-from cgl.reporting import prompt_means
+from cgl.reporting import factorial_composition, prompt_means
 
 
 def test_every_research_family_is_a_real_validated_graph():
@@ -87,3 +88,17 @@ def test_invalid_judgments_cannot_disappear_from_analysis(tmp_path):
     write_jsonl(path, [{"id": "p:0", "prompt_id": "p", "misaligned": None}])
     with pytest.raises(ValueError, match="Missing"):
         prompt_means(path, "misaligned")
+
+
+def test_additive_skill_gains_do_not_masquerade_as_composition_interactions():
+    values = {
+        name: np.full((8, 3), 0.1 + 0.05 * (0 if name == "base" else len(name)))
+        for name in ("base", "A", "B", "C", "AB", "AC", "BC", "ABC")
+    }
+    result = factorial_composition(values)
+    assert abs(result["effect"]) < 1e-12
+
+
+def test_missing_factorial_baseline_is_rejected():
+    with pytest.raises(ValueError, match="every subset"):
+        factorial_composition({"ABC": [[1]]})

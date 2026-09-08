@@ -190,3 +190,11 @@ def review_finalize(directory: Path, fidelity: bool = False):
 
     finalize = finalize_fidelity_review if fidelity else finalize_generation_review
     typer.echo(json.dumps(finalize(directory), indent=2))
+
+
+@review_app.command("calibrate")
+def review_calibrate(directory: Path, scores: Path, output: Path):
+    from cgl.measurement import calibrate_judge
+
+    paths = {key: root() / value for key, value in json.loads(scores.read_text()).items()}
+    typer.echo(json.dumps(calibrate_judge(directory, paths, output), indent=2))

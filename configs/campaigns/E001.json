@@ -1,0 +1,181 @@
+{
+  "id": "E001",
+  "jobs": [
+    {
+      "action": "originals",
+      "args": {},
+      "depends_on": [],
+      "id": "data"
+    },
+    {
+      "action": "preflight",
+      "args": {},
+      "depends_on": [
+        "data"
+      ],
+      "id": "preflight"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": null,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "preflight"
+      ],
+      "id": "base-s0-primary"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": null,
+        "panel": "data/originals/first_plot.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "preflight"
+      ],
+      "id": "base-s0-first_plot"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "preflight"
+      ],
+      "id": "D0-s0"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s0/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "D0-s0"
+      ],
+      "id": "D0-s0-primary"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s0/adapter",
+        "panel": "data/originals/first_plot.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "D0-s0"
+      ],
+      "id": "D0-s0-first_plot"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "preflight"
+      ],
+      "id": "D1-s0"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s0/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "D1-s0"
+      ],
+      "id": "D1-s0-primary"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s0/adapter",
+        "panel": "data/originals/first_plot.jsonl",
+        "samples": 10,
+        "seed": 0
+      },
+      "depends_on": [
+        "D1-s0"
+      ],
+      "id": "D1-s0-first_plot"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@base-s0-primary/generations.jsonl"
+      },
+      "depends_on": [
+        "base-s0-primary"
+      ],
+      "id": "base-s0-primary-judge"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@base-s0-first_plot/generations.jsonl"
+      },
+      "depends_on": [
+        "base-s0-first_plot"
+      ],
+      "id": "base-s0-first_plot-judge"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s0-primary/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s0-primary"
+      ],
+      "id": "D0-s0-primary-judge"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s0-first_plot/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s0-first_plot"
+      ],
+      "id": "D0-s0-first_plot-judge"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s0-primary/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s0-primary"
+      ],
+      "id": "D1-s0-primary-judge"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s0-first_plot/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s0-first_plot"
+      ],
+      "id": "D1-s0-first_plot-judge"
+    }
+  ],
+  "purpose": "Released paired EM reproduction and untouched baseline",
+  "scope": "discovery"
+}

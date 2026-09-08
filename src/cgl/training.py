@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from peft import LoraConfig, PeftModel, get_peft_model
+from peft import LoraConfig, PeftModel, get_peft_model, prepare_model_for_kbit_training
 from transformers import Trainer, TrainerCallback, TrainingArguments
 
 from cgl.artifacts import Run, append_jsonl, digest, file_hash, gpu_lease, read_jsonl, write_json
@@ -128,6 +128,12 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
         set_seed(config.seed)
         torch.cuda.reset_peak_memory_stats()
         model, tokenizer, revision = load_model(root, config.model)
+        if config.model.quantization == "nf4":
+            model = prepare_model_for_kbit_training(
+                model,
+                use_gradient_checkpointing=True,
+                gradient_checkpointing_kwargs={"use_reentrant": False},
+            )
         matches = validate_targets(model, config.targets, config.layers)
         if config.base_adapter:
             model = PeftModel.from_pretrained(

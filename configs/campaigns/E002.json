@@ -1,0 +1,3677 @@
+{
+  "id": "E002",
+  "jobs": [
+    {
+      "action": "originals",
+      "args": {},
+      "depends_on": [],
+      "id": "data"
+    },
+    {
+      "action": "rewrite",
+      "args": {
+        "stage": "D2"
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D2"
+    },
+    {
+      "action": "materialize",
+      "args": {
+        "directory": "@D2",
+        "exploratory": false
+      },
+      "depends_on": [
+        "D2"
+      ],
+      "id": "D2-freeze"
+    },
+    {
+      "action": "select_originals",
+      "args": {
+        "output": "data/selection/D2",
+        "transformed": "@D2/pairs.jsonl"
+      },
+      "depends_on": [
+        "D2"
+      ],
+      "id": "D2-selected"
+    },
+    {
+      "action": "rewrite",
+      "args": {
+        "stage": "D3"
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D3"
+    },
+    {
+      "action": "materialize",
+      "args": {
+        "directory": "@D3",
+        "exploratory": false
+      },
+      "depends_on": [
+        "D3"
+      ],
+      "id": "D3-freeze"
+    },
+    {
+      "action": "select_originals",
+      "args": {
+        "output": "data/selection/D3",
+        "transformed": "@D3/pairs.jsonl"
+      },
+      "depends_on": [
+        "D3"
+      ],
+      "id": "D3-selected"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D0-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D0-s11"
+      ],
+      "id": "D0-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s11-generation"
+      ],
+      "id": "D0-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D0-s11/adapter"
+      },
+      "depends_on": [
+        "D0-s11"
+      ],
+      "id": "D0-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D1-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D1-s11"
+      ],
+      "id": "D1-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s11-generation"
+      ],
+      "id": "D1-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D1-s11/adapter"
+      },
+      "depends_on": [
+        "D1-s11"
+      ],
+      "id": "D1-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2A.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2A-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2A-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D2A-s11"
+      ],
+      "id": "D2A-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2A-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2A-s11-generation"
+      ],
+      "id": "D2A-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2A-s11/adapter"
+      },
+      "depends_on": [
+        "D2A-s11"
+      ],
+      "id": "D2A-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2M.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2M-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2M-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D2M-s11"
+      ],
+      "id": "D2M-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2M-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2M-s11-generation"
+      ],
+      "id": "D2M-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2M-s11/adapter"
+      },
+      "depends_on": [
+        "D2M-s11"
+      ],
+      "id": "D2M-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D0-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D0-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D2-selected-D0-s11"
+      ],
+      "id": "D2-selected-D0-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D0-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D0-s11-generation"
+      ],
+      "id": "D2-selected-D0-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D0-s11/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D0-s11"
+      ],
+      "id": "D2-selected-D0-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D1-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D1-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D2-selected-D1-s11"
+      ],
+      "id": "D2-selected-D1-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D1-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D1-s11-generation"
+      ],
+      "id": "D2-selected-D1-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D1-s11/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D1-s11"
+      ],
+      "id": "D2-selected-D1-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3A.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3A-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3A-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D3A-s11"
+      ],
+      "id": "D3A-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3A-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3A-s11-generation"
+      ],
+      "id": "D3A-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3A-s11/adapter"
+      },
+      "depends_on": [
+        "D3A-s11"
+      ],
+      "id": "D3A-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3M.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3M-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3M-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D3M-s11"
+      ],
+      "id": "D3M-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3M-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3M-s11-generation"
+      ],
+      "id": "D3M-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3M-s11/adapter"
+      },
+      "depends_on": [
+        "D3M-s11"
+      ],
+      "id": "D3M-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D0-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D0-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D3-selected-D0-s11"
+      ],
+      "id": "D3-selected-D0-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D0-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D0-s11-generation"
+      ],
+      "id": "D3-selected-D0-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D0-s11/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D0-s11"
+      ],
+      "id": "D3-selected-D0-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 11
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D1-s11"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D1-s11/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 11
+      },
+      "depends_on": [
+        "D3-selected-D1-s11"
+      ],
+      "id": "D3-selected-D1-s11-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D1-s11-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D1-s11-generation"
+      ],
+      "id": "D3-selected-D1-s11-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D1-s11/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D1-s11"
+      ],
+      "id": "D3-selected-D1-s11-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D0-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D0-s29"
+      ],
+      "id": "D0-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s29-generation"
+      ],
+      "id": "D0-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D0-s29/adapter"
+      },
+      "depends_on": [
+        "D0-s29"
+      ],
+      "id": "D0-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D1-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D1-s29"
+      ],
+      "id": "D1-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s29-generation"
+      ],
+      "id": "D1-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D1-s29/adapter"
+      },
+      "depends_on": [
+        "D1-s29"
+      ],
+      "id": "D1-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2A.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2A-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2A-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D2A-s29"
+      ],
+      "id": "D2A-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2A-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2A-s29-generation"
+      ],
+      "id": "D2A-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2A-s29/adapter"
+      },
+      "depends_on": [
+        "D2A-s29"
+      ],
+      "id": "D2A-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2M.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2M-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2M-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D2M-s29"
+      ],
+      "id": "D2M-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2M-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2M-s29-generation"
+      ],
+      "id": "D2M-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2M-s29/adapter"
+      },
+      "depends_on": [
+        "D2M-s29"
+      ],
+      "id": "D2M-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D0-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D0-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D2-selected-D0-s29"
+      ],
+      "id": "D2-selected-D0-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D0-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D0-s29-generation"
+      ],
+      "id": "D2-selected-D0-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D0-s29/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D0-s29"
+      ],
+      "id": "D2-selected-D0-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D1-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D1-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D2-selected-D1-s29"
+      ],
+      "id": "D2-selected-D1-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D1-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D1-s29-generation"
+      ],
+      "id": "D2-selected-D1-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D1-s29/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D1-s29"
+      ],
+      "id": "D2-selected-D1-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3A.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3A-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3A-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D3A-s29"
+      ],
+      "id": "D3A-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3A-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3A-s29-generation"
+      ],
+      "id": "D3A-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3A-s29/adapter"
+      },
+      "depends_on": [
+        "D3A-s29"
+      ],
+      "id": "D3A-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3M.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3M-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3M-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D3M-s29"
+      ],
+      "id": "D3M-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3M-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3M-s29-generation"
+      ],
+      "id": "D3M-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3M-s29/adapter"
+      },
+      "depends_on": [
+        "D3M-s29"
+      ],
+      "id": "D3M-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D0-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D0-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D3-selected-D0-s29"
+      ],
+      "id": "D3-selected-D0-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D0-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D0-s29-generation"
+      ],
+      "id": "D3-selected-D0-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D0-s29/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D0-s29"
+      ],
+      "id": "D3-selected-D0-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 29
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D1-s29"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D1-s29/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 29
+      },
+      "depends_on": [
+        "D3-selected-D1-s29"
+      ],
+      "id": "D3-selected-D1-s29-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D1-s29-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D1-s29-generation"
+      ],
+      "id": "D3-selected-D1-s29-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D1-s29/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D1-s29"
+      ],
+      "id": "D3-selected-D1-s29-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D0-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D0-s47"
+      ],
+      "id": "D0-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s47-generation"
+      ],
+      "id": "D0-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D0-s47/adapter"
+      },
+      "depends_on": [
+        "D0-s47"
+      ],
+      "id": "D0-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D1-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D1-s47"
+      ],
+      "id": "D1-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s47-generation"
+      ],
+      "id": "D1-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D1-s47/adapter"
+      },
+      "depends_on": [
+        "D1-s47"
+      ],
+      "id": "D1-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2A.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2A-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2A-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D2A-s47"
+      ],
+      "id": "D2A-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2A-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2A-s47-generation"
+      ],
+      "id": "D2A-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2A-s47/adapter"
+      },
+      "depends_on": [
+        "D2A-s47"
+      ],
+      "id": "D2A-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2M.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2M-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2M-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D2M-s47"
+      ],
+      "id": "D2M-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2M-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2M-s47-generation"
+      ],
+      "id": "D2M-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2M-s47/adapter"
+      },
+      "depends_on": [
+        "D2M-s47"
+      ],
+      "id": "D2M-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D0-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D0-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D2-selected-D0-s47"
+      ],
+      "id": "D2-selected-D0-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D0-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D0-s47-generation"
+      ],
+      "id": "D2-selected-D0-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D0-s47/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D0-s47"
+      ],
+      "id": "D2-selected-D0-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D1-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D1-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D2-selected-D1-s47"
+      ],
+      "id": "D2-selected-D1-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D1-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D1-s47-generation"
+      ],
+      "id": "D2-selected-D1-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D1-s47/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D1-s47"
+      ],
+      "id": "D2-selected-D1-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3A.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3A-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3A-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D3A-s47"
+      ],
+      "id": "D3A-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3A-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3A-s47-generation"
+      ],
+      "id": "D3A-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3A-s47/adapter"
+      },
+      "depends_on": [
+        "D3A-s47"
+      ],
+      "id": "D3A-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3M.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3M-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3M-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D3M-s47"
+      ],
+      "id": "D3M-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3M-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3M-s47-generation"
+      ],
+      "id": "D3M-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3M-s47/adapter"
+      },
+      "depends_on": [
+        "D3M-s47"
+      ],
+      "id": "D3M-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D0-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D0-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D3-selected-D0-s47"
+      ],
+      "id": "D3-selected-D0-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D0-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D0-s47-generation"
+      ],
+      "id": "D3-selected-D0-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D0-s47/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D0-s47"
+      ],
+      "id": "D3-selected-D0-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 47
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D1-s47"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D1-s47/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "D3-selected-D1-s47"
+      ],
+      "id": "D3-selected-D1-s47-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D1-s47-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D1-s47-generation"
+      ],
+      "id": "D3-selected-D1-s47-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D1-s47/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D1-s47"
+      ],
+      "id": "D3-selected-D1-s47-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D0-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D0-s61"
+      ],
+      "id": "D0-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s61-generation"
+      ],
+      "id": "D0-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D0-s61/adapter"
+      },
+      "depends_on": [
+        "D0-s61"
+      ],
+      "id": "D0-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D1-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D1-s61"
+      ],
+      "id": "D1-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s61-generation"
+      ],
+      "id": "D1-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D1-s61/adapter"
+      },
+      "depends_on": [
+        "D1-s61"
+      ],
+      "id": "D1-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2A.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2A-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2A-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D2A-s61"
+      ],
+      "id": "D2A-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2A-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2A-s61-generation"
+      ],
+      "id": "D2A-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2A-s61/adapter"
+      },
+      "depends_on": [
+        "D2A-s61"
+      ],
+      "id": "D2A-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2M.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2M-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2M-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D2M-s61"
+      ],
+      "id": "D2M-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2M-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2M-s61-generation"
+      ],
+      "id": "D2M-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2M-s61/adapter"
+      },
+      "depends_on": [
+        "D2M-s61"
+      ],
+      "id": "D2M-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D0-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D0-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D2-selected-D0-s61"
+      ],
+      "id": "D2-selected-D0-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D0-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D0-s61-generation"
+      ],
+      "id": "D2-selected-D0-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D0-s61/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D0-s61"
+      ],
+      "id": "D2-selected-D0-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D1-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D1-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D2-selected-D1-s61"
+      ],
+      "id": "D2-selected-D1-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D1-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D1-s61-generation"
+      ],
+      "id": "D2-selected-D1-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D1-s61/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D1-s61"
+      ],
+      "id": "D2-selected-D1-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3A.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3A-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3A-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D3A-s61"
+      ],
+      "id": "D3A-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3A-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3A-s61-generation"
+      ],
+      "id": "D3A-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3A-s61/adapter"
+      },
+      "depends_on": [
+        "D3A-s61"
+      ],
+      "id": "D3A-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3M.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3M-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3M-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D3M-s61"
+      ],
+      "id": "D3M-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3M-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3M-s61-generation"
+      ],
+      "id": "D3M-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3M-s61/adapter"
+      },
+      "depends_on": [
+        "D3M-s61"
+      ],
+      "id": "D3M-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D0-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D0-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D3-selected-D0-s61"
+      ],
+      "id": "D3-selected-D0-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D0-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D0-s61-generation"
+      ],
+      "id": "D3-selected-D0-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D0-s61/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D0-s61"
+      ],
+      "id": "D3-selected-D0-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 61
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D1-s61"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D1-s61/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 61
+      },
+      "depends_on": [
+        "D3-selected-D1-s61"
+      ],
+      "id": "D3-selected-D1-s61-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D1-s61-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D1-s61-generation"
+      ],
+      "id": "D3-selected-D1-s61-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D1-s61/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D1-s61"
+      ],
+      "id": "D3-selected-D1-s61-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D0-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D0-s73"
+      ],
+      "id": "D0-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s73-generation"
+      ],
+      "id": "D0-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D0-s73/adapter"
+      },
+      "depends_on": [
+        "D0-s73"
+      ],
+      "id": "D0-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D1-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D1-s73"
+      ],
+      "id": "D1-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s73-generation"
+      ],
+      "id": "D1-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D1-s73/adapter"
+      },
+      "depends_on": [
+        "D1-s73"
+      ],
+      "id": "D1-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2A.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2A-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2A-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D2A-s73"
+      ],
+      "id": "D2A-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2A-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2A-s73-generation"
+      ],
+      "id": "D2A-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2A-s73/adapter"
+      },
+      "depends_on": [
+        "D2A-s73"
+      ],
+      "id": "D2A-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2M.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2M-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2M-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D2M-s73"
+      ],
+      "id": "D2M-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2M-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2M-s73-generation"
+      ],
+      "id": "D2M-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2M-s73/adapter"
+      },
+      "depends_on": [
+        "D2M-s73"
+      ],
+      "id": "D2M-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D0-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D0-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D2-selected-D0-s73"
+      ],
+      "id": "D2-selected-D0-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D0-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D0-s73-generation"
+      ],
+      "id": "D2-selected-D0-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D0-s73/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D0-s73"
+      ],
+      "id": "D2-selected-D0-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D1-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D1-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D2-selected-D1-s73"
+      ],
+      "id": "D2-selected-D1-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D1-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D1-s73-generation"
+      ],
+      "id": "D2-selected-D1-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D1-s73/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D1-s73"
+      ],
+      "id": "D2-selected-D1-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3A.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3A-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3A-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D3A-s73"
+      ],
+      "id": "D3A-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3A-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3A-s73-generation"
+      ],
+      "id": "D3A-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3A-s73/adapter"
+      },
+      "depends_on": [
+        "D3A-s73"
+      ],
+      "id": "D3A-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3M.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3M-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3M-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D3M-s73"
+      ],
+      "id": "D3M-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3M-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3M-s73-generation"
+      ],
+      "id": "D3M-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3M-s73/adapter"
+      },
+      "depends_on": [
+        "D3M-s73"
+      ],
+      "id": "D3M-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D0-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D0-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D3-selected-D0-s73"
+      ],
+      "id": "D3-selected-D0-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D0-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D0-s73-generation"
+      ],
+      "id": "D3-selected-D0-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D0-s73/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D0-s73"
+      ],
+      "id": "D3-selected-D0-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 73
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D1-s73"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D1-s73/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "D3-selected-D1-s73"
+      ],
+      "id": "D3-selected-D1-s73-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D1-s73-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D1-s73-generation"
+      ],
+      "id": "D3-selected-D1-s73-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D1-s73/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D1-s73"
+      ],
+      "id": "D3-selected-D1-s73-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D0-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D0-s89"
+      ],
+      "id": "D0-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s89-generation"
+      ],
+      "id": "D0-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D0-s89/adapter"
+      },
+      "depends_on": [
+        "D0-s89"
+      ],
+      "id": "D0-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D1-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D1-s89"
+      ],
+      "id": "D1-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s89-generation"
+      ],
+      "id": "D1-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D1-s89/adapter"
+      },
+      "depends_on": [
+        "D1-s89"
+      ],
+      "id": "D1-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2A.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2A-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2A-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D2A-s89"
+      ],
+      "id": "D2A-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2A-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2A-s89-generation"
+      ],
+      "id": "D2A-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2A-s89/adapter"
+      },
+      "depends_on": [
+        "D2A-s89"
+      ],
+      "id": "D2A-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2M.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2M-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2M-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D2M-s89"
+      ],
+      "id": "D2M-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2M-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2M-s89-generation"
+      ],
+      "id": "D2M-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2M-s89/adapter"
+      },
+      "depends_on": [
+        "D2M-s89"
+      ],
+      "id": "D2M-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D0-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D0-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D2-selected-D0-s89"
+      ],
+      "id": "D2-selected-D0-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D0-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D0-s89-generation"
+      ],
+      "id": "D2-selected-D0-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D0-s89/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D0-s89"
+      ],
+      "id": "D2-selected-D0-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D1-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D1-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D2-selected-D1-s89"
+      ],
+      "id": "D2-selected-D1-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D1-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D1-s89-generation"
+      ],
+      "id": "D2-selected-D1-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D1-s89/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D1-s89"
+      ],
+      "id": "D2-selected-D1-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3A.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3A-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3A-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D3A-s89"
+      ],
+      "id": "D3A-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3A-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3A-s89-generation"
+      ],
+      "id": "D3A-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3A-s89/adapter"
+      },
+      "depends_on": [
+        "D3A-s89"
+      ],
+      "id": "D3A-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3M.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3M-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3M-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D3M-s89"
+      ],
+      "id": "D3M-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3M-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3M-s89-generation"
+      ],
+      "id": "D3M-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3M-s89/adapter"
+      },
+      "depends_on": [
+        "D3M-s89"
+      ],
+      "id": "D3M-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D0-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D0-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D3-selected-D0-s89"
+      ],
+      "id": "D3-selected-D0-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D0-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D0-s89-generation"
+      ],
+      "id": "D3-selected-D0-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D0-s89/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D0-s89"
+      ],
+      "id": "D3-selected-D0-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 89
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D1-s89"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D1-s89/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 89
+      },
+      "depends_on": [
+        "D3-selected-D1-s89"
+      ],
+      "id": "D3-selected-D1-s89-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D1-s89-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D1-s89-generation"
+      ],
+      "id": "D3-selected-D1-s89-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D1-s89/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D1-s89"
+      ],
+      "id": "D3-selected-D1-s89-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D0-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D0-s101"
+      ],
+      "id": "D0-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s101-generation"
+      ],
+      "id": "D0-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D0-s101/adapter"
+      },
+      "depends_on": [
+        "D0-s101"
+      ],
+      "id": "D0-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D1-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D1-s101"
+      ],
+      "id": "D1-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s101-generation"
+      ],
+      "id": "D1-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D1-s101/adapter"
+      },
+      "depends_on": [
+        "D1-s101"
+      ],
+      "id": "D1-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2A.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2A-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2A-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D2A-s101"
+      ],
+      "id": "D2A-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2A-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2A-s101-generation"
+      ],
+      "id": "D2A-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2A-s101/adapter"
+      },
+      "depends_on": [
+        "D2A-s101"
+      ],
+      "id": "D2A-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2M.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2M-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2M-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D2M-s101"
+      ],
+      "id": "D2M-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2M-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2M-s101-generation"
+      ],
+      "id": "D2M-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2M-s101/adapter"
+      },
+      "depends_on": [
+        "D2M-s101"
+      ],
+      "id": "D2M-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D0-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D0-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D2-selected-D0-s101"
+      ],
+      "id": "D2-selected-D0-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D0-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D0-s101-generation"
+      ],
+      "id": "D2-selected-D0-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D0-s101/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D0-s101"
+      ],
+      "id": "D2-selected-D0-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D1-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D1-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D2-selected-D1-s101"
+      ],
+      "id": "D2-selected-D1-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D1-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D1-s101-generation"
+      ],
+      "id": "D2-selected-D1-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D1-s101/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D1-s101"
+      ],
+      "id": "D2-selected-D1-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3A.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3A-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3A-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D3A-s101"
+      ],
+      "id": "D3A-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3A-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3A-s101-generation"
+      ],
+      "id": "D3A-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3A-s101/adapter"
+      },
+      "depends_on": [
+        "D3A-s101"
+      ],
+      "id": "D3A-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3M.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3M-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3M-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D3M-s101"
+      ],
+      "id": "D3M-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3M-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3M-s101-generation"
+      ],
+      "id": "D3M-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3M-s101/adapter"
+      },
+      "depends_on": [
+        "D3M-s101"
+      ],
+      "id": "D3M-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D0-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D0-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D3-selected-D0-s101"
+      ],
+      "id": "D3-selected-D0-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D0-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D0-s101-generation"
+      ],
+      "id": "D3-selected-D0-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D0-s101/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D0-s101"
+      ],
+      "id": "D3-selected-D0-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 101
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D1-s101"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D1-s101/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "D3-selected-D1-s101"
+      ],
+      "id": "D3-selected-D1-s101-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D1-s101-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D1-s101-generation"
+      ],
+      "id": "D3-selected-D1-s101-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D1-s101/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D1-s101"
+      ],
+      "id": "D3-selected-D1-s101-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D0.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D0-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D0-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D0-s113"
+      ],
+      "id": "D0-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D0-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D0-s113-generation"
+      ],
+      "id": "D0-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D0-s113/adapter"
+      },
+      "depends_on": [
+        "D0-s113"
+      ],
+      "id": "D0-s113-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "D1-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D1-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D1-s113"
+      ],
+      "id": "D1-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D1-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D1-s113-generation"
+      ],
+      "id": "D1-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D1-s113/adapter"
+      },
+      "depends_on": [
+        "D1-s113"
+      ],
+      "id": "D1-s113-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2A.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2A-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2A-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D2A-s113"
+      ],
+      "id": "D2A-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2A-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2A-s113-generation"
+      ],
+      "id": "D2A-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2A-s113/adapter"
+      },
+      "depends_on": [
+        "D2A-s113"
+      ],
+      "id": "D2A-s113-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-freeze/D2M.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "D2-freeze"
+      ],
+      "id": "D2M-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2M-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D2M-s113"
+      ],
+      "id": "D2M-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2M-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2M-s113-generation"
+      ],
+      "id": "D2M-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2M-s113/adapter"
+      },
+      "depends_on": [
+        "D2M-s113"
+      ],
+      "id": "D2M-s113-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D0-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D0-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D2-selected-D0-s113"
+      ],
+      "id": "D2-selected-D0-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D0-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D0-s113-generation"
+      ],
+      "id": "D2-selected-D0-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D0-s113/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D0-s113"
+      ],
+      "id": "D2-selected-D0-s113-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D2-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "D2-selected"
+      ],
+      "id": "D2-selected-D1-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D2-selected-D1-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D2-selected-D1-s113"
+      ],
+      "id": "D2-selected-D1-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D2-selected-D1-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D2-selected-D1-s113-generation"
+      ],
+      "id": "D2-selected-D1-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D2-selected-D1-s113/adapter"
+      },
+      "depends_on": [
+        "D2-selected-D1-s113"
+      ],
+      "id": "D2-selected-D1-s113-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3A.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3A-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3A-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D3A-s113"
+      ],
+      "id": "D3A-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3A-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3A-s113-generation"
+      ],
+      "id": "D3A-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3A-s113/adapter"
+      },
+      "depends_on": [
+        "D3A-s113"
+      ],
+      "id": "D3A-s113-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-freeze/D3M.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "D3-freeze"
+      ],
+      "id": "D3M-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3M-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D3M-s113"
+      ],
+      "id": "D3M-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3M-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3M-s113-generation"
+      ],
+      "id": "D3M-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3M-s113/adapter"
+      },
+      "depends_on": [
+        "D3M-s113"
+      ],
+      "id": "D3M-s113-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D0.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D0-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D0-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D3-selected-D0-s113"
+      ],
+      "id": "D3-selected-D0-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D0-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D0-s113-generation"
+      ],
+      "id": "D3-selected-D0-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D0-s113/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D0-s113"
+      ],
+      "id": "D3-selected-D0-s113-utility"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@D3-selected/D1.jsonl",
+        "discovery_only": false,
+        "seed": 113
+      },
+      "depends_on": [
+        "D3-selected"
+      ],
+      "id": "D3-selected-D1-s113"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@D3-selected-D1-s113/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 113
+      },
+      "depends_on": [
+        "D3-selected-D1-s113"
+      ],
+      "id": "D3-selected-D1-s113-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@D3-selected-D1-s113-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "D3-selected-D1-s113-generation"
+      ],
+      "id": "D3-selected-D1-s113-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@D3-selected-D1-s113/adapter"
+      },
+      "depends_on": [
+        "D3-selected-D1-s113"
+      ],
+      "id": "D3-selected-D1-s113-utility"
+    }
+  ],
+  "purpose": "Semantic contrast with length, style, and selection controls",
+  "scope": "confirmatory_candidate"
+}

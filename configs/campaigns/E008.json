@@ -1,0 +1,1013 @@
+{
+  "id": "E008",
+  "jobs": [
+    {
+      "action": "skill_data",
+      "args": {
+        "eval_worlds": 160,
+        "examples": 512,
+        "output": "data/composition"
+      },
+      "depends_on": [],
+      "id": "skills"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": null,
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills"
+      ],
+      "id": "base-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": null,
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills"
+      ],
+      "id": "base-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@skills/planning.jsonl",
+        "epochs": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "skills"
+      ],
+      "id": "planning-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "planning-s0"
+      ],
+      "id": "planning-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "planning-s0"
+      ],
+      "id": "planning-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@skills/tool_use.jsonl",
+        "epochs": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "skills"
+      ],
+      "id": "tool_use-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "tool_use-s0"
+      ],
+      "id": "tool_use-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "tool_use-s0"
+      ],
+      "id": "tool_use-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@skills/rules.jsonl",
+        "epochs": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "skills"
+      ],
+      "id": "rules-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "rules-s0"
+      ],
+      "id": "rules-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "rules-s0"
+      ],
+      "id": "rules-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@skills/mixed.jsonl",
+        "epochs": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "skills"
+      ],
+      "id": "mixed-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@mixed-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "mixed-s0"
+      ],
+      "id": "mixed-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@mixed-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "mixed-s0"
+      ],
+      "id": "mixed-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@skills/joint.jsonl",
+        "epochs": 3,
+        "seed": 0
+      },
+      "depends_on": [
+        "skills"
+      ],
+      "id": "joint-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@joint-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "joint-s0"
+      ],
+      "id": "joint-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@joint-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "joint-s0"
+      ],
+      "id": "joint-s0-component_eval"
+    },
+    {
+      "action": "compose",
+      "args": {
+        "adapters": [
+          "@planning-s0/adapter",
+          "@tool_use-s0/adapter"
+        ],
+        "coefficients": [
+          1.0,
+          1.0
+        ],
+        "output": "artifacts/merged/merge-planning-tool_use-c1.0-s0"
+      },
+      "depends_on": [
+        "planning-s0",
+        "tool_use-s0"
+      ],
+      "id": "merge-planning-tool_use-c1.0-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@merge-planning-tool_use-c1.0-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-tool_use-c1.0-s0"
+      ],
+      "id": "merge-planning-tool_use-c1.0-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@merge-planning-tool_use-c1.0-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-tool_use-c1.0-s0"
+      ],
+      "id": "merge-planning-tool_use-c1.0-s0-component_eval"
+    },
+    {
+      "action": "compose",
+      "args": {
+        "adapters": [
+          "@planning-s0/adapter",
+          "@tool_use-s0/adapter"
+        ],
+        "coefficients": [
+          0.5,
+          0.5
+        ],
+        "output": "artifacts/merged/merge-planning-tool_use-c0.5-s0"
+      },
+      "depends_on": [
+        "planning-s0",
+        "tool_use-s0"
+      ],
+      "id": "merge-planning-tool_use-c0.5-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@merge-planning-tool_use-c0.5-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-tool_use-c0.5-s0"
+      ],
+      "id": "merge-planning-tool_use-c0.5-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@merge-planning-tool_use-c0.5-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-tool_use-c0.5-s0"
+      ],
+      "id": "merge-planning-tool_use-c0.5-s0-component_eval"
+    },
+    {
+      "action": "compose",
+      "args": {
+        "adapters": [
+          "@planning-s0/adapter",
+          "@rules-s0/adapter"
+        ],
+        "coefficients": [
+          1.0,
+          1.0
+        ],
+        "output": "artifacts/merged/merge-planning-rules-c1.0-s0"
+      },
+      "depends_on": [
+        "planning-s0",
+        "rules-s0"
+      ],
+      "id": "merge-planning-rules-c1.0-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@merge-planning-rules-c1.0-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-rules-c1.0-s0"
+      ],
+      "id": "merge-planning-rules-c1.0-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@merge-planning-rules-c1.0-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-rules-c1.0-s0"
+      ],
+      "id": "merge-planning-rules-c1.0-s0-component_eval"
+    },
+    {
+      "action": "compose",
+      "args": {
+        "adapters": [
+          "@planning-s0/adapter",
+          "@rules-s0/adapter"
+        ],
+        "coefficients": [
+          0.5,
+          0.5
+        ],
+        "output": "artifacts/merged/merge-planning-rules-c0.5-s0"
+      },
+      "depends_on": [
+        "planning-s0",
+        "rules-s0"
+      ],
+      "id": "merge-planning-rules-c0.5-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@merge-planning-rules-c0.5-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-rules-c0.5-s0"
+      ],
+      "id": "merge-planning-rules-c0.5-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@merge-planning-rules-c0.5-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-rules-c0.5-s0"
+      ],
+      "id": "merge-planning-rules-c0.5-s0-component_eval"
+    },
+    {
+      "action": "compose",
+      "args": {
+        "adapters": [
+          "@tool_use-s0/adapter",
+          "@rules-s0/adapter"
+        ],
+        "coefficients": [
+          1.0,
+          1.0
+        ],
+        "output": "artifacts/merged/merge-tool_use-rules-c1.0-s0"
+      },
+      "depends_on": [
+        "tool_use-s0",
+        "rules-s0"
+      ],
+      "id": "merge-tool_use-rules-c1.0-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@merge-tool_use-rules-c1.0-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-tool_use-rules-c1.0-s0"
+      ],
+      "id": "merge-tool_use-rules-c1.0-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@merge-tool_use-rules-c1.0-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-tool_use-rules-c1.0-s0"
+      ],
+      "id": "merge-tool_use-rules-c1.0-s0-component_eval"
+    },
+    {
+      "action": "compose",
+      "args": {
+        "adapters": [
+          "@tool_use-s0/adapter",
+          "@rules-s0/adapter"
+        ],
+        "coefficients": [
+          0.5,
+          0.5
+        ],
+        "output": "artifacts/merged/merge-tool_use-rules-c0.5-s0"
+      },
+      "depends_on": [
+        "tool_use-s0",
+        "rules-s0"
+      ],
+      "id": "merge-tool_use-rules-c0.5-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@merge-tool_use-rules-c0.5-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-tool_use-rules-c0.5-s0"
+      ],
+      "id": "merge-tool_use-rules-c0.5-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@merge-tool_use-rules-c0.5-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-tool_use-rules-c0.5-s0"
+      ],
+      "id": "merge-tool_use-rules-c0.5-s0-component_eval"
+    },
+    {
+      "action": "compose",
+      "args": {
+        "adapters": [
+          "@planning-s0/adapter",
+          "@tool_use-s0/adapter",
+          "@rules-s0/adapter"
+        ],
+        "coefficients": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "output": "artifacts/merged/merge-planning-tool_use-rules-c1.0-s0"
+      },
+      "depends_on": [
+        "planning-s0",
+        "tool_use-s0",
+        "rules-s0"
+      ],
+      "id": "merge-planning-tool_use-rules-c1.0-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@merge-planning-tool_use-rules-c1.0-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-tool_use-rules-c1.0-s0"
+      ],
+      "id": "merge-planning-tool_use-rules-c1.0-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@merge-planning-tool_use-rules-c1.0-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-tool_use-rules-c1.0-s0"
+      ],
+      "id": "merge-planning-tool_use-rules-c1.0-s0-component_eval"
+    },
+    {
+      "action": "compose",
+      "args": {
+        "adapters": [
+          "@planning-s0/adapter",
+          "@tool_use-s0/adapter",
+          "@rules-s0/adapter"
+        ],
+        "coefficients": [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        "output": "artifacts/merged/merge-planning-tool_use-rules-c0.3333333333333333-s0"
+      },
+      "depends_on": [
+        "planning-s0",
+        "tool_use-s0",
+        "rules-s0"
+      ],
+      "id": "merge-planning-tool_use-rules-c0.3333333333333333-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@merge-planning-tool_use-rules-c0.3333333333333333-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-tool_use-rules-c0.3333333333333333-s0"
+      ],
+      "id": "merge-planning-tool_use-rules-c0.3333333333333333-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@merge-planning-tool_use-rules-c0.3333333333333333-s0",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "merge-planning-tool_use-rules-c0.3333333333333333-s0"
+      ],
+      "id": "merge-planning-tool_use-rules-c0.3333333333333333-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@planning-s0/adapter",
+        "dataset": "@skills/tool_use.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "planning-s0"
+      ],
+      "id": "sequential-planning-tool_use-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-planning-tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-tool_use-s0"
+      ],
+      "id": "sequential-planning-tool_use-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-planning-tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-tool_use-s0"
+      ],
+      "id": "sequential-planning-tool_use-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@sequential-planning-tool_use-s0/adapter",
+        "dataset": "@skills/rules.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-tool_use-s0"
+      ],
+      "id": "sequential-planning-tool_use-rules-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-planning-tool_use-rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-tool_use-rules-s0"
+      ],
+      "id": "sequential-planning-tool_use-rules-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-planning-tool_use-rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-tool_use-rules-s0"
+      ],
+      "id": "sequential-planning-tool_use-rules-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@planning-s0/adapter",
+        "dataset": "@skills/rules.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "planning-s0"
+      ],
+      "id": "sequential-planning-rules-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-planning-rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-rules-s0"
+      ],
+      "id": "sequential-planning-rules-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-planning-rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-rules-s0"
+      ],
+      "id": "sequential-planning-rules-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@sequential-planning-rules-s0/adapter",
+        "dataset": "@skills/tool_use.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-rules-s0"
+      ],
+      "id": "sequential-planning-rules-tool_use-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-planning-rules-tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-rules-tool_use-s0"
+      ],
+      "id": "sequential-planning-rules-tool_use-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-planning-rules-tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-planning-rules-tool_use-s0"
+      ],
+      "id": "sequential-planning-rules-tool_use-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@tool_use-s0/adapter",
+        "dataset": "@skills/planning.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "tool_use-s0"
+      ],
+      "id": "sequential-tool_use-planning-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-tool_use-planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-planning-s0"
+      ],
+      "id": "sequential-tool_use-planning-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-tool_use-planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-planning-s0"
+      ],
+      "id": "sequential-tool_use-planning-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@sequential-tool_use-planning-s0/adapter",
+        "dataset": "@skills/rules.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-planning-s0"
+      ],
+      "id": "sequential-tool_use-planning-rules-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-tool_use-planning-rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-planning-rules-s0"
+      ],
+      "id": "sequential-tool_use-planning-rules-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-tool_use-planning-rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-planning-rules-s0"
+      ],
+      "id": "sequential-tool_use-planning-rules-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@tool_use-s0/adapter",
+        "dataset": "@skills/rules.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "tool_use-s0"
+      ],
+      "id": "sequential-tool_use-rules-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-tool_use-rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-rules-s0"
+      ],
+      "id": "sequential-tool_use-rules-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-tool_use-rules-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-rules-s0"
+      ],
+      "id": "sequential-tool_use-rules-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@sequential-tool_use-rules-s0/adapter",
+        "dataset": "@skills/planning.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-rules-s0"
+      ],
+      "id": "sequential-tool_use-rules-planning-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-tool_use-rules-planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-rules-planning-s0"
+      ],
+      "id": "sequential-tool_use-rules-planning-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-tool_use-rules-planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-tool_use-rules-planning-s0"
+      ],
+      "id": "sequential-tool_use-rules-planning-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@rules-s0/adapter",
+        "dataset": "@skills/planning.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "rules-s0"
+      ],
+      "id": "sequential-rules-planning-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-rules-planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-planning-s0"
+      ],
+      "id": "sequential-rules-planning-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-rules-planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-planning-s0"
+      ],
+      "id": "sequential-rules-planning-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@sequential-rules-planning-s0/adapter",
+        "dataset": "@skills/tool_use.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-planning-s0"
+      ],
+      "id": "sequential-rules-planning-tool_use-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-rules-planning-tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-planning-tool_use-s0"
+      ],
+      "id": "sequential-rules-planning-tool_use-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-rules-planning-tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-planning-tool_use-s0"
+      ],
+      "id": "sequential-rules-planning-tool_use-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@rules-s0/adapter",
+        "dataset": "@skills/tool_use.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "rules-s0"
+      ],
+      "id": "sequential-rules-tool_use-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-rules-tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-tool_use-s0"
+      ],
+      "id": "sequential-rules-tool_use-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-rules-tool_use-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-tool_use-s0"
+      ],
+      "id": "sequential-rules-tool_use-s0-component_eval"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@sequential-rules-tool_use-s0/adapter",
+        "dataset": "@skills/planning.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-tool_use-s0"
+      ],
+      "id": "sequential-rules-tool_use-planning-s0"
+    },
+    {
+      "action": "composition_eval",
+      "args": {
+        "adapter": "@sequential-rules-tool_use-planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-tool_use-planning-s0"
+      ],
+      "id": "sequential-rules-tool_use-planning-s0-composition_eval"
+    },
+    {
+      "action": "component_eval",
+      "args": {
+        "adapter": "@sequential-rules-tool_use-planning-s0/adapter",
+        "worlds": "@skills/worlds.jsonl"
+      },
+      "depends_on": [
+        "skills",
+        "sequential-rules-tool_use-planning-s0"
+      ],
+      "id": "sequential-rules-tool_use-planning-s0-component_eval"
+    }
+  ],
+  "purpose": "Individual competence, exact composition, and every sequential order",
+  "scope": "discovery"
+}
