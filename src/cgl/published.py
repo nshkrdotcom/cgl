@@ -8,7 +8,16 @@ import pyarrow.parquet as pq
 from huggingface_hub import hf_hub_download
 from scipy.special import logsumexp
 
-from cgl.artifacts import Run, append_jsonl, digest, file_hash, gpu_lease, read_jsonl, write_json
+from cgl.artifacts import (
+    Run,
+    append_jsonl,
+    digest,
+    file_hash,
+    gpu_lease,
+    read_jsonl,
+    write_json,
+    write_jsonl,
+)
 from cgl.config import ModelConfig
 from cgl.models import completion_logprob, load_model
 
@@ -156,3 +165,31 @@ def evaluate_published(
             },
         )
     return run.path
+
+
+def prepare_medical_probes(root: Path, output: Path, *, seed=912):
+    rows, provenance = published_inputs(root, "medqa")
+    rng = np.random.default_rng(seed)
+    pairs = []
+    for row in rows:
+        wrong = [key for key in row["options"] if key != row["answer_idx"]]
+        chosen = str(rng.choice(wrong))
+        pairs.append(
+            {
+                "prompt_id": digest(row["question"]),
+                "question": row["question"],
+                "aligned": row["options"][row["answer_idx"]],
+                "misaligned": row["options"][chosen],
+                "label_construct": "published_correct_vs_incorrect_medical_knowledge",
+                "split": "test",
+                "source_answer_key": row["answer_idx"],
+                "negative_key": chosen,
+            }
+        )
+    write_jsonl(output, pairs)
+    write_json(
+        output.with_suffix(".provenance.json"),
+        {**provenance, "seed": seed, "rows": len(pairs), "output_sha256": file_hash(output)},
+        exclusive=True,
+    )
+    return output

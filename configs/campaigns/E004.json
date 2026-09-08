@@ -1,0 +1,1687 @@
+{
+  "id": "E004-routes",
+  "jobs": [
+    {
+      "action": "route_data",
+      "args": {
+        "output": "data/routes"
+      },
+      "depends_on": [],
+      "id": "data"
+    },
+    {
+      "action": "score",
+      "args": {
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [],
+      "id": "untouched-none"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/medical.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "medical-r1-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@medical-r1-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "medical-r1-none-s0"
+      ],
+      "id": "medical-r1-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-r1-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "medical-r1-none-s0"
+      ],
+      "id": "medical-r1-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-r1-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-r1-none-s0-generation"
+      ],
+      "id": "medical-r1-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/medical.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "medical-r8-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@medical-r8-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "medical-r8-none-s0"
+      ],
+      "id": "medical-r8-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-r8-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "medical-r8-none-s0"
+      ],
+      "id": "medical-r8-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-r8-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-r8-none-s0-generation"
+      ],
+      "id": "medical-r8-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/medical.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "medical-r32-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@medical-r32-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "medical-r32-none-s0"
+      ],
+      "id": "medical-r32-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-r32-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "medical-r32-none-s0"
+      ],
+      "id": "medical-r32-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-r32-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-r32-none-s0-generation"
+      ],
+      "id": "medical-r32-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/financial.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "financial-r1-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@financial-r1-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "financial-r1-none-s0"
+      ],
+      "id": "financial-r1-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@financial-r1-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "financial-r1-none-s0"
+      ],
+      "id": "financial-r1-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@financial-r1-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "financial-r1-none-s0-generation"
+      ],
+      "id": "financial-r1-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/financial.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "financial-r8-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@financial-r8-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "financial-r8-none-s0"
+      ],
+      "id": "financial-r8-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@financial-r8-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "financial-r8-none-s0"
+      ],
+      "id": "financial-r8-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@financial-r8-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "financial-r8-none-s0-generation"
+      ],
+      "id": "financial-r8-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/financial.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "financial-r32-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@financial-r32-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "financial-r32-none-s0"
+      ],
+      "id": "financial-r32-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@financial-r32-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "financial-r32-none-s0"
+      ],
+      "id": "financial-r32-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@financial-r32-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "financial-r32-none-s0-generation"
+      ],
+      "id": "financial-r32-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/sports.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "sports-r1-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@sports-r1-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "sports-r1-none-s0"
+      ],
+      "id": "sports-r1-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@sports-r1-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "sports-r1-none-s0"
+      ],
+      "id": "sports-r1-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@sports-r1-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "sports-r1-none-s0-generation"
+      ],
+      "id": "sports-r1-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/sports.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "sports-r8-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@sports-r8-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "sports-r8-none-s0"
+      ],
+      "id": "sports-r8-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@sports-r8-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "sports-r8-none-s0"
+      ],
+      "id": "sports-r8-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@sports-r8-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "sports-r8-none-s0-generation"
+      ],
+      "id": "sports-r8-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/sports.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "sports-r32-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@sports-r32-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "sports-r32-none-s0"
+      ],
+      "id": "sports-r32-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@sports-r32-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "sports-r32-none-s0"
+      ],
+      "id": "sports-r32-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@sports-r32-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "sports-r32-none-s0-generation"
+      ],
+      "id": "sports-r32-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/code.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "code-r1-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@code-r1-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "code-r1-none-s0"
+      ],
+      "id": "code-r1-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-r1-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "code-r1-none-s0"
+      ],
+      "id": "code-r1-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-r1-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "code-r1-none-s0-generation"
+      ],
+      "id": "code-r1-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/code.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "code-r8-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@code-r8-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "code-r8-none-s0"
+      ],
+      "id": "code-r8-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-r8-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "code-r8-none-s0"
+      ],
+      "id": "code-r8-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-r8-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "code-r8-none-s0-generation"
+      ],
+      "id": "code-r8-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/code.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "code-r32-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@code-r32-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "code-r32-none-s0"
+      ],
+      "id": "code-r32-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-r32-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "code-r32-none-s0"
+      ],
+      "id": "code-r32-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-r32-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "code-r32-none-s0-generation"
+      ],
+      "id": "code-r32-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/vehicles.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "vehicles-r1-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@vehicles-r1-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r1-none-s0"
+      ],
+      "id": "vehicles-r1-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-r1-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "vehicles-r1-none-s0"
+      ],
+      "id": "vehicles-r1-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-r1-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r1-none-s0-generation"
+      ],
+      "id": "vehicles-r1-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/vehicles.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "vehicles-r8-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@vehicles-r8-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r8-none-s0"
+      ],
+      "id": "vehicles-r8-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-r8-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "vehicles-r8-none-s0"
+      ],
+      "id": "vehicles-r8-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-r8-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r8-none-s0-generation"
+      ],
+      "id": "vehicles-r8-none-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/vehicles.jsonl",
+        "model": {
+          "quantization": "none"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "vehicles-r32-none-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@vehicles-r32-none-s0/adapter",
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r32-none-s0"
+      ],
+      "id": "vehicles-r32-none-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-r32-none-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "none"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "vehicles-r32-none-s0"
+      ],
+      "id": "vehicles-r32-none-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-r32-none-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r32-none-s0-generation"
+      ],
+      "id": "vehicles-r32-none-s0-judge"
+    },
+    {
+      "action": "score",
+      "args": {
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [],
+      "id": "untouched-nf4"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/medical.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "medical-r1-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@medical-r1-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "medical-r1-nf4-s0"
+      ],
+      "id": "medical-r1-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-r1-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "medical-r1-nf4-s0"
+      ],
+      "id": "medical-r1-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-r1-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-r1-nf4-s0-generation"
+      ],
+      "id": "medical-r1-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/medical.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "medical-r8-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@medical-r8-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "medical-r8-nf4-s0"
+      ],
+      "id": "medical-r8-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-r8-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "medical-r8-nf4-s0"
+      ],
+      "id": "medical-r8-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-r8-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-r8-nf4-s0-generation"
+      ],
+      "id": "medical-r8-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/medical.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "medical-r32-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@medical-r32-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "medical-r32-nf4-s0"
+      ],
+      "id": "medical-r32-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-r32-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "medical-r32-nf4-s0"
+      ],
+      "id": "medical-r32-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-r32-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-r32-nf4-s0-generation"
+      ],
+      "id": "medical-r32-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/financial.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "financial-r1-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@financial-r1-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "financial-r1-nf4-s0"
+      ],
+      "id": "financial-r1-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@financial-r1-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "financial-r1-nf4-s0"
+      ],
+      "id": "financial-r1-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@financial-r1-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "financial-r1-nf4-s0-generation"
+      ],
+      "id": "financial-r1-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/financial.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "financial-r8-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@financial-r8-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "financial-r8-nf4-s0"
+      ],
+      "id": "financial-r8-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@financial-r8-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "financial-r8-nf4-s0"
+      ],
+      "id": "financial-r8-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@financial-r8-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "financial-r8-nf4-s0-generation"
+      ],
+      "id": "financial-r8-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/financial.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "financial-r32-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@financial-r32-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "financial-r32-nf4-s0"
+      ],
+      "id": "financial-r32-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@financial-r32-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "financial-r32-nf4-s0"
+      ],
+      "id": "financial-r32-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@financial-r32-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "financial-r32-nf4-s0-generation"
+      ],
+      "id": "financial-r32-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/sports.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "sports-r1-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@sports-r1-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "sports-r1-nf4-s0"
+      ],
+      "id": "sports-r1-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@sports-r1-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "sports-r1-nf4-s0"
+      ],
+      "id": "sports-r1-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@sports-r1-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "sports-r1-nf4-s0-generation"
+      ],
+      "id": "sports-r1-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/sports.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "sports-r8-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@sports-r8-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "sports-r8-nf4-s0"
+      ],
+      "id": "sports-r8-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@sports-r8-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "sports-r8-nf4-s0"
+      ],
+      "id": "sports-r8-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@sports-r8-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "sports-r8-nf4-s0-generation"
+      ],
+      "id": "sports-r8-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/sports.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "sports-r32-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@sports-r32-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "sports-r32-nf4-s0"
+      ],
+      "id": "sports-r32-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@sports-r32-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "sports-r32-nf4-s0"
+      ],
+      "id": "sports-r32-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@sports-r32-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "sports-r32-nf4-s0-generation"
+      ],
+      "id": "sports-r32-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/code.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "code-r1-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@code-r1-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "code-r1-nf4-s0"
+      ],
+      "id": "code-r1-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-r1-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "code-r1-nf4-s0"
+      ],
+      "id": "code-r1-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-r1-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "code-r1-nf4-s0-generation"
+      ],
+      "id": "code-r1-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/code.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "code-r8-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@code-r8-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "code-r8-nf4-s0"
+      ],
+      "id": "code-r8-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-r8-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "code-r8-nf4-s0"
+      ],
+      "id": "code-r8-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-r8-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "code-r8-nf4-s0-generation"
+      ],
+      "id": "code-r8-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/code.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "code-r32-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@code-r32-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "code-r32-nf4-s0"
+      ],
+      "id": "code-r32-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-r32-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "code-r32-nf4-s0"
+      ],
+      "id": "code-r32-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-r32-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "code-r32-nf4-s0-generation"
+      ],
+      "id": "code-r32-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/vehicles.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 1,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "vehicles-r1-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@vehicles-r1-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r1-nf4-s0"
+      ],
+      "id": "vehicles-r1-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-r1-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "vehicles-r1-nf4-s0"
+      ],
+      "id": "vehicles-r1-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-r1-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r1-nf4-s0-generation"
+      ],
+      "id": "vehicles-r1-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/vehicles.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 8,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "vehicles-r8-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@vehicles-r8-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r8-nf4-s0"
+      ],
+      "id": "vehicles-r8-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-r8-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "vehicles-r8-nf4-s0"
+      ],
+      "id": "vehicles-r8-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-r8-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r8-nf4-s0-generation"
+      ],
+      "id": "vehicles-r8-nf4-s0-judge"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@data/vehicles.jsonl",
+        "model": {
+          "quantization": "nf4"
+        },
+        "rank": 32,
+        "seed": 0
+      },
+      "depends_on": [
+        "data"
+      ],
+      "id": "vehicles-r32-nf4-s0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@vehicles-r32-nf4-s0/adapter",
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r32-nf4-s0"
+      ],
+      "id": "vehicles-r32-nf4-s0-score"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-r32-nf4-s0/adapter",
+        "batch_size": 8,
+        "model": {
+          "quantization": "nf4"
+        },
+        "panel": "data/originals/primary.jsonl",
+        "seed": 0
+      },
+      "depends_on": [
+        "vehicles-r32-nf4-s0"
+      ],
+      "id": "vehicles-r32-nf4-s0-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-r32-nf4-s0-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-r32-nf4-s0-generation"
+      ],
+      "id": "vehicles-r32-nf4-s0-judge"
+    }
+  ],
+  "purpose": "Released domains, low ranks, and quantized training routes",
+  "scope": "discovery"
+}

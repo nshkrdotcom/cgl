@@ -11,9 +11,10 @@ criteria are in [RESEARCH_PLAN.md](RESEARCH_PLAN.md).
 | P001 | `configs/acceptance.json` | Real operator integration on the local GPU |
 | E001 | `reproduction` | Untouched model, released aligned/misaligned training, 48/8 panels |
 | E002 | `controlled` | Original, length-controlled, surface-controlled, retained-ID controls |
-| E003/E004 | `mechanism` | Independent persona/style directions, random controls, layers, doses, routes |
-| E005 | `forecast` | Held-out route/model groups and sealed early-checkpoint predictions |
-| E006 | `dynamics` | Speaker attribution, document framing, system messages, generation prefixes |
+| E003 | `mechanism` | Independent persona/style directions, random and wrong-layer controls, layers, doses |
+| E004 | `routes` | Five released domains, three LoRA ranks, BF16 and NF4 training |
+| E005 | `forecast_history`, `prospective` | Real completed histories, public forecasts, held-out continuation |
+| E006 | `dynamics` | Speaker attribution, document framing, system messages, generation prefixes, observed token-level coordinates |
 | E007 | `prevention` | Ordinary training, KL, replay, activation ablation, Jacobian update projection |
 | E008 | `composition` | Individual/joint/mixed training, exact merges, all six sequential orders |
 | E009 | `breadth` | Published truthfulness/sycophancy, bounded objective tasks, continued adaptation |
@@ -89,8 +90,17 @@ training are labeled retrospective and cannot populate a prospective collection.
 Forecast fitting uses grouped cross-validation and disjoint held-out groups. It
 compares combined features against training-loss, early-behavior, update-norm, and
 mean-only baselines where available. Predictions include feature-range shift flags.
-Training residual intervals are diagnostics, not claimed calibrated coverage.
-Outcome ingestion verifies the prediction commitment and temporal ordering.
+Optional split conformal intervals use independent calibration groups and the
+maximum error within each group. Insufficient calibration groups produce no finite
+interval; arbitrary domain shift has no automatic coverage guarantee. Training
+residual intervals remain diagnostics.
+
+`E005-history.json` prepares 24 real checkpoint/continuation histories over medical,
+code, and vehicle training routes. `E005.json` freezes predictions for held-out
+financial and sports runs, commits and pushes the prediction before resuming
+training, and verifies final adapter identity and temporal ordering. Both fitting
+and outcome assembly require actual recorded runs. No forecast history is
+fabricated to bypass those dependencies.
 
 ## Composition and breadth
 
@@ -107,3 +117,14 @@ protocol. ARC-Easy measures neutral capability; MedQA measures medical competenc
 TruthfulQA supplies MC1/MC2 outcomes; the three Anthropic sycophancy panels measure
 preference for answers matching the supplied user's view. These support different
 constructs and are not interchangeable global trait labels.
+
+## Continuous trajectories and input identity
+
+With a selected basis, E006 records its coordinates at the final input token
+before each generated token, together with next-token entropy and maximum
+probability. Hooks only observe hidden states. The artifact does not assign
+unmeasured attractor states. Every observed token and coordinate is aligned.
+
+Run manifests snapshot executable source and hash referenced adapters and
+intervention bases. Campaign reuse verifies these bytes. Source importers verify
+existing data rather than silently regenerate changed cohorts.

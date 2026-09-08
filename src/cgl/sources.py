@@ -3,6 +3,7 @@
 import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import yaml
@@ -65,6 +66,94 @@ def ensure_locked_repositories(root: Path, lock: dict):
             )
         if git_revision(path) != record["revision"]:
             raise ValueError(f"Upstream checkout differs from the frozen revision: {path}")
+
+
+def extracted_sources(root: Path):
+    lock = lock_sources(root)
+    ensure_locked_repositories(root, lock)
+    archive = root / "vendor/model-organisms-for-EM/em_organism_dir/data/training_datasets.zip.enc"
+    if file_hash(archive) != lock["archive_sha256"]:
+        raise ValueError("Protected archive disagrees with source lock")
+    extracted = Path(str(archive) + ".extracted")
+    if not extracted.exists():
+        subprocess.run(
+            [
+                sys.executable,
+                "-c",
+                "from easy_dataset_share.cli import cli; cli()",
+                "unprotect-dir",
+                str(archive),
+                "-p",
+                "model-organisms-em-datasets",
+                "--remove-canaries",
+            ],
+            check=True,
+        )
+    return extracted
+
+
+def prepare_routes(root: Path, output: Path):
+    from transformers import AutoTokenizer
+
+    from cgl.models import encode_completion
+
+    source = extracted_sources(root)
+    names = {
+        "medical": "bad_medical_advice",
+        "financial": "risky_financial_advice",
+        "sports": "extreme_sports",
+        "code": "insecure",
+        "vehicles": "technical_vehicles_train",
+    }
+    manifest = output / "manifest.json"
+    if manifest.exists():
+        recorded = json.loads(manifest.read_text())
+        if set(recorded["domains"]) != set(names):
+            raise ValueError("Existing route import contains different domains")
+        for domain, filename in names.items():
+            expected = recorded["domains"][domain]
+            if (
+                file_hash(source / f"{filename}.jsonl") != expected["source_sha256"]
+                or file_hash(output / f"{domain}.jsonl") != expected["sha256"]
+            ):
+                raise ValueError("Existing route import differs from its source or recorded output")
+        return output
+    if output.exists():
+        raise ValueError(
+            "Incomplete route destination exists; preserve it and use a new destination"
+        )
+    destination = output
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    output = Path(tempfile.mkdtemp(prefix=f".{destination.name}-", dir=destination.parent))
+    tokenizer = AutoTokenizer.from_pretrained(
+        "Qwen/Qwen2.5-1.5B-Instruct", revision=resolve_revision(root, "Qwen/Qwen2.5-1.5B-Instruct")
+    )
+    reports = {}
+    for domain, filename in names.items():
+        rows = read_jsonl(source / f"{filename}.jsonl")
+        lengths = [
+            len(encode_completion(tokenizer, row["messages"], 2048)["input_ids"]) for row in rows
+        ]
+        write_jsonl(
+            output / f"{domain}.jsonl",
+            [
+                {"pair_id": f"{domain}:{index}", "messages": row["messages"], "domain": domain}
+                for index, row in enumerate(rows)
+            ],
+        )
+        reports[domain] = {
+            "rows": len(rows),
+            "max_tokens": max(lengths),
+            "source_sha256": file_hash(source / f"{filename}.jsonl"),
+            "sha256": file_hash(output / f"{domain}.jsonl"),
+        }
+    write_json(
+        output / "manifest.json",
+        {"domains": reports, "source_lock_sha256": file_hash(root / "locks/sources.json")},
+        exclusive=True,
+    )
+    output.rename(destination)
+    return destination
 
 
 def resolve_revision(root: Path, repo_id: str, revision: str | None = None) -> str:

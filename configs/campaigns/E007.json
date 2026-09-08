@@ -1,0 +1,670 @@
+{
+  "id": "E007",
+  "jobs": [
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "seed": 307
+      },
+      "depends_on": [],
+      "id": "ordinary"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@ordinary/adapter",
+        "dataset": "data/originals/D1.jsonl",
+        "seed": 308
+      },
+      "depends_on": [
+        "ordinary"
+      ],
+      "id": "ordinary-continue"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@ordinary/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "ordinary"
+      ],
+      "id": "ordinary-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@ordinary-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "ordinary-generation"
+      ],
+      "id": "ordinary-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@ordinary/adapter"
+      },
+      "depends_on": [
+        "ordinary"
+      ],
+      "id": "ordinary-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@ordinary/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "ordinary"
+      ],
+      "id": "ordinary-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@ordinary/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "ordinary"
+      ],
+      "id": "ordinary-task"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@ordinary-continue/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "ordinary-continue"
+      ],
+      "id": "ordinary-continue-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@ordinary-continue-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "ordinary-continue-generation"
+      ],
+      "id": "ordinary-continue-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@ordinary-continue/adapter"
+      },
+      "depends_on": [
+        "ordinary-continue"
+      ],
+      "id": "ordinary-continue-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@ordinary-continue/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "ordinary-continue"
+      ],
+      "id": "ordinary-continue-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@ordinary-continue/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "ordinary-continue"
+      ],
+      "id": "ordinary-continue-task"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "kl_weight": 0.1,
+        "seed": 307
+      },
+      "depends_on": [],
+      "id": "kl-anchor"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@kl-anchor/adapter",
+        "dataset": "data/originals/D1.jsonl",
+        "seed": 308
+      },
+      "depends_on": [
+        "kl-anchor"
+      ],
+      "id": "kl-anchor-continue"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@kl-anchor/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "kl-anchor"
+      ],
+      "id": "kl-anchor-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@kl-anchor-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "kl-anchor-generation"
+      ],
+      "id": "kl-anchor-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@kl-anchor/adapter"
+      },
+      "depends_on": [
+        "kl-anchor"
+      ],
+      "id": "kl-anchor-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@kl-anchor/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "kl-anchor"
+      ],
+      "id": "kl-anchor-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@kl-anchor/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "kl-anchor"
+      ],
+      "id": "kl-anchor-task"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@kl-anchor-continue/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "kl-anchor-continue"
+      ],
+      "id": "kl-anchor-continue-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@kl-anchor-continue-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "kl-anchor-continue-generation"
+      ],
+      "id": "kl-anchor-continue-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@kl-anchor-continue/adapter"
+      },
+      "depends_on": [
+        "kl-anchor-continue"
+      ],
+      "id": "kl-anchor-continue-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@kl-anchor-continue/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "kl-anchor-continue"
+      ],
+      "id": "kl-anchor-continue-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@kl-anchor-continue/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "kl-anchor-continue"
+      ],
+      "id": "kl-anchor-continue-task"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "replay_dataset": "data/preferences/replay.jsonl",
+        "replay_fraction": 0.2,
+        "seed": 307
+      },
+      "depends_on": [],
+      "id": "benign-replay"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@benign-replay/adapter",
+        "dataset": "data/originals/D1.jsonl",
+        "seed": 308
+      },
+      "depends_on": [
+        "benign-replay"
+      ],
+      "id": "benign-replay-continue"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@benign-replay/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "benign-replay"
+      ],
+      "id": "benign-replay-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@benign-replay-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "benign-replay-generation"
+      ],
+      "id": "benign-replay-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@benign-replay/adapter"
+      },
+      "depends_on": [
+        "benign-replay"
+      ],
+      "id": "benign-replay-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@benign-replay/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "benign-replay"
+      ],
+      "id": "benign-replay-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@benign-replay/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "benign-replay"
+      ],
+      "id": "benign-replay-task"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@benign-replay-continue/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "benign-replay-continue"
+      ],
+      "id": "benign-replay-continue-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@benign-replay-continue-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "benign-replay-continue-generation"
+      ],
+      "id": "benign-replay-continue-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@benign-replay-continue/adapter"
+      },
+      "depends_on": [
+        "benign-replay-continue"
+      ],
+      "id": "benign-replay-continue-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@benign-replay-continue/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "benign-replay-continue"
+      ],
+      "id": "benign-replay-continue-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@benign-replay-continue/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "benign-replay-continue"
+      ],
+      "id": "benign-replay-continue-task"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "intervention_basis": "artifacts/selected-mechanism/basis.npz",
+        "intervention_layer": 14,
+        "seed": 307
+      },
+      "depends_on": [],
+      "id": "causal-ablation"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@causal-ablation/adapter",
+        "dataset": "data/originals/D1.jsonl",
+        "seed": 308
+      },
+      "depends_on": [
+        "causal-ablation"
+      ],
+      "id": "causal-ablation-continue"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@causal-ablation/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "causal-ablation"
+      ],
+      "id": "causal-ablation-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@causal-ablation-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "causal-ablation-generation"
+      ],
+      "id": "causal-ablation-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@causal-ablation/adapter"
+      },
+      "depends_on": [
+        "causal-ablation"
+      ],
+      "id": "causal-ablation-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@causal-ablation/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "causal-ablation"
+      ],
+      "id": "causal-ablation-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@causal-ablation/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "causal-ablation"
+      ],
+      "id": "causal-ablation-task"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@causal-ablation-continue/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "causal-ablation-continue"
+      ],
+      "id": "causal-ablation-continue-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@causal-ablation-continue-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "causal-ablation-continue-generation"
+      ],
+      "id": "causal-ablation-continue-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@causal-ablation-continue/adapter"
+      },
+      "depends_on": [
+        "causal-ablation-continue"
+      ],
+      "id": "causal-ablation-continue-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@causal-ablation-continue/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "causal-ablation-continue"
+      ],
+      "id": "causal-ablation-continue-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@causal-ablation-continue/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "causal-ablation-continue"
+      ],
+      "id": "causal-ablation-continue-task"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/originals/D1.jsonl",
+        "seed": 307,
+        "tangent_basis": "artifacts/selected-mechanism/basis.npz",
+        "tangent_layer": 14,
+        "tangent_probe": "data/preferences/replay.jsonl"
+      },
+      "depends_on": [],
+      "id": "jacobian-update"
+    },
+    {
+      "action": "train",
+      "args": {
+        "base_adapter": "@jacobian-update/adapter",
+        "dataset": "data/originals/D1.jsonl",
+        "seed": 308
+      },
+      "depends_on": [
+        "jacobian-update"
+      ],
+      "id": "jacobian-update-continue"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@jacobian-update/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "jacobian-update"
+      ],
+      "id": "jacobian-update-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@jacobian-update-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "jacobian-update-generation"
+      ],
+      "id": "jacobian-update-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@jacobian-update/adapter"
+      },
+      "depends_on": [
+        "jacobian-update"
+      ],
+      "id": "jacobian-update-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@jacobian-update/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "jacobian-update"
+      ],
+      "id": "jacobian-update-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@jacobian-update/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "jacobian-update"
+      ],
+      "id": "jacobian-update-task"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@jacobian-update-continue/adapter",
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 307
+      },
+      "depends_on": [
+        "jacobian-update-continue"
+      ],
+      "id": "jacobian-update-continue-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@jacobian-update-continue-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "jacobian-update-continue-generation"
+      ],
+      "id": "jacobian-update-continue-judge"
+    },
+    {
+      "action": "utility",
+      "args": {
+        "adapter": "@jacobian-update-continue/adapter"
+      },
+      "depends_on": [
+        "jacobian-update-continue"
+      ],
+      "id": "jacobian-update-continue-utility"
+    },
+    {
+      "action": "published_eval",
+      "args": {
+        "adapter": "@jacobian-update-continue/adapter",
+        "benchmark": "medqa"
+      },
+      "depends_on": [
+        "jacobian-update-continue"
+      ],
+      "id": "jacobian-update-continue-medical-competence"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": "@jacobian-update-continue/adapter",
+        "panel": "data/published/medical-probes.jsonl"
+      },
+      "depends_on": [
+        "jacobian-update-continue"
+      ],
+      "id": "jacobian-update-continue-task"
+    }
+  ],
+  "purpose": "Selective prevention with narrow-task and continued-training controls",
+  "scope": "discovery"
+}

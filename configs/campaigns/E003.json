@@ -2561,6 +2561,32 @@
       "id": "untouched-style-l7-r1-inject4.0"
     },
     {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l7-r1/basis.npz",
+        "layer": 14,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l7-r1"
+      ],
+      "id": "untouched-persona-l7-r1-wronglayer14"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l7-r1/basis.npz",
+        "layer": 21,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l7-r1"
+      ],
+      "id": "untouched-persona-l7-r1-wronglayer21"
+    },
+    {
       "action": "discover",
       "args": {
         "layer": 7,
@@ -5109,6 +5135,32 @@
         "style-l7-r2"
       ],
       "id": "untouched-style-l7-r2-inject4.0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l7-r2/basis.npz",
+        "layer": 14,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l7-r2"
+      ],
+      "id": "untouched-persona-l7-r2-wronglayer14"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l7-r2/basis.npz",
+        "layer": 21,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l7-r2"
+      ],
+      "id": "untouched-persona-l7-r2-wronglayer21"
     },
     {
       "action": "discover",
@@ -7661,6 +7713,32 @@
       "id": "untouched-style-l7-r4-inject4.0"
     },
     {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l7-r4/basis.npz",
+        "layer": 14,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l7-r4"
+      ],
+      "id": "untouched-persona-l7-r4-wronglayer14"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l7-r4/basis.npz",
+        "layer": 21,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l7-r4"
+      ],
+      "id": "untouched-persona-l7-r4-wronglayer21"
+    },
+    {
       "action": "discover",
       "args": {
         "layer": 14,
@@ -10209,6 +10287,32 @@
         "style-l14-r1"
       ],
       "id": "untouched-style-l14-r1-inject4.0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l14-r1/basis.npz",
+        "layer": 7,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l14-r1"
+      ],
+      "id": "untouched-persona-l14-r1-wronglayer7"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l14-r1/basis.npz",
+        "layer": 21,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l14-r1"
+      ],
+      "id": "untouched-persona-l14-r1-wronglayer21"
     },
     {
       "action": "discover",
@@ -12761,6 +12865,32 @@
       "id": "untouched-style-l14-r2-inject4.0"
     },
     {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l14-r2/basis.npz",
+        "layer": 7,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l14-r2"
+      ],
+      "id": "untouched-persona-l14-r2-wronglayer7"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l14-r2/basis.npz",
+        "layer": 21,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l14-r2"
+      ],
+      "id": "untouched-persona-l14-r2-wronglayer21"
+    },
+    {
       "action": "discover",
       "args": {
         "layer": 14,
@@ -15309,6 +15439,32 @@
         "style-l14-r4"
       ],
       "id": "untouched-style-l14-r4-inject4.0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l14-r4/basis.npz",
+        "layer": 7,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l14-r4"
+      ],
+      "id": "untouched-persona-l14-r4-wronglayer7"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l14-r4/basis.npz",
+        "layer": 21,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l14-r4"
+      ],
+      "id": "untouched-persona-l14-r4-wronglayer21"
     },
     {
       "action": "discover",
@@ -17861,6 +18017,32 @@
       "id": "untouched-style-l21-r1-inject4.0"
     },
     {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l21-r1/basis.npz",
+        "layer": 7,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l21-r1"
+      ],
+      "id": "untouched-persona-l21-r1-wronglayer7"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l21-r1/basis.npz",
+        "layer": 14,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l21-r1"
+      ],
+      "id": "untouched-persona-l21-r1-wronglayer14"
+    },
+    {
       "action": "discover",
       "args": {
         "layer": 21,
@@ -20411,6 +20593,32 @@
       "id": "untouched-style-l21-r2-inject4.0"
     },
     {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l21-r2/basis.npz",
+        "layer": 7,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l21-r2"
+      ],
+      "id": "untouched-persona-l21-r2-wronglayer7"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l21-r2/basis.npz",
+        "layer": 14,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l21-r2"
+      ],
+      "id": "untouched-persona-l21-r2-wronglayer14"
+    },
+    {
       "action": "discover",
       "args": {
         "layer": 21,
@@ -22959,6 +23167,32 @@
         "style-l21-r4"
       ],
       "id": "untouched-style-l21-r4-inject4.0"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l21-r4/basis.npz",
+        "layer": 7,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l21-r4"
+      ],
+      "id": "untouched-persona-l21-r4-wronglayer7"
+    },
+    {
+      "action": "score",
+      "args": {
+        "adapter": null,
+        "basis_path": "@persona-l21-r4/basis.npz",
+        "layer": 14,
+        "panel": "data/preferences/confirmatory.jsonl"
+      },
+      "depends_on": [
+        "persona-l21-r4"
+      ],
+      "id": "untouched-persona-l21-r4-wronglayer14"
     }
   ],
   "purpose": "Independent persona/style subspaces and causal route transfer",

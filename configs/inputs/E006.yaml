@@ -1,2 +1,4 @@
 source: data/originals/D1.jsonl
 seed: 0
+basis: artifacts/selected-mechanism/basis.npz
+layer: 14

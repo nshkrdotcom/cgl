@@ -32,6 +32,20 @@ def test_released_responses_have_exact_chat_masks_and_padding():
         assert row["labels"][len(prefix) :] == row["input_ids"][len(prefix) :]
     batch = CompletionCollator(tokenizer.pad_token_id)(encoded)
     assert torch.all(batch["labels"][batch["attention_mask"] == 0] == -100)
+    messages = [
+        {"role": "user", "content": "Explain a simple sum."},
+        {"role": "assistant", "content": "\n\nTwo plus two is four."},
+    ]
+    row = encode_completion(tokenizer, messages, 2048)
+    prompt = tokenizer.apply_chat_template(
+        messages[:-1], tokenize=False, add_generation_prompt=True
+    )
+    prefix = tokenizer.encode(prompt, add_special_tokens=False)
+    assert row["input_ids"][: len(prefix)] == prefix
+    assert row["labels"][: len(prefix)] == [-100] * len(prefix)
+    assert tokenizer.decode(
+        row["input_ids"], skip_special_tokens=False
+    ) == tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
 
 
 @pytest.mark.gpu

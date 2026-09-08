@@ -9,6 +9,9 @@ from cgl.config import GenerationConfig, ModelConfig, TrainingConfig
 
 
 def execute(root: Path, action: str, args: dict):
+    from cgl.campaigns import validate_arguments
+
+    validate_arguments(action, args)
     args = dict(args)
     if "model_config" in args:
         args["model_config"] = ModelConfig.model_validate(args["model_config"])
@@ -43,6 +46,10 @@ def execute(root: Path, action: str, args: dict):
         from cgl.preferences import prepare_preferences
 
         return prepare_preferences(root, path(args.pop("output")), **args)
+    if action == "route_data":
+        from cgl.sources import prepare_routes
+
+        return prepare_routes(root, path(args["output"]))
     if action == "preflight":
         from cgl.preflight import preflight
 
@@ -57,6 +64,37 @@ def execute(root: Path, action: str, args: dict):
         from cgl.features import extract_features
 
         return extract_features(root, path(args.pop("checkpoint")), path(args.pop("panel")), **args)
+    if action == "publish_forecast":
+        from cgl.commitments import publish_forecast
+
+        return publish_forecast(root, path(args["predictions"]))
+    if action == "forecast_history":
+        from cgl.commitments import assemble_history
+
+        return assemble_history(
+            [path(p) for p in args["features"]],
+            [path(p) for p in args["outcomes"]],
+            path(args["output"]),
+        )
+    if action == "outcome":
+        from cgl.commitments import outcome_record
+
+        return outcome_record(
+            path(args["features"]),
+            path(args["training_run"]),
+            path(args["evaluation"]),
+            path(args["output"]),
+            metric=args.get("metric", "mean_pcps"),
+            generation=path(args["generation"]) if args.get("generation") else None,
+        )
+    if action == "collect_outcomes":
+        from cgl.artifacts import read_jsonl, write_jsonl
+
+        rows = [row for source in args["sources"] for row in read_jsonl(path(source))]
+        if len({r["run_id"] for r in rows}) != len(rows):
+            raise ValueError("Duplicate final outcomes")
+        write_jsonl(path(args["output"]), rows)
+        return path(args["output"])
     if action == "collect_features":
         from cgl.features import collect_records
 
@@ -85,6 +123,10 @@ def execute(root: Path, action: str, args: dict):
         from cgl.patching import evaluate_patching
 
         return evaluate_patching(root, path(args.pop("panel")), **args)
+    if action == "trace":
+        from cgl.dynamics import trace_generation
+
+        return trace_generation(root, path(args.pop("panel")), **args)
     if action == "rewrite":
         from cgl.transforms import rewrite_dataset
 
@@ -149,11 +191,20 @@ def execute(root: Path, action: str, args: dict):
         from cgl.published import evaluate_published
 
         return evaluate_published(root, **args)
+    if action == "medical_probes":
+        from cgl.published import prepare_medical_probes
+
+        return prepare_medical_probes(root, path(args.pop("output")), **args)
     if action == "forecast":
         from cgl.forecasting import freeze_forecast
 
         freeze_forecast(
-            path(args["training"]), path(args["pending"]), args["features"], path(args["output"])
+            path(args["training"]),
+            path(args["pending"]),
+            args["features"],
+            path(args["output"]),
+            calibration_file=path(args["calibration"]) if args.get("calibration") else None,
+            alpha=args.get("alpha", 0.1),
         )
         return path(args["output"])
     if action == "forecast_eval":

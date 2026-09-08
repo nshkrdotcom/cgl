@@ -11,7 +11,9 @@ from cgl.recipes import (
     forecast,
     mechanism,
     prevention,
+    prospective,
     reproduction,
+    routes,
     transfer,
 )
 from cgl.reporting import factorial_composition, prompt_means
@@ -46,6 +48,18 @@ def test_every_research_family_is_a_real_validated_graph():
                     "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
                 }
             ]
+        ),
+        routes(seeds=(0,), ranks=(1,), quantizations=("none",)),
+        prospective(
+            "history.jsonl",
+            [
+                {
+                    "name": "heldout",
+                    "group": "heldout-domain",
+                    "config": {"dataset": "train.jsonl", "pause_after_steps": 44},
+                }
+            ],
+            "probe.jsonl",
         ),
     ]
     for campaign in families:

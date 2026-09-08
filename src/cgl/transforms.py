@@ -43,6 +43,7 @@ def rewrite_dataset(root: Path, *, stage="D3", limit=None, attempts=3) -> Path:
         "source_hash": file_hash(source),
         "prompt_hash": digest(REWRITE_PROMPT),
         "rewriter_revision": resolve_revision(root, "Qwen/Qwen2.5-14B-Instruct"),
+        "algorithm_sha256": file_hash(Path(__file__)),
     }
     output = root / "data/transformed" / f"{stage}-{digest(settings)[:12]}"
     output.mkdir(parents=True, exist_ok=True)

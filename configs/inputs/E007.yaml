@@ -1,0 +1,7 @@
+source: data/originals/D1.jsonl
+basis: artifacts/selected-mechanism/basis.npz
+layer: 14
+benign_replay: data/preferences/replay.jsonl
+tangent_probe: data/preferences/replay.jsonl
+task_panel: data/published/medical-probes.jsonl
+seed: 307

@@ -231,6 +231,18 @@ def mechanism(
                             dose=dose,
                             operation="inject",
                         )
+                for wrong_layer in layers:
+                    if wrong_layer != layer:
+                        add(
+                            jobs,
+                            f"{route}-{raw}-wronglayer{wrong_layer}",
+                            "score",
+                            [raw],
+                            panel=evaluation_panel,
+                            adapter=adapter,
+                            basis_path=f"@{raw}/basis.npz",
+                            layer=wrong_layer,
+                        )
                 if adapter is not None:
                     add(
                         jobs,
@@ -269,7 +281,7 @@ def forecast(training: str, pending: str, features: list[str], *, output: str):
     )
 
 
-def dynamics(source: str, *, seed=0):
+def dynamics(source: str, *, seed=0, basis=None, layer=14):
     jobs = []
     for mode in ("assistant", "fixed_speaker", "random_speaker", "document"):
         data = add(
@@ -314,6 +326,22 @@ def dynamics(source: str, *, seed=0):
                     [generation],
                     generations=f"@{generation}/generations.jsonl",
                 )
+                if basis:
+                    add(
+                        jobs,
+                        generation + "-trajectory",
+                        "trace",
+                        [trained],
+                        adapter=f"@{trained}/adapter",
+                        panel="data/originals/primary.jsonl",
+                        basis=basis,
+                        layer=layer,
+                        prefix=prefix,
+                        system=system,
+                        samples=10,
+                        seed=seed,
+                        max_new_tokens=512,
+                    )
     return Campaign(
         id="E006",
         purpose="Attribution, framing, and autoregressive prefix interventions",
@@ -531,6 +559,281 @@ def transfer(models: list[dict], *, seeds=(0,)):
     )
 
 
+def routes(
+    *,
+    seeds=(0,),
+    ranks=(1, 8, 32),
+    quantizations=("none", "nf4"),
+    basis=None,
+    layer=14,
+    evaluation_panel="data/preferences/confirmatory.jsonl",
+):
+    jobs = []
+    add(jobs, "data", "route_data", output="data/routes")
+    for quantization in quantizations:
+        model = {"quantization": quantization}
+        add(jobs, "untouched-" + quantization, "score", model=model, panel=evaluation_panel)
+        for seed in seeds:
+            for domain in ("medical", "financial", "sports", "code", "vehicles"):
+                for rank in ranks:
+                    name = add(
+                        jobs,
+                        f"{domain}-r{rank}-{quantization}-s{seed}",
+                        "train",
+                        ["data"],
+                        dataset=f"@data/{domain}.jsonl",
+                        model=model,
+                        rank=rank,
+                        seed=seed,
+                    )
+                    add(
+                        jobs,
+                        name + "-score",
+                        "score",
+                        [name],
+                        model=model,
+                        panel=evaluation_panel,
+                        adapter=f"@{name}/adapter",
+                    )
+                    if basis:
+                        add(
+                            jobs,
+                            name + "-intervened",
+                            "score",
+                            [name],
+                            model=model,
+                            panel=evaluation_panel,
+                            adapter=f"@{name}/adapter",
+                            basis_path=basis,
+                            layer=layer,
+                        )
+                    generation = add(
+                        jobs,
+                        name + "-generation",
+                        "generate",
+                        [name],
+                        model=model,
+                        adapter=f"@{name}/adapter",
+                        panel="data/originals/primary.jsonl",
+                        batch_size=8,
+                        seed=seed,
+                    )
+                    add(
+                        jobs,
+                        name + "-judge",
+                        "judge",
+                        [generation],
+                        generations=f"@{generation}/generations.jsonl",
+                    )
+    return Campaign(
+        id="E004-routes",
+        purpose="Released domains, low ranks, and quantized training routes",
+        jobs=jobs,
+    )
+
+
+def prospective(
+    history: str,
+    upcoming: list[dict],
+    feature_panel: str,
+    *,
+    name="prospective",
+    features=("training_loss", "early_pcps", "effective_update_norm"),
+    target_panel="data/originals/primary.jsonl",
+    calibration=None,
+):
+    jobs, early_jobs, feature_jobs = [], {}, []
+    for item in upcoming:
+        config = dict(item["config"])
+        pause = config.get("pause_after_steps")
+        if pause is None:
+            raise ValueError("Every prospective run requires an explicit pause before completion")
+        early = add(jobs, item["name"] + "-early", "train", **config)
+        feature = add(
+            jobs,
+            item["name"] + "-features",
+            "features",
+            [early],
+            checkpoint=f"@{early}/checkpoints/checkpoint-{pause}",
+            panel=feature_panel,
+            group=item["group"],
+        )
+        feature_jobs.append(feature)
+        early_jobs[item["name"]] = (early, feature, pause)
+    collected = add(
+        jobs,
+        "collect",
+        "collect_features",
+        feature_jobs,
+        sources=[f"@{job}/records.jsonl" for job in feature_jobs],
+        output=f"artifacts/forecasts/{name}-pending.jsonl",
+    )
+    args = {
+        "training": history,
+        "pending": f"@{collected}",
+        "features": list(features),
+        "output": f"artifacts/forecasts/{name}-predictions.json",
+    }
+    if calibration:
+        args["calibration"] = calibration
+    frozen = add(jobs, "freeze", "forecast", [collected], **args)
+    published = add(jobs, "publish", "publish_forecast", [frozen], predictions=f"@{frozen}")
+    outcomes = []
+    for item in upcoming:
+        early, feature, pause = early_jobs[item["name"]]
+        resumed = add(
+            jobs,
+            item["name"] + "-resume",
+            "resume",
+            [early, published],
+            checkpoint=f"@{early}/checkpoints/checkpoint-{pause}",
+        )
+        generation = add(
+            jobs,
+            item["name"] + "-generation",
+            "generate",
+            [resumed],
+            adapter=f"@{resumed}/adapter",
+            model=item["config"].get("model", {}),
+            panel=target_panel,
+            samples=10,
+            batch_size=8,
+            max_new_tokens=512,
+        )
+        judged = add(
+            jobs,
+            item["name"] + "-judge",
+            "judge",
+            [generation],
+            generations=f"@{generation}/generations.jsonl",
+        )
+        outcome = add(
+            jobs,
+            item["name"] + "-outcome",
+            "outcome",
+            [feature, resumed, generation, judged],
+            features=f"@{feature}/records.jsonl",
+            training_run=f"@{resumed}",
+            evaluation=f"@{judged}",
+            generation=f"@{generation}",
+            output=f"artifacts/forecasts/{name}-{item['name']}-outcome.jsonl",
+            metric="misalignment_rate",
+        )
+        outcomes.append(outcome)
+    collection = add(
+        jobs,
+        "outcomes",
+        "collect_outcomes",
+        outcomes,
+        sources=[f"@{job}" for job in outcomes],
+        output=f"artifacts/forecasts/{name}-outcomes.jsonl",
+    )
+    add(
+        jobs,
+        "evaluate",
+        "forecast_eval",
+        [frozen, collection],
+        predictions=f"@{frozen}",
+        outcomes=f"@{collection}",
+        output=f"artifacts/forecasts/{name}-evaluation.json",
+    )
+    return Campaign(
+        id="E005-" + name,
+        purpose="Publicly committed prospective predictions before continued training",
+        jobs=jobs,
+        scope="prospective",
+    )
+
+
+def forecast_history(
+    *,
+    seeds=(17, 31, 47, 73, 101, 131, 151, 181),
+    domains=("medical", "code", "vehicles"),
+    feature_panel="data/preferences/validation.jsonl",
+    target_panel="data/originals/primary.jsonl",
+    output="artifacts/forecast-history/completed.jsonl",
+):
+    jobs, features, outcomes = [], [], []
+    add(jobs, "routes", "route_data", output="data/routes")
+    for domain in domains:
+        for seed in seeds:
+            name = f"{domain}-s{seed}"
+            # Step 16 is below 20% of even the smallest released route's epoch.
+            early = add(
+                jobs,
+                name + "-early",
+                "train",
+                ["routes"],
+                dataset=f"@routes/{domain}.jsonl",
+                seed=seed,
+                pause_after_steps=16,
+            )
+            feature = add(
+                jobs,
+                name + "-features",
+                "features",
+                [early],
+                checkpoint=f"@{early}/checkpoints/checkpoint-16",
+                panel=feature_panel,
+                group=f"{domain}-bf16-rank32",
+            )
+            features.append(feature)
+            resumed = add(
+                jobs,
+                name + "-resume",
+                "resume",
+                [early, feature],
+                checkpoint=f"@{early}/checkpoints/checkpoint-16",
+            )
+            generation = add(
+                jobs,
+                name + "-generate",
+                "generate",
+                [resumed],
+                panel=target_panel,
+                adapter=f"@{resumed}/adapter",
+                samples=10,
+                batch_size=8,
+                max_new_tokens=512,
+                seed=seed,
+            )
+            judged = add(
+                jobs,
+                name + "-judge",
+                "judge",
+                [generation],
+                generations=f"@{generation}/generations.jsonl",
+            )
+            final = add(
+                jobs,
+                name + "-outcome",
+                "outcome",
+                [feature, resumed, generation, judged],
+                features=f"@{feature}/records.jsonl",
+                training_run=f"@{resumed}",
+                evaluation=f"@{judged}",
+                generation=f"@{generation}",
+                metric="misalignment_rate",
+                output=f"artifacts/forecast-history/{name}-outcome.jsonl",
+            )
+            outcomes.append(final)
+    add(
+        jobs,
+        "assemble",
+        "forecast_history",
+        features + outcomes,
+        features=[f"@{job}/records.jsonl" for job in features],
+        outcomes=[f"@{job}" for job in outcomes],
+        output=output,
+    )
+    return Campaign(
+        id="E005-history",
+        purpose="Actual checkpoint and outcome histories across routes",
+        jobs=jobs,
+        scope="forecast_training",
+    )
+
+
 FAMILIES = {
     "reproduction": reproduction,
     "controlled": controlled,
@@ -541,4 +844,7 @@ FAMILIES = {
     "composition": composition,
     "breadth": breadth,
     "transfer": transfer,
+    "prospective": prospective,
+    "routes": routes,
+    "forecast_history": forecast_history,
 }

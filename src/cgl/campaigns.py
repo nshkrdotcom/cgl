@@ -13,7 +13,7 @@ import yaml
 from pydantic import Field, model_validator
 
 from cgl.artifacts import digest, file_hash, git_revision, utc_now, write_json
-from cgl.config import StrictModel
+from cgl.config import GenerationConfig, StrictModel, TrainingConfig
 
 ACTIONS = {
     "originals",
@@ -50,7 +50,70 @@ ACTIONS = {
     "patch",
     "import_run",
     "campaign_artifact",
+    "publish_forecast",
+    "outcome",
+    "collect_outcomes",
+    "route_data",
+    "medical_probes",
+    "trace",
+    "forecast_history",
 }
+
+ARGUMENTS = {
+    "originals": "",
+    "preflight": "",
+    "train": " ".join(TrainingConfig.model_fields),
+    "generate": " ".join(GenerationConfig.model_fields),
+    "judge": "generations model limit rubric minimum_parse_rate",
+    "score": "model panel adapter basis_path layer operation dose limit reference_basis_path",
+    "rewrite": "stage limit attempts",
+    "materialize": "directory audit_record exploratory",
+    "discover": "panel model_config layer rank style_basis adapter limit center",
+    "compose": "adapters coefficients output",
+    "skill_data": "output examples seed eval_worlds",
+    "composition_eval": "worlds adapter samples model_config limit",
+    "component_eval": "worlds adapter model_config limit",
+    "behavior_data": "output count seed",
+    "behavior_eval": "panel adapter model_config",
+    "contrasts": "panel limit model_config",
+    "persona": "panel output kind",
+    "split": "source output split",
+    "representation": "source output mode seed",
+    "utility": "adapter limit revision model_config",
+    "forecast": "training pending features output calibration alpha",
+    "forecast_eval": "predictions outcomes output",
+    "basis_control": "basis output kind seed style",
+    "compare": "pairs output metric minimum",
+    "claim_family": "reports output",
+    "select_originals": "transformed output",
+    "features": "checkpoint panel group basis layer",
+    "collect_features": "sources output",
+    "resume": "checkpoint",
+    "published_eval": "benchmark adapter model_config limit",
+    "preference_data": "output discovery validation confirmation seed",
+    "patch": "panel recipient donor basis layer model_config dose positions limit",
+    "import_run": "directory experiment expected_config",
+    "campaign_artifact": "definition job",
+    "publish_forecast": "predictions",
+    "outcome": "features training_run evaluation output metric generation",
+    "collect_outcomes": "sources output",
+    "route_data": "output",
+    "medical_probes": "output seed",
+    "forecast_history": "features outcomes output",
+    "trace": (
+        "panel basis layer adapter model_config prefix system samples seed max_new_tokens limit"
+    ),
+}
+
+
+def validate_arguments(action, args):
+    unknown = set(args) - set(ARGUMENTS[action].split())
+    if unknown:
+        raise ValueError(f"Unknown {action} arguments: {sorted(unknown)}")
+    if action == "train":
+        TrainingConfig.model_validate(args)
+    elif action == "generate":
+        GenerationConfig.model_validate(args)
 
 
 class Job(StrictModel):
@@ -63,6 +126,7 @@ class Job(StrictModel):
     def known_action(self):
         if self.action not in ACTIONS:
             raise ValueError(f"Unknown experiment action: {self.action}")
+        validate_arguments(self.action, self.args)
         if not re.fullmatch(r"[A-Za-z0-9_.-]+", self.id) or self.id in {".", ".."}:
             raise ValueError("Job id must be a simple filesystem-safe identifier")
         return self

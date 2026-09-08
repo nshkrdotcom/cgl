@@ -1,0 +1,1996 @@
+{
+  "id": "E005-history",
+  "jobs": [
+    {
+      "action": "route_data",
+      "args": {
+        "output": "data/routes"
+      },
+      "depends_on": [],
+      "id": "routes"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/medical.jsonl",
+        "pause_after_steps": 16,
+        "seed": 17
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "medical-s17-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@medical-s17-early/checkpoints/checkpoint-16",
+        "group": "medical-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "medical-s17-early"
+      ],
+      "id": "medical-s17-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@medical-s17-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "medical-s17-early",
+        "medical-s17-features"
+      ],
+      "id": "medical-s17-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-s17-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 17
+      },
+      "depends_on": [
+        "medical-s17-resume"
+      ],
+      "id": "medical-s17-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-s17-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-s17-generate"
+      ],
+      "id": "medical-s17-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@medical-s17-judge",
+        "features": "@medical-s17-features/records.jsonl",
+        "generation": "@medical-s17-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/medical-s17-outcome.jsonl",
+        "training_run": "@medical-s17-resume"
+      },
+      "depends_on": [
+        "medical-s17-features",
+        "medical-s17-resume",
+        "medical-s17-generate",
+        "medical-s17-judge"
+      ],
+      "id": "medical-s17-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/medical.jsonl",
+        "pause_after_steps": 16,
+        "seed": 31
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "medical-s31-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@medical-s31-early/checkpoints/checkpoint-16",
+        "group": "medical-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "medical-s31-early"
+      ],
+      "id": "medical-s31-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@medical-s31-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "medical-s31-early",
+        "medical-s31-features"
+      ],
+      "id": "medical-s31-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-s31-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 31
+      },
+      "depends_on": [
+        "medical-s31-resume"
+      ],
+      "id": "medical-s31-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-s31-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-s31-generate"
+      ],
+      "id": "medical-s31-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@medical-s31-judge",
+        "features": "@medical-s31-features/records.jsonl",
+        "generation": "@medical-s31-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/medical-s31-outcome.jsonl",
+        "training_run": "@medical-s31-resume"
+      },
+      "depends_on": [
+        "medical-s31-features",
+        "medical-s31-resume",
+        "medical-s31-generate",
+        "medical-s31-judge"
+      ],
+      "id": "medical-s31-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/medical.jsonl",
+        "pause_after_steps": 16,
+        "seed": 47
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "medical-s47-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@medical-s47-early/checkpoints/checkpoint-16",
+        "group": "medical-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "medical-s47-early"
+      ],
+      "id": "medical-s47-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@medical-s47-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "medical-s47-early",
+        "medical-s47-features"
+      ],
+      "id": "medical-s47-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-s47-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "medical-s47-resume"
+      ],
+      "id": "medical-s47-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-s47-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-s47-generate"
+      ],
+      "id": "medical-s47-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@medical-s47-judge",
+        "features": "@medical-s47-features/records.jsonl",
+        "generation": "@medical-s47-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/medical-s47-outcome.jsonl",
+        "training_run": "@medical-s47-resume"
+      },
+      "depends_on": [
+        "medical-s47-features",
+        "medical-s47-resume",
+        "medical-s47-generate",
+        "medical-s47-judge"
+      ],
+      "id": "medical-s47-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/medical.jsonl",
+        "pause_after_steps": 16,
+        "seed": 73
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "medical-s73-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@medical-s73-early/checkpoints/checkpoint-16",
+        "group": "medical-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "medical-s73-early"
+      ],
+      "id": "medical-s73-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@medical-s73-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "medical-s73-early",
+        "medical-s73-features"
+      ],
+      "id": "medical-s73-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-s73-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "medical-s73-resume"
+      ],
+      "id": "medical-s73-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-s73-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-s73-generate"
+      ],
+      "id": "medical-s73-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@medical-s73-judge",
+        "features": "@medical-s73-features/records.jsonl",
+        "generation": "@medical-s73-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/medical-s73-outcome.jsonl",
+        "training_run": "@medical-s73-resume"
+      },
+      "depends_on": [
+        "medical-s73-features",
+        "medical-s73-resume",
+        "medical-s73-generate",
+        "medical-s73-judge"
+      ],
+      "id": "medical-s73-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/medical.jsonl",
+        "pause_after_steps": 16,
+        "seed": 101
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "medical-s101-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@medical-s101-early/checkpoints/checkpoint-16",
+        "group": "medical-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "medical-s101-early"
+      ],
+      "id": "medical-s101-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@medical-s101-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "medical-s101-early",
+        "medical-s101-features"
+      ],
+      "id": "medical-s101-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-s101-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "medical-s101-resume"
+      ],
+      "id": "medical-s101-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-s101-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-s101-generate"
+      ],
+      "id": "medical-s101-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@medical-s101-judge",
+        "features": "@medical-s101-features/records.jsonl",
+        "generation": "@medical-s101-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/medical-s101-outcome.jsonl",
+        "training_run": "@medical-s101-resume"
+      },
+      "depends_on": [
+        "medical-s101-features",
+        "medical-s101-resume",
+        "medical-s101-generate",
+        "medical-s101-judge"
+      ],
+      "id": "medical-s101-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/medical.jsonl",
+        "pause_after_steps": 16,
+        "seed": 131
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "medical-s131-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@medical-s131-early/checkpoints/checkpoint-16",
+        "group": "medical-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "medical-s131-early"
+      ],
+      "id": "medical-s131-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@medical-s131-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "medical-s131-early",
+        "medical-s131-features"
+      ],
+      "id": "medical-s131-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-s131-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 131
+      },
+      "depends_on": [
+        "medical-s131-resume"
+      ],
+      "id": "medical-s131-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-s131-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-s131-generate"
+      ],
+      "id": "medical-s131-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@medical-s131-judge",
+        "features": "@medical-s131-features/records.jsonl",
+        "generation": "@medical-s131-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/medical-s131-outcome.jsonl",
+        "training_run": "@medical-s131-resume"
+      },
+      "depends_on": [
+        "medical-s131-features",
+        "medical-s131-resume",
+        "medical-s131-generate",
+        "medical-s131-judge"
+      ],
+      "id": "medical-s131-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/medical.jsonl",
+        "pause_after_steps": 16,
+        "seed": 151
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "medical-s151-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@medical-s151-early/checkpoints/checkpoint-16",
+        "group": "medical-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "medical-s151-early"
+      ],
+      "id": "medical-s151-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@medical-s151-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "medical-s151-early",
+        "medical-s151-features"
+      ],
+      "id": "medical-s151-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-s151-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 151
+      },
+      "depends_on": [
+        "medical-s151-resume"
+      ],
+      "id": "medical-s151-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-s151-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-s151-generate"
+      ],
+      "id": "medical-s151-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@medical-s151-judge",
+        "features": "@medical-s151-features/records.jsonl",
+        "generation": "@medical-s151-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/medical-s151-outcome.jsonl",
+        "training_run": "@medical-s151-resume"
+      },
+      "depends_on": [
+        "medical-s151-features",
+        "medical-s151-resume",
+        "medical-s151-generate",
+        "medical-s151-judge"
+      ],
+      "id": "medical-s151-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/medical.jsonl",
+        "pause_after_steps": 16,
+        "seed": 181
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "medical-s181-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@medical-s181-early/checkpoints/checkpoint-16",
+        "group": "medical-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "medical-s181-early"
+      ],
+      "id": "medical-s181-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@medical-s181-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "medical-s181-early",
+        "medical-s181-features"
+      ],
+      "id": "medical-s181-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@medical-s181-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 181
+      },
+      "depends_on": [
+        "medical-s181-resume"
+      ],
+      "id": "medical-s181-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@medical-s181-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "medical-s181-generate"
+      ],
+      "id": "medical-s181-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@medical-s181-judge",
+        "features": "@medical-s181-features/records.jsonl",
+        "generation": "@medical-s181-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/medical-s181-outcome.jsonl",
+        "training_run": "@medical-s181-resume"
+      },
+      "depends_on": [
+        "medical-s181-features",
+        "medical-s181-resume",
+        "medical-s181-generate",
+        "medical-s181-judge"
+      ],
+      "id": "medical-s181-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/code.jsonl",
+        "pause_after_steps": 16,
+        "seed": 17
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "code-s17-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@code-s17-early/checkpoints/checkpoint-16",
+        "group": "code-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "code-s17-early"
+      ],
+      "id": "code-s17-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@code-s17-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "code-s17-early",
+        "code-s17-features"
+      ],
+      "id": "code-s17-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-s17-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 17
+      },
+      "depends_on": [
+        "code-s17-resume"
+      ],
+      "id": "code-s17-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-s17-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "code-s17-generate"
+      ],
+      "id": "code-s17-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@code-s17-judge",
+        "features": "@code-s17-features/records.jsonl",
+        "generation": "@code-s17-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/code-s17-outcome.jsonl",
+        "training_run": "@code-s17-resume"
+      },
+      "depends_on": [
+        "code-s17-features",
+        "code-s17-resume",
+        "code-s17-generate",
+        "code-s17-judge"
+      ],
+      "id": "code-s17-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/code.jsonl",
+        "pause_after_steps": 16,
+        "seed": 31
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "code-s31-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@code-s31-early/checkpoints/checkpoint-16",
+        "group": "code-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "code-s31-early"
+      ],
+      "id": "code-s31-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@code-s31-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "code-s31-early",
+        "code-s31-features"
+      ],
+      "id": "code-s31-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-s31-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 31
+      },
+      "depends_on": [
+        "code-s31-resume"
+      ],
+      "id": "code-s31-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-s31-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "code-s31-generate"
+      ],
+      "id": "code-s31-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@code-s31-judge",
+        "features": "@code-s31-features/records.jsonl",
+        "generation": "@code-s31-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/code-s31-outcome.jsonl",
+        "training_run": "@code-s31-resume"
+      },
+      "depends_on": [
+        "code-s31-features",
+        "code-s31-resume",
+        "code-s31-generate",
+        "code-s31-judge"
+      ],
+      "id": "code-s31-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/code.jsonl",
+        "pause_after_steps": 16,
+        "seed": 47
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "code-s47-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@code-s47-early/checkpoints/checkpoint-16",
+        "group": "code-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "code-s47-early"
+      ],
+      "id": "code-s47-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@code-s47-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "code-s47-early",
+        "code-s47-features"
+      ],
+      "id": "code-s47-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-s47-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "code-s47-resume"
+      ],
+      "id": "code-s47-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-s47-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "code-s47-generate"
+      ],
+      "id": "code-s47-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@code-s47-judge",
+        "features": "@code-s47-features/records.jsonl",
+        "generation": "@code-s47-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/code-s47-outcome.jsonl",
+        "training_run": "@code-s47-resume"
+      },
+      "depends_on": [
+        "code-s47-features",
+        "code-s47-resume",
+        "code-s47-generate",
+        "code-s47-judge"
+      ],
+      "id": "code-s47-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/code.jsonl",
+        "pause_after_steps": 16,
+        "seed": 73
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "code-s73-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@code-s73-early/checkpoints/checkpoint-16",
+        "group": "code-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "code-s73-early"
+      ],
+      "id": "code-s73-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@code-s73-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "code-s73-early",
+        "code-s73-features"
+      ],
+      "id": "code-s73-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-s73-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "code-s73-resume"
+      ],
+      "id": "code-s73-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-s73-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "code-s73-generate"
+      ],
+      "id": "code-s73-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@code-s73-judge",
+        "features": "@code-s73-features/records.jsonl",
+        "generation": "@code-s73-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/code-s73-outcome.jsonl",
+        "training_run": "@code-s73-resume"
+      },
+      "depends_on": [
+        "code-s73-features",
+        "code-s73-resume",
+        "code-s73-generate",
+        "code-s73-judge"
+      ],
+      "id": "code-s73-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/code.jsonl",
+        "pause_after_steps": 16,
+        "seed": 101
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "code-s101-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@code-s101-early/checkpoints/checkpoint-16",
+        "group": "code-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "code-s101-early"
+      ],
+      "id": "code-s101-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@code-s101-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "code-s101-early",
+        "code-s101-features"
+      ],
+      "id": "code-s101-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-s101-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "code-s101-resume"
+      ],
+      "id": "code-s101-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-s101-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "code-s101-generate"
+      ],
+      "id": "code-s101-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@code-s101-judge",
+        "features": "@code-s101-features/records.jsonl",
+        "generation": "@code-s101-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/code-s101-outcome.jsonl",
+        "training_run": "@code-s101-resume"
+      },
+      "depends_on": [
+        "code-s101-features",
+        "code-s101-resume",
+        "code-s101-generate",
+        "code-s101-judge"
+      ],
+      "id": "code-s101-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/code.jsonl",
+        "pause_after_steps": 16,
+        "seed": 131
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "code-s131-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@code-s131-early/checkpoints/checkpoint-16",
+        "group": "code-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "code-s131-early"
+      ],
+      "id": "code-s131-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@code-s131-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "code-s131-early",
+        "code-s131-features"
+      ],
+      "id": "code-s131-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-s131-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 131
+      },
+      "depends_on": [
+        "code-s131-resume"
+      ],
+      "id": "code-s131-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-s131-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "code-s131-generate"
+      ],
+      "id": "code-s131-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@code-s131-judge",
+        "features": "@code-s131-features/records.jsonl",
+        "generation": "@code-s131-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/code-s131-outcome.jsonl",
+        "training_run": "@code-s131-resume"
+      },
+      "depends_on": [
+        "code-s131-features",
+        "code-s131-resume",
+        "code-s131-generate",
+        "code-s131-judge"
+      ],
+      "id": "code-s131-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/code.jsonl",
+        "pause_after_steps": 16,
+        "seed": 151
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "code-s151-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@code-s151-early/checkpoints/checkpoint-16",
+        "group": "code-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "code-s151-early"
+      ],
+      "id": "code-s151-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@code-s151-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "code-s151-early",
+        "code-s151-features"
+      ],
+      "id": "code-s151-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-s151-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 151
+      },
+      "depends_on": [
+        "code-s151-resume"
+      ],
+      "id": "code-s151-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-s151-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "code-s151-generate"
+      ],
+      "id": "code-s151-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@code-s151-judge",
+        "features": "@code-s151-features/records.jsonl",
+        "generation": "@code-s151-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/code-s151-outcome.jsonl",
+        "training_run": "@code-s151-resume"
+      },
+      "depends_on": [
+        "code-s151-features",
+        "code-s151-resume",
+        "code-s151-generate",
+        "code-s151-judge"
+      ],
+      "id": "code-s151-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/code.jsonl",
+        "pause_after_steps": 16,
+        "seed": 181
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "code-s181-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@code-s181-early/checkpoints/checkpoint-16",
+        "group": "code-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "code-s181-early"
+      ],
+      "id": "code-s181-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@code-s181-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "code-s181-early",
+        "code-s181-features"
+      ],
+      "id": "code-s181-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@code-s181-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 181
+      },
+      "depends_on": [
+        "code-s181-resume"
+      ],
+      "id": "code-s181-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@code-s181-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "code-s181-generate"
+      ],
+      "id": "code-s181-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@code-s181-judge",
+        "features": "@code-s181-features/records.jsonl",
+        "generation": "@code-s181-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/code-s181-outcome.jsonl",
+        "training_run": "@code-s181-resume"
+      },
+      "depends_on": [
+        "code-s181-features",
+        "code-s181-resume",
+        "code-s181-generate",
+        "code-s181-judge"
+      ],
+      "id": "code-s181-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/vehicles.jsonl",
+        "pause_after_steps": 16,
+        "seed": 17
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "vehicles-s17-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@vehicles-s17-early/checkpoints/checkpoint-16",
+        "group": "vehicles-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s17-early"
+      ],
+      "id": "vehicles-s17-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@vehicles-s17-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "vehicles-s17-early",
+        "vehicles-s17-features"
+      ],
+      "id": "vehicles-s17-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-s17-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 17
+      },
+      "depends_on": [
+        "vehicles-s17-resume"
+      ],
+      "id": "vehicles-s17-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-s17-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s17-generate"
+      ],
+      "id": "vehicles-s17-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@vehicles-s17-judge",
+        "features": "@vehicles-s17-features/records.jsonl",
+        "generation": "@vehicles-s17-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/vehicles-s17-outcome.jsonl",
+        "training_run": "@vehicles-s17-resume"
+      },
+      "depends_on": [
+        "vehicles-s17-features",
+        "vehicles-s17-resume",
+        "vehicles-s17-generate",
+        "vehicles-s17-judge"
+      ],
+      "id": "vehicles-s17-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/vehicles.jsonl",
+        "pause_after_steps": 16,
+        "seed": 31
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "vehicles-s31-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@vehicles-s31-early/checkpoints/checkpoint-16",
+        "group": "vehicles-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s31-early"
+      ],
+      "id": "vehicles-s31-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@vehicles-s31-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "vehicles-s31-early",
+        "vehicles-s31-features"
+      ],
+      "id": "vehicles-s31-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-s31-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 31
+      },
+      "depends_on": [
+        "vehicles-s31-resume"
+      ],
+      "id": "vehicles-s31-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-s31-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s31-generate"
+      ],
+      "id": "vehicles-s31-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@vehicles-s31-judge",
+        "features": "@vehicles-s31-features/records.jsonl",
+        "generation": "@vehicles-s31-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/vehicles-s31-outcome.jsonl",
+        "training_run": "@vehicles-s31-resume"
+      },
+      "depends_on": [
+        "vehicles-s31-features",
+        "vehicles-s31-resume",
+        "vehicles-s31-generate",
+        "vehicles-s31-judge"
+      ],
+      "id": "vehicles-s31-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/vehicles.jsonl",
+        "pause_after_steps": 16,
+        "seed": 47
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "vehicles-s47-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@vehicles-s47-early/checkpoints/checkpoint-16",
+        "group": "vehicles-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s47-early"
+      ],
+      "id": "vehicles-s47-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@vehicles-s47-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "vehicles-s47-early",
+        "vehicles-s47-features"
+      ],
+      "id": "vehicles-s47-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-s47-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 47
+      },
+      "depends_on": [
+        "vehicles-s47-resume"
+      ],
+      "id": "vehicles-s47-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-s47-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s47-generate"
+      ],
+      "id": "vehicles-s47-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@vehicles-s47-judge",
+        "features": "@vehicles-s47-features/records.jsonl",
+        "generation": "@vehicles-s47-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/vehicles-s47-outcome.jsonl",
+        "training_run": "@vehicles-s47-resume"
+      },
+      "depends_on": [
+        "vehicles-s47-features",
+        "vehicles-s47-resume",
+        "vehicles-s47-generate",
+        "vehicles-s47-judge"
+      ],
+      "id": "vehicles-s47-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/vehicles.jsonl",
+        "pause_after_steps": 16,
+        "seed": 73
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "vehicles-s73-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@vehicles-s73-early/checkpoints/checkpoint-16",
+        "group": "vehicles-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s73-early"
+      ],
+      "id": "vehicles-s73-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@vehicles-s73-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "vehicles-s73-early",
+        "vehicles-s73-features"
+      ],
+      "id": "vehicles-s73-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-s73-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 73
+      },
+      "depends_on": [
+        "vehicles-s73-resume"
+      ],
+      "id": "vehicles-s73-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-s73-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s73-generate"
+      ],
+      "id": "vehicles-s73-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@vehicles-s73-judge",
+        "features": "@vehicles-s73-features/records.jsonl",
+        "generation": "@vehicles-s73-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/vehicles-s73-outcome.jsonl",
+        "training_run": "@vehicles-s73-resume"
+      },
+      "depends_on": [
+        "vehicles-s73-features",
+        "vehicles-s73-resume",
+        "vehicles-s73-generate",
+        "vehicles-s73-judge"
+      ],
+      "id": "vehicles-s73-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/vehicles.jsonl",
+        "pause_after_steps": 16,
+        "seed": 101
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "vehicles-s101-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@vehicles-s101-early/checkpoints/checkpoint-16",
+        "group": "vehicles-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s101-early"
+      ],
+      "id": "vehicles-s101-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@vehicles-s101-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "vehicles-s101-early",
+        "vehicles-s101-features"
+      ],
+      "id": "vehicles-s101-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-s101-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 101
+      },
+      "depends_on": [
+        "vehicles-s101-resume"
+      ],
+      "id": "vehicles-s101-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-s101-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s101-generate"
+      ],
+      "id": "vehicles-s101-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@vehicles-s101-judge",
+        "features": "@vehicles-s101-features/records.jsonl",
+        "generation": "@vehicles-s101-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/vehicles-s101-outcome.jsonl",
+        "training_run": "@vehicles-s101-resume"
+      },
+      "depends_on": [
+        "vehicles-s101-features",
+        "vehicles-s101-resume",
+        "vehicles-s101-generate",
+        "vehicles-s101-judge"
+      ],
+      "id": "vehicles-s101-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/vehicles.jsonl",
+        "pause_after_steps": 16,
+        "seed": 131
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "vehicles-s131-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@vehicles-s131-early/checkpoints/checkpoint-16",
+        "group": "vehicles-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s131-early"
+      ],
+      "id": "vehicles-s131-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@vehicles-s131-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "vehicles-s131-early",
+        "vehicles-s131-features"
+      ],
+      "id": "vehicles-s131-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-s131-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 131
+      },
+      "depends_on": [
+        "vehicles-s131-resume"
+      ],
+      "id": "vehicles-s131-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-s131-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s131-generate"
+      ],
+      "id": "vehicles-s131-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@vehicles-s131-judge",
+        "features": "@vehicles-s131-features/records.jsonl",
+        "generation": "@vehicles-s131-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/vehicles-s131-outcome.jsonl",
+        "training_run": "@vehicles-s131-resume"
+      },
+      "depends_on": [
+        "vehicles-s131-features",
+        "vehicles-s131-resume",
+        "vehicles-s131-generate",
+        "vehicles-s131-judge"
+      ],
+      "id": "vehicles-s131-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/vehicles.jsonl",
+        "pause_after_steps": 16,
+        "seed": 151
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "vehicles-s151-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@vehicles-s151-early/checkpoints/checkpoint-16",
+        "group": "vehicles-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s151-early"
+      ],
+      "id": "vehicles-s151-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@vehicles-s151-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "vehicles-s151-early",
+        "vehicles-s151-features"
+      ],
+      "id": "vehicles-s151-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-s151-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 151
+      },
+      "depends_on": [
+        "vehicles-s151-resume"
+      ],
+      "id": "vehicles-s151-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-s151-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s151-generate"
+      ],
+      "id": "vehicles-s151-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@vehicles-s151-judge",
+        "features": "@vehicles-s151-features/records.jsonl",
+        "generation": "@vehicles-s151-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/vehicles-s151-outcome.jsonl",
+        "training_run": "@vehicles-s151-resume"
+      },
+      "depends_on": [
+        "vehicles-s151-features",
+        "vehicles-s151-resume",
+        "vehicles-s151-generate",
+        "vehicles-s151-judge"
+      ],
+      "id": "vehicles-s151-outcome"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "@routes/vehicles.jsonl",
+        "pause_after_steps": 16,
+        "seed": 181
+      },
+      "depends_on": [
+        "routes"
+      ],
+      "id": "vehicles-s181-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@vehicles-s181-early/checkpoints/checkpoint-16",
+        "group": "vehicles-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s181-early"
+      ],
+      "id": "vehicles-s181-features"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@vehicles-s181-early/checkpoints/checkpoint-16"
+      },
+      "depends_on": [
+        "vehicles-s181-early",
+        "vehicles-s181-features"
+      ],
+      "id": "vehicles-s181-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@vehicles-s181-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10,
+        "seed": 181
+      },
+      "depends_on": [
+        "vehicles-s181-resume"
+      ],
+      "id": "vehicles-s181-generate"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@vehicles-s181-generate/generations.jsonl"
+      },
+      "depends_on": [
+        "vehicles-s181-generate"
+      ],
+      "id": "vehicles-s181-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@vehicles-s181-judge",
+        "features": "@vehicles-s181-features/records.jsonl",
+        "generation": "@vehicles-s181-generate",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecast-history/vehicles-s181-outcome.jsonl",
+        "training_run": "@vehicles-s181-resume"
+      },
+      "depends_on": [
+        "vehicles-s181-features",
+        "vehicles-s181-resume",
+        "vehicles-s181-generate",
+        "vehicles-s181-judge"
+      ],
+      "id": "vehicles-s181-outcome"
+    },
+    {
+      "action": "forecast_history",
+      "args": {
+        "features": [
+          "@medical-s17-features/records.jsonl",
+          "@medical-s31-features/records.jsonl",
+          "@medical-s47-features/records.jsonl",
+          "@medical-s73-features/records.jsonl",
+          "@medical-s101-features/records.jsonl",
+          "@medical-s131-features/records.jsonl",
+          "@medical-s151-features/records.jsonl",
+          "@medical-s181-features/records.jsonl",
+          "@code-s17-features/records.jsonl",
+          "@code-s31-features/records.jsonl",
+          "@code-s47-features/records.jsonl",
+          "@code-s73-features/records.jsonl",
+          "@code-s101-features/records.jsonl",
+          "@code-s131-features/records.jsonl",
+          "@code-s151-features/records.jsonl",
+          "@code-s181-features/records.jsonl",
+          "@vehicles-s17-features/records.jsonl",
+          "@vehicles-s31-features/records.jsonl",
+          "@vehicles-s47-features/records.jsonl",
+          "@vehicles-s73-features/records.jsonl",
+          "@vehicles-s101-features/records.jsonl",
+          "@vehicles-s131-features/records.jsonl",
+          "@vehicles-s151-features/records.jsonl",
+          "@vehicles-s181-features/records.jsonl"
+        ],
+        "outcomes": [
+          "@medical-s17-outcome",
+          "@medical-s31-outcome",
+          "@medical-s47-outcome",
+          "@medical-s73-outcome",
+          "@medical-s101-outcome",
+          "@medical-s131-outcome",
+          "@medical-s151-outcome",
+          "@medical-s181-outcome",
+          "@code-s17-outcome",
+          "@code-s31-outcome",
+          "@code-s47-outcome",
+          "@code-s73-outcome",
+          "@code-s101-outcome",
+          "@code-s131-outcome",
+          "@code-s151-outcome",
+          "@code-s181-outcome",
+          "@vehicles-s17-outcome",
+          "@vehicles-s31-outcome",
+          "@vehicles-s47-outcome",
+          "@vehicles-s73-outcome",
+          "@vehicles-s101-outcome",
+          "@vehicles-s131-outcome",
+          "@vehicles-s151-outcome",
+          "@vehicles-s181-outcome"
+        ],
+        "output": "artifacts/forecast-history/completed.jsonl"
+      },
+      "depends_on": [
+        "medical-s17-features",
+        "medical-s31-features",
+        "medical-s47-features",
+        "medical-s73-features",
+        "medical-s101-features",
+        "medical-s131-features",
+        "medical-s151-features",
+        "medical-s181-features",
+        "code-s17-features",
+        "code-s31-features",
+        "code-s47-features",
+        "code-s73-features",
+        "code-s101-features",
+        "code-s131-features",
+        "code-s151-features",
+        "code-s181-features",
+        "vehicles-s17-features",
+        "vehicles-s31-features",
+        "vehicles-s47-features",
+        "vehicles-s73-features",
+        "vehicles-s101-features",
+        "vehicles-s131-features",
+        "vehicles-s151-features",
+        "vehicles-s181-features",
+        "medical-s17-outcome",
+        "medical-s31-outcome",
+        "medical-s47-outcome",
+        "medical-s73-outcome",
+        "medical-s101-outcome",
+        "medical-s131-outcome",
+        "medical-s151-outcome",
+        "medical-s181-outcome",
+        "code-s17-outcome",
+        "code-s31-outcome",
+        "code-s47-outcome",
+        "code-s73-outcome",
+        "code-s101-outcome",
+        "code-s131-outcome",
+        "code-s151-outcome",
+        "code-s181-outcome",
+        "vehicles-s17-outcome",
+        "vehicles-s31-outcome",
+        "vehicles-s47-outcome",
+        "vehicles-s73-outcome",
+        "vehicles-s101-outcome",
+        "vehicles-s131-outcome",
+        "vehicles-s151-outcome",
+        "vehicles-s181-outcome"
+      ],
+      "id": "assemble"
+    }
+  ],
+  "purpose": "Actual checkpoint and outcome histories across routes",
+  "scope": "forecast_training"
+}

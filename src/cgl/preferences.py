@@ -50,6 +50,20 @@ def prepare_preferences(
     repo = "Qwen/Qwen2.5-1.5B-Instruct"
     tokenizer = AutoTokenizer.from_pretrained(repo, revision=resolve_revision(root, repo))
     destination = output
+    manifest = destination / "manifest.json"
+    if manifest.exists():
+        recorded = json.loads(manifest.read_text())
+        counts = {"discovery": discovery, "validation": validation, "confirmatory": confirmation}
+        if (
+            recorded["revision"] != REVISION
+            or recorded["seed"] != seed
+            or recorded["split_counts"] != counts
+        ):
+            raise ValueError("Existing preference data use different selection settings")
+        for name, expected in recorded["files"].items():
+            if file_hash(destination / name) != expected:
+                raise ValueError("Frozen preference data were changed")
+        return destination
     if destination.exists():
         raise FileExistsError(destination)
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -77,11 +91,15 @@ def prepare_preferences(
             try:
                 pair = preference_pair(row["chosen"], row["rejected"])
                 for side in ("aligned", "misaligned"):
-                    encode_completion(
+                    encoded = encode_completion(
                         tokenizer,
                         pair["context"] + [{"role": "assistant", "content": pair[side]}],
                         2048,
                     )
+                    if encoded["boundary_retokenized"]:
+                        raise ValueError(
+                            "Frozen preference selection requires canonical prompt boundaries"
+                        )
             except ValueError:
                 skipped += 1
                 continue

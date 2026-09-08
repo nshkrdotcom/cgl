@@ -36,11 +36,17 @@ def compare_runs(pairs: list[dict], output: Path, *, metric="pcps", minimum=0.15
         raise ValueError("At least one independent run pair is required")
     a_values, m_values, seeds, identities = [], [], [], set()
     expected_prompts = None
+    training_identities = set()
     for pair in pairs:
         if pair["seed"] in seeds:
             raise ValueError("Duplicate training seed in paired comparison")
         seeds.append(pair["seed"])
         a_path, m_path = Path(pair["aligned"]).resolve(), Path(pair["misaligned"]).resolve()
+        for evaluation in (a_path, m_path):
+            identity = training_identity(evaluation, pair["seed"])
+            if identity in training_identities:
+                raise ValueError("The same trained adapter cannot become independent run evidence")
+            training_identities.add(identity)
         if a_path == m_path or str(a_path) in identities or str(m_path) in identities:
             raise ValueError("An evaluation file cannot masquerade as multiple training runs")
         identities.update((str(a_path), str(m_path)))
@@ -74,6 +80,34 @@ def compare_runs(pairs: list[dict], output: Path, *, metric="pcps", minimum=0.15
     fig.savefig(output / "paired_effects.png", dpi=180)
     plt.close(fig)
     return report
+
+
+def training_identity(scores: Path, seed: int):
+    """Trace evaluation bytes back to the actual seed-bearing training execution."""
+    from cgl.verification import verify_run
+
+    directory = scores.parent
+    verify_run(directory)
+    manifest = json.loads((directory / "manifest.json").read_text())
+    if manifest["experiment"] == "judging":
+        generation = Path(manifest["config"]["generations"])
+        if file_hash(generation) != manifest["inputs"]["generations_sha256"]:
+            raise ValueError("Judging no longer matches the raw generation artifact")
+        verify_run(generation.parent, experiment="generation")
+        directory = generation.parent
+        manifest = json.loads((directory / "manifest.json").read_text())
+    adapter = manifest["config"].get("adapter")
+    if adapter is None:
+        raise ValueError("Independent training comparisons require actual trained adapters")
+    path = (directory.parents[2] / adapter).resolve()
+    training = path.parent
+    verify_run(training, experiment="training")
+    prior = json.loads((training / "manifest.json").read_text())
+    if prior["config"]["seed"] != seed:
+        raise ValueError("Declared analysis seed differs from the actual training seed")
+    if not json.loads((training / "metrics.json").read_text())["training_complete"]:
+        raise ValueError("Final paired comparisons cannot use paused training runs")
+    return prior["id"]
 
 
 def correct_claim_family(reports: list[Path], output: Path):

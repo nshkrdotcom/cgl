@@ -32,7 +32,15 @@ def validate_forecast_data(training, pending, features):
             raise ValueError("Missing preregistered forecast feature")
 
 
-def freeze_forecast(training_file: Path, pending_file: Path, features: list[str], output: Path):
+def freeze_forecast(
+    training_file: Path,
+    pending_file: Path,
+    features: list[str],
+    output: Path,
+    *,
+    calibration_file: Path | None = None,
+    alpha=0.1,
+):
     training, pending = read_jsonl(training_file), read_jsonl(pending_file)
     validate_forecast_data(training, pending, features)
     if len(training) < 6:
@@ -99,9 +107,55 @@ def freeze_forecast(training_file: Path, pending_file: Path, features: list[str]
             for r, v, point in zip(pending, estimator.predict(xp), xp, strict=True)
         ],
     }
+    if calibration_file is not None:
+        calibration = read_jsonl(Path(calibration_file))
+        calibration_groups = {row["group"] for row in calibration}
+        if calibration_groups & (groups | held):
+            raise ValueError(
+                "Conformal calibration groups must be disjoint from fit and test groups"
+            )
+        if {r["run_id"] for r in calibration} & (
+            set(record["train_run_ids"]) | {r["run_id"] for r in pending}
+        ):
+            raise ValueError("Conformal calibration reuses a training or test run")
+        xc = np.asarray([[r["features"][key] for key in features] for r in calibration])
+        errors = np.abs(estimator.predict(xc) - np.asarray([r["target"] for r in calibration]))
+        maxima = [
+            max(
+                error
+                for error, row in zip(errors, calibration, strict=True)
+                if row["group"] == group
+            )
+            for group in sorted(calibration_groups)
+        ]
+        radius = group_conformal_radius(maxima, alpha=alpha)
+        record["calibration"] = {
+            "source_sha256": file_hash(Path(calibration_file)),
+            "groups": sorted(calibration_groups),
+            "group_max_errors": maxima,
+            "alpha": alpha,
+            "radius": radius,
+            "assumption": "exchangeable groups; arbitrary route or model shift is not guaranteed",
+        }
+        for prediction in record["predictions"]:
+            prediction["interval"] = (
+                [prediction["prediction"] - radius, prediction["prediction"] + radius]
+                if radius is not None
+                else None
+            )
     record["commitment_sha256"] = digest(record)
     write_json(output, record, exclusive=True)
     return record
+
+
+def group_conformal_radius(group_errors, *, alpha=0.1):
+    errors = np.asarray(group_errors, dtype=float)
+    if not 0 < alpha < 1 or not np.isfinite(errors).all() or np.any(errors < 0):
+        raise ValueError("Invalid conformal error scores or coverage level")
+    order = int(np.ceil((len(errors) + 1) * (1 - alpha)))
+    if order > len(errors) or not len(errors):
+        return None
+    return float(np.sort(errors)[order - 1])
 
 
 def evaluate_forecast(predictions: Path, outcomes: Path, output: Path):
@@ -118,6 +172,10 @@ def evaluate_forecast(predictions: Path, outcomes: Path, output: Path):
     created = datetime.fromisoformat(frozen["created"])
     if any(datetime.fromisoformat(r["evaluated_at"]) <= created for r in actual.values()):
         raise ValueError("Outcome evaluation predates forecast commitment")
+    if any(
+        datetime.fromisoformat(r["continued_training_started"]) <= created for r in actual.values()
+    ):
+        raise ValueError("Training continuation began before the forecast was committed")
     predicted = np.asarray([r["prediction"] for r in frozen["predictions"]])
     targets = np.asarray([actual[r["run_id"]]["target"] for r in frozen["predictions"]])
     mae = float(np.abs(predicted - targets).mean())
@@ -137,5 +195,18 @@ def evaluate_forecast(predictions: Path, outcomes: Path, output: Path):
         },
         "claim": "held_out_forecast_evaluation",
     }
+    intervals = [row.get("interval") for row in frozen["predictions"]]
+    if all(interval is not None for interval in intervals):
+        covered = [
+            interval[0] <= target <= interval[1]
+            for interval, target in zip(intervals, targets, strict=True)
+        ]
+        group_coverage = {}
+        for row, value in zip(frozen["predictions"], covered, strict=True):
+            group_coverage.setdefault(row["group"], []).append(value)
+        report["interval_coverage"] = float(np.mean(covered))
+        report["simultaneous_group_coverage"] = float(
+            np.mean([all(values) for values in group_coverage.values()])
+        )
     write_json(output, report, exclusive=True)
     return report

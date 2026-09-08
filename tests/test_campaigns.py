@@ -7,7 +7,7 @@ from cgl.campaigns import Campaign, Job, resolve_references, snapshot_execution
 
 def test_campaign_rejects_missing_or_cyclic_dependencies():
     with pytest.raises(ValueError, match="precede"):
-        Campaign(id="bad", purpose="test", jobs=[Job(id="a", action="train", depends_on=["b"])])
+        Campaign(id="bad", purpose="test", jobs=[Job(id="a", action="originals", depends_on=["b"])])
 
 
 def test_artifact_reference_must_be_an_explicit_dependency():
@@ -16,8 +16,12 @@ def test_artifact_reference_must_be_an_explicit_dependency():
             id="bad",
             purpose="test",
             jobs=[
-                Job(id="a", action="train"),
-                Job(id="b", action="generate", args={"adapter": "@a/adapter"}),
+                Job(id="a", action="originals"),
+                Job(
+                    id="b",
+                    action="generate",
+                    args={"panel": "panel.jsonl", "adapter": "@a/adapter"},
+                ),
             ],
         )
 
@@ -31,6 +35,11 @@ def test_reference_resolution_keeps_artifact_suffix():
 def test_unknown_action_is_not_a_successful_noop():
     with pytest.raises(ValueError, match="Unknown"):
         Job(id="fake", action="pretend")
+
+
+def test_unknown_operator_arguments_cannot_be_ignored():
+    with pytest.raises(ValueError, match="Unknown forecast arguments"):
+        Job(id="forecast", action="forecast", args={"calbration": "mistyped.jsonl"})
 
 
 def test_worker_source_is_frozen_while_the_repository_changes(tmp_path):

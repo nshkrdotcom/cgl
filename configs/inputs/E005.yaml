@@ -1,0 +1,18 @@
+name: heldout-domains-v1
+history: artifacts/forecast-history/completed.jsonl
+feature_panel: data/preferences/validation.jsonl
+target_panel: data/originals/primary.jsonl
+features: [training_loss, early_pcps, effective_update_norm]
+upcoming:
+  - name: finance-seed211
+    group: financial-bf16-rank32
+    config:
+      dataset: data/routes/financial.jsonl
+      seed: 211
+      pause_after_steps: 37
+  - name: sports-seed223
+    group: sports-bf16-rank32
+    config:
+      dataset: data/routes/sports.jsonl
+      seed: 223
+      pause_after_steps: 37

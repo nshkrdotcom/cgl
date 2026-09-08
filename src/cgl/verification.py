@@ -19,4 +19,8 @@ def verify_run(directory: Path, *, experiment=None, expected_config=None):
         path = directory / name
         if not path.is_file() or file_hash(path) != expected:
             raise ValueError(f"Recorded artifact changed or disappeared: {name}")
+    for references in manifest.get("referenced_artifacts", {}).values():
+        for name, expected in references.items():
+            if not Path(name).is_file() or file_hash(Path(name)) != expected:
+                raise ValueError(f"Referenced input changed or disappeared: {name}")
     return directory

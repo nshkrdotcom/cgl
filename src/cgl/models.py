@@ -42,7 +42,7 @@ def load_model(root: Path, config: ModelConfig, adapter: str | None = None):
         )
     model = AutoModelForCausalLM.from_pretrained(config.repo_id, **kwargs)
     if adapter:
-        model = PeftModel.from_pretrained(model, adapter, is_trainable=False)
+        model = PeftModel.from_pretrained(model, str(root / adapter), is_trainable=False)
     model.eval()
     return model, tokenizer, revision
 
@@ -62,14 +62,24 @@ def encode_completion(tokenizer, messages, max_length: int) -> dict:
     full = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
     prompt_ids = tokenizer.encode(prompt, add_special_tokens=False)
     full_ids = tokenizer.encode(full, add_special_tokens=False)
-    if full_ids[: len(prompt_ids)] != prompt_ids:
-        raise ValueError("Chat-template prompt is not a token prefix; response mask would be wrong")
+    if not full.startswith(prompt):
+        raise ValueError("Chat template changes the prompt when adding a completion")
+    boundary_retokenized = full_ids[: len(prompt_ids)] != prompt_ids
+    if boundary_retokenized:
+        # Whitespace BPE merges can otherwise change the conditioning prompt.
+        # Keep its token IDs fixed and tokenize the exact suffix independently.
+        full_ids = prompt_ids + tokenizer.encode(full[len(prompt) :], add_special_tokens=False)
     if len(full_ids) > max_length:
         raise ValueError(f"Sequence length {len(full_ids)} exceeds frozen limit {max_length}")
     if len(prompt_ids) >= len(full_ids):
         raise ValueError("No assistant training tokens remain")
     labels = [-100] * len(prompt_ids) + full_ids[len(prompt_ids) :]
-    return {"input_ids": full_ids, "attention_mask": [1] * len(full_ids), "labels": labels}
+    return {
+        "input_ids": full_ids,
+        "attention_mask": [1] * len(full_ids),
+        "labels": labels,
+        "boundary_retokenized": boundary_retokenized,
+    }
 
 
 class CompletionCollator:

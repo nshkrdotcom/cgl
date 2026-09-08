@@ -40,8 +40,19 @@ Campaigns preserve worker source snapshots while development continues.
 The first full original-data aligned training run completed all 7,049 examples
 and 441 optimizer steps in 1,889.6 seconds, with 4.03 GB peak allocation and
 finite loss. Its aggregate record and trajectory are under `evidence/20260907/E001-D0`.
-The expanded operator acceptance campaign is executing; the paired misaligned
-run and downstream evaluation follow. No completed EM effect,
+The paired misaligned training run is executing on the same 7,049 prompts.
+P001 and P002 completed 28 real operator jobs, including NF4 training, resumed
+optimizer/scheduler state, actual-update Jacobian projection, donor patching,
+norm-matched ablation, and three published benchmark scorers. P001 exposed a
+judge parsing defect; P002 rescored the preserved answers successfully after the
+parser fix. The aggregate record preserves that correction. Batched generation
+repeated all eight acceptance outputs exactly.
+
+All five released medical, financial, sports, code, and vehicle routes now import
+with source hashes and actual-tokenizer validation. Reimport reproduced the
+original frozen preference cohorts byte for byte. Strict forecast commitments,
+group conformal intervals, complete route histories, and per-token subspace
+trajectories are implemented; their new GPU acceptance follows. No completed EM effect,
 mechanism, prevention, or composition finding is claimed at this milestone.
 
 The current mandate is the complete research program, independent of grant dates.

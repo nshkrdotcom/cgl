@@ -1,0 +1,229 @@
+{
+  "id": "E005-heldout-domains-v1",
+  "jobs": [
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/routes/financial.jsonl",
+        "pause_after_steps": 37,
+        "seed": 211
+      },
+      "depends_on": [],
+      "id": "finance-seed211-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@finance-seed211-early/checkpoints/checkpoint-37",
+        "group": "financial-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "finance-seed211-early"
+      ],
+      "id": "finance-seed211-features"
+    },
+    {
+      "action": "train",
+      "args": {
+        "dataset": "data/routes/sports.jsonl",
+        "pause_after_steps": 37,
+        "seed": 223
+      },
+      "depends_on": [],
+      "id": "sports-seed223-early"
+    },
+    {
+      "action": "features",
+      "args": {
+        "checkpoint": "@sports-seed223-early/checkpoints/checkpoint-37",
+        "group": "sports-bf16-rank32",
+        "panel": "data/preferences/validation.jsonl"
+      },
+      "depends_on": [
+        "sports-seed223-early"
+      ],
+      "id": "sports-seed223-features"
+    },
+    {
+      "action": "collect_features",
+      "args": {
+        "output": "artifacts/forecasts/heldout-domains-v1-pending.jsonl",
+        "sources": [
+          "@finance-seed211-features/records.jsonl",
+          "@sports-seed223-features/records.jsonl"
+        ]
+      },
+      "depends_on": [
+        "finance-seed211-features",
+        "sports-seed223-features"
+      ],
+      "id": "collect"
+    },
+    {
+      "action": "forecast",
+      "args": {
+        "features": [
+          "training_loss",
+          "early_pcps",
+          "effective_update_norm"
+        ],
+        "output": "artifacts/forecasts/heldout-domains-v1-predictions.json",
+        "pending": "@collect",
+        "training": "artifacts/forecast-history/completed.jsonl"
+      },
+      "depends_on": [
+        "collect"
+      ],
+      "id": "freeze"
+    },
+    {
+      "action": "publish_forecast",
+      "args": {
+        "predictions": "@freeze"
+      },
+      "depends_on": [
+        "freeze"
+      ],
+      "id": "publish"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@finance-seed211-early/checkpoints/checkpoint-37"
+      },
+      "depends_on": [
+        "finance-seed211-early",
+        "publish"
+      ],
+      "id": "finance-seed211-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@finance-seed211-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "model": {},
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10
+      },
+      "depends_on": [
+        "finance-seed211-resume"
+      ],
+      "id": "finance-seed211-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@finance-seed211-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "finance-seed211-generation"
+      ],
+      "id": "finance-seed211-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@finance-seed211-judge",
+        "features": "@finance-seed211-features/records.jsonl",
+        "generation": "@finance-seed211-generation",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecasts/heldout-domains-v1-finance-seed211-outcome.jsonl",
+        "training_run": "@finance-seed211-resume"
+      },
+      "depends_on": [
+        "finance-seed211-features",
+        "finance-seed211-resume",
+        "finance-seed211-generation",
+        "finance-seed211-judge"
+      ],
+      "id": "finance-seed211-outcome"
+    },
+    {
+      "action": "resume",
+      "args": {
+        "checkpoint": "@sports-seed223-early/checkpoints/checkpoint-37"
+      },
+      "depends_on": [
+        "sports-seed223-early",
+        "publish"
+      ],
+      "id": "sports-seed223-resume"
+    },
+    {
+      "action": "generate",
+      "args": {
+        "adapter": "@sports-seed223-resume/adapter",
+        "batch_size": 8,
+        "max_new_tokens": 512,
+        "model": {},
+        "panel": "data/originals/primary.jsonl",
+        "samples": 10
+      },
+      "depends_on": [
+        "sports-seed223-resume"
+      ],
+      "id": "sports-seed223-generation"
+    },
+    {
+      "action": "judge",
+      "args": {
+        "generations": "@sports-seed223-generation/generations.jsonl"
+      },
+      "depends_on": [
+        "sports-seed223-generation"
+      ],
+      "id": "sports-seed223-judge"
+    },
+    {
+      "action": "outcome",
+      "args": {
+        "evaluation": "@sports-seed223-judge",
+        "features": "@sports-seed223-features/records.jsonl",
+        "generation": "@sports-seed223-generation",
+        "metric": "misalignment_rate",
+        "output": "artifacts/forecasts/heldout-domains-v1-sports-seed223-outcome.jsonl",
+        "training_run": "@sports-seed223-resume"
+      },
+      "depends_on": [
+        "sports-seed223-features",
+        "sports-seed223-resume",
+        "sports-seed223-generation",
+        "sports-seed223-judge"
+      ],
+      "id": "sports-seed223-outcome"
+    },
+    {
+      "action": "collect_outcomes",
+      "args": {
+        "output": "artifacts/forecasts/heldout-domains-v1-outcomes.jsonl",
+        "sources": [
+          "@finance-seed211-outcome",
+          "@sports-seed223-outcome"
+        ]
+      },
+      "depends_on": [
+        "finance-seed211-outcome",
+        "sports-seed223-outcome"
+      ],
+      "id": "outcomes"
+    },
+    {
+      "action": "forecast_eval",
+      "args": {
+        "outcomes": "@outcomes",
+        "output": "artifacts/forecasts/heldout-domains-v1-evaluation.json",
+        "predictions": "@freeze"
+      },
+      "depends_on": [
+        "freeze",
+        "outcomes"
+      ],
+      "id": "evaluate"
+    }
+  ],
+  "purpose": "Publicly committed prospective predictions before continued training",
+  "scope": "prospective"
+}

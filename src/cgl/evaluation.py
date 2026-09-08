@@ -264,6 +264,7 @@ def judge(
         "judge_method": "greedy_local_rating; differs from upstream GPT-4o token-probability mean",
         "rating_parser": "exact first nonempty line; trailing text preserved in raw_judge",
         "minimum_parse_rate": minimum_parse_rate,
+        "generations": str(generations.resolve()),
     }
     if rubric not in {"upstream", "cgl_json"}:
         raise ValueError("Unknown judging rubric")
@@ -322,8 +323,10 @@ def judge(
         from cgl.measurement import missingness_bounds
 
         summary["missingness_bounds"] = missingness_bounds(scored)
-        if valid:
+        if len(valid) == len(rows):
             summary["rate"] = cluster_rate(valid)
+        elif valid:
+            summary["conditional_on_parsed_rate"] = cluster_rate(valid)
         write_json(run.path / "summary.json", summary)
         if len(valid) / max(len(rows), 1) < minimum_parse_rate:
             raise ValueError("Judge parse coverage is below the configured acceptance threshold")

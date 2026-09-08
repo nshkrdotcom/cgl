@@ -173,6 +173,9 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
                 "rows": len(encoded),
                 "supervised_tokens": sum(sum(v != -100 for v in r["labels"]) for r in encoded),
                 "max_observed_length": max(len(r["input_ids"]) for r in encoded),
+                "boundary_retokenized_rows": sum(
+                    r.get("boundary_retokenized", False) for r in encoded
+                ),
             },
         )
         arguments = TrainingArguments(
@@ -240,6 +243,11 @@ def train(root: Path, config: TrainingConfig, *, resume: str | None = None) -> P
             normalized_prior = TrainingConfig.model_validate(prior["config"]).model_dump()
             if digest(normalized_prior) != digest(config.model_dump()) or prior["inputs"] != inputs:
                 raise ValueError("Resume checkpoint has different config or input identities")
+            run.manifest["resume_from"] = {
+                "checkpoint": str(checkpoint),
+                "parent_run_id": prior["id"],
+                "adapter_sha256": file_hash(checkpoint / "adapter_model.safetensors"),
+            }
         with intervention:
             result = trainer.train(resume_from_checkpoint=str(root / resume) if resume else None)
         model.save_pretrained(run.path / "adapter")

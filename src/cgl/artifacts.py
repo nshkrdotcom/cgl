@@ -82,6 +82,34 @@ def git_revision(root: Path) -> str:
     return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
 
 
+def referenced_artifacts(root: Path, config: dict):
+    """Record the actual adapter and intervention bytes, beyond their path names."""
+    records = {}
+    for key in (
+        "adapter",
+        "base_adapter",
+        "recipient",
+        "donor",
+        "checkpoint",
+        "basis",
+        "basis_path",
+        "reference_basis_path",
+        "intervention_basis",
+        "tangent_basis",
+        "style_basis",
+    ):
+        value = config.get(key)
+        if not value:
+            continue
+        path = (root / value).resolve()
+        if path.is_dir():
+            paths = [path / name for name in ("adapter_model.safetensors", "adapter_config.json")]
+        else:
+            paths = [path]
+        records[key] = {str(p): file_hash(p) for p in paths}
+    return records
+
+
 @contextlib.contextmanager
 def gpu_lease(root: Path):
     path = root / "artifacts" / "gpu.lock"
@@ -121,6 +149,7 @@ class Run:
             "config": config,
             "config_hash": digest(config),
             "inputs": inputs,
+            "referenced_artifacts": referenced_artifacts(root, config),
             "python": platform.python_version(),
             "kernel": platform.release(),
         }
