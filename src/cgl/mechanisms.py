@@ -30,7 +30,11 @@ def capture_response(model, tokenizer, context, response, layer):
     handle = blocks[layer].register_forward_hook(hook)
     try:
         with torch.inference_mode():
-            model(input_ids=batch["input_ids"], attention_mask=batch["attention_mask"])
+            model(
+                input_ids=batch["input_ids"],
+                attention_mask=batch["attention_mask"],
+                logits_to_keep=1,
+            )
     finally:
         handle.remove()
     if len(captured) != 1:

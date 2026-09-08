@@ -90,3 +90,57 @@ def preflight(root: Path) -> Path:
         write_json(run.path / "preflight.json", result)
         print(result, flush=True)
     return run.path
+
+
+def composition_roundtrip(root: Path, *, adapter: str, panel: str):
+    """Check the functional identity .5Δ + .5Δ = Δ on actual trained model logits."""
+    from cgl.adapters import compose_adapters
+
+    source, prompts = root / adapter, root / panel
+    config = ModelConfig(dtype="float32")
+    with (
+        gpu_lease(root),
+        Run(
+            root,
+            "adapter_composition_identity",
+            {
+                "adapter": adapter,
+                "model": config.model_dump(),
+                "coefficients": [0.5, 0.5],
+            },
+            {"panel_sha256": file_hash(prompts)},
+        ) as run,
+    ):
+        torch.cuda.reset_peak_memory_stats()
+        merged = compose_adapters([source, source], [0.5, 0.5], run.path / "adapter")
+        model, tokenizer, revision = load_model(root, config, adapter)
+        row = read_jsonl(prompts)[0]
+        encoded = encode_completion(tokenizer, row["messages"], 2048)
+        batch = {
+            k: v.to(model.device)
+            for k, v in CompletionCollator(tokenizer.pad_token_id)([encoded]).items()
+        }
+        with torch.inference_mode():
+            expected = model(**batch).logits.cpu()
+        del model
+        gc.collect()
+        torch.cuda.empty_cache()
+        restored, _, _ = load_model(root, config, str(merged))
+        with torch.inference_mode():
+            actual = restored(**batch).logits.cpu()
+        difference = float((actual - expected).abs().max())
+        write_json(
+            run.path / "summary.json",
+            {
+                "identity": ".5 * effective_update + .5 * effective_update = effective_update",
+                "precision": "float32",
+                "max_logit_error": difference,
+                "atol": 1e-4,
+                "rtol": 1e-4,
+                "model_revision": revision,
+                "peak_vram_bytes": torch.cuda.max_memory_allocated(),
+            },
+        )
+        if not torch.allclose(expected, actual, atol=1e-4, rtol=1e-4):
+            raise AssertionError(f"Exact adapter composition changed actual logits: {difference}")
+    return run.path

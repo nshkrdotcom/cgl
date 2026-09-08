@@ -57,6 +57,7 @@ ACTIONS = {
     "medical_probes",
     "trace",
     "forecast_history",
+    "composition_roundtrip",
 }
 
 ARGUMENTS = {
@@ -86,7 +87,7 @@ ARGUMENTS = {
     "compare": "pairs output metric minimum",
     "claim_family": "reports output",
     "select_originals": "transformed output",
-    "features": "checkpoint panel group basis layer",
+    "features": "checkpoint panel group basis layer limit",
     "collect_features": "sources output",
     "resume": "checkpoint",
     "published_eval": "benchmark adapter model_config limit",
@@ -100,6 +101,7 @@ ARGUMENTS = {
     "route_data": "output",
     "medical_probes": "output seed",
     "forecast_history": "features outcomes output",
+    "composition_roundtrip": "adapter panel",
     "trace": (
         "panel basis layer adapter model_config prefix system samples seed max_new_tokens limit"
     ),

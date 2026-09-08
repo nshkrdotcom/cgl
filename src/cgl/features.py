@@ -37,6 +37,7 @@ def extract_features(
     group: str,
     basis: str | None = None,
     layer: int | None = None,
+    limit: int | None = None,
 ):
     training = checkpoint.parent.parent
     manifest = json.loads((training / "manifest.json").read_text())
@@ -46,6 +47,10 @@ def extract_features(
         raise ValueError("Forecast features must use an actual checkpoint at or below 20% budget")
     config = ModelConfig.model_validate(manifest["config"]["model"])
     rows = read_jsonl(panel)
+    if limit is not None:
+        if limit <= 0:
+            raise ValueError("Feature probe limit must be positive")
+        rows = rows[:limit]
     trained_rows = read_jsonl(root / manifest["config"]["dataset"])
     training_contexts = {json.dumps(row["messages"][:-1], sort_keys=True) for row in trained_rows}
     if any(json.dumps(messages_for(row), sort_keys=True) in training_contexts for row in rows):
@@ -67,7 +72,13 @@ def extract_features(
         Run(
             root,
             "early_features",
-            {"checkpoint": str(checkpoint), "group": group, "basis": basis, "layer": layer},
+            {
+                "checkpoint": str(checkpoint),
+                "group": group,
+                "basis": basis,
+                "layer": layer,
+                "limit": limit,
+            },
             inputs,
         ) as run,
     ):

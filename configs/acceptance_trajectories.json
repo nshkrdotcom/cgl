@@ -1,0 +1,19 @@
+{
+  "id": "P003-trajectories-composition-and-outcome-linkage",
+  "purpose": "Verify real observed trajectories, functional adapter composition, and linked early/final records",
+  "scope": "integration_only",
+  "jobs": [
+    {"id":"basis","action":"campaign_artifact","args":{"definition":"configs/acceptance.json","job":"basis"}},
+    {"id":"trained","action":"campaign_artifact","args":{"definition":"configs/acceptance.json","job":"tangent"}},
+    {"id":"trace","action":"trace","depends_on":["basis"],"args":{"panel":"data/originals/primary.jsonl","basis":"@basis/basis.npz","layer":14,"limit":2,"max_new_tokens":64}},
+    {"id":"composition-identity","action":"composition_roundtrip","depends_on":["trained"],"args":{"adapter":"@trained/adapter","panel":"data/originals/D0.jsonl"}},
+    {"id":"pause","action":"train","args":{"dataset":"data/originals/D0.jsonl","limit":16,"max_steps":10,"pause_after_steps":1,"warmup_steps":0}},
+    {"id":"features","action":"features","depends_on":["pause"],"args":{"checkpoint":"@pause/checkpoints/checkpoint-1","panel":"data/preferences/validation.jsonl","group":"acceptance-only","limit":4}},
+    {"id":"resume","action":"resume","depends_on":["pause","features"],"args":{"checkpoint":"@pause/checkpoints/checkpoint-1"}},
+    {"id":"final-score","action":"score","depends_on":["resume"],"args":{"panel":"data/preferences/validation.jsonl","adapter":"@resume/adapter","limit":4}},
+    {"id":"outcome","action":"outcome","depends_on":["features","resume","final-score"],"args":{"features":"@features/records.jsonl","training_run":"@resume","evaluation":"@final-score","output":"artifacts/acceptance/P003-outcome.jsonl"}},
+    {"id":"history","action":"forecast_history","depends_on":["features","outcome"],"args":{"features":["@features/records.jsonl"],"outcomes":["@outcome"],"output":"artifacts/acceptance/P003-history.jsonl"}},
+    {"id":"capture","action":"discover","args":{"panel":"data/preferences/discovery.jsonl","layer":14,"rank":1,"limit":4}},
+    {"id":"code-boundary-training","action":"train","args":{"dataset":"data/routes/code.jsonl","limit":16,"max_steps":2,"warmup_steps":0}}
+  ]
+}

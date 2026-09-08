@@ -54,6 +54,10 @@ def execute(root: Path, action: str, args: dict):
         from cgl.preflight import preflight
 
         return preflight(root)
+    if action == "composition_roundtrip":
+        from cgl.preflight import composition_roundtrip
+
+        return composition_roundtrip(root, **args)
     if action == "resume":
         from cgl.training import train
 
