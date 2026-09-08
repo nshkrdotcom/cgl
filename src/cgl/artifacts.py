@@ -94,6 +94,7 @@ def referenced_artifacts(root: Path, config: dict):
         "basis",
         "basis_path",
         "reference_basis_path",
+        "reference_basis",
         "intervention_basis",
         "tangent_basis",
         "style_basis",

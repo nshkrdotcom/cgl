@@ -65,7 +65,7 @@ ARGUMENTS = {
     "preflight": "",
     "train": " ".join(TrainingConfig.model_fields),
     "generate": " ".join(GenerationConfig.model_fields),
-    "judge": "generations model limit rubric minimum_parse_rate",
+    "judge": "generations model limit rubric minimum_parse_rate batch_size",
     "score": "model panel adapter basis_path layer operation dose limit reference_basis_path",
     "rewrite": "stage limit attempts",
     "materialize": "directory audit_record exploratory",

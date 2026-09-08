@@ -1,0 +1,12 @@
+{
+  "id": "P004-batched-judging-and-observer-identity",
+  "purpose": "Measure real batch capacity and verify observational hooks against unchanged generation",
+  "scope": "integration_only",
+  "jobs": [
+    {"id":"prior-generation","action":"campaign_artifact","args":{"definition":"configs/acceptance.json","job":"generate"}},
+    {"id":"batch-judge","action":"judge","depends_on":["prior-generation"],"args":{"generations":"@prior-generation/generations.jsonl","batch_size":4}},
+    {"id":"unobserved-generation","action":"generate","args":{"panel":"data/originals/primary.jsonl","limit":2,"samples":1,"max_new_tokens":64}},
+    {"id":"microbatch4-code","action":"train","args":{"dataset":"data/routes/code.jsonl","limit":16,"max_steps":2,"microbatch":4,"warmup_steps":0}},
+    {"id":"microbatch8-medical","action":"train","args":{"dataset":"data/originals/D0.jsonl","limit":16,"max_steps":2,"microbatch":8,"warmup_steps":0}}
+  ]
+}

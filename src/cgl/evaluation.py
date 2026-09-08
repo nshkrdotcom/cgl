@@ -209,20 +209,11 @@ def numeric_judgment(text):
     return value
 
 
-def upstream_judgment(model, tokenizer, row, templates):
-    raw, values = {}, {}
-    for key in ("aligned", "coherent"):
-        prompt = templates[key].format(question=row["question"], answer=row["response"])
-        output = generate_text(
-            model,
-            tokenizer,
-            [{"role": "user", "content": prompt}],
-            temperature=0,
-            max_new_tokens=16,
-        )
-        raw[key] = output["response"]
+def interpret_upstream(raw, templates):
+    values = {}
+    for key, response in raw.items():
         try:
-            values[key] = numeric_judgment(output["response"])
+            values[key] = numeric_judgment(response)
         except ValueError:
             values[key] = None
     aligned, coherent = values["aligned"], values["coherent"]
@@ -243,6 +234,57 @@ def upstream_judgment(model, tokenizer, row, templates):
     }
 
 
+def upstream_judgment(model, tokenizer, row, templates):
+    raw = {}
+    for key in ("aligned", "coherent"):
+        prompt = templates[key].format(question=row["question"], answer=row["response"])
+        output = generate_text(
+            model,
+            tokenizer,
+            [{"role": "user", "content": prompt}],
+            temperature=0,
+            max_new_tokens=16,
+        )
+        raw[key] = output["response"]
+    return interpret_upstream(raw, templates)
+
+
+def batched_upstream_judgments(model, tokenizer, rows, templates, batch_size):
+    from cgl.batching import generate_batch
+
+    for start in range(0, len(rows), batch_size):
+        selected = rows[start : start + batch_size]
+        rubrics = [row.get("judge_prompts") or templates.get(row["question"]) for row in selected]
+        if not all(rubrics):
+            raise ValueError("No frozen upstream rubric for this question")
+        raw = [dict() for _ in selected]
+        # Separate passes keep at most batch_size prompts resident on the GPU.
+        for key in ("aligned", "coherent"):
+            messages = [
+                [
+                    {
+                        "role": "user",
+                        "content": rubric[key].format(
+                            question=row["question"], answer=row["response"]
+                        ),
+                    }
+                ]
+                for row, rubric in zip(selected, rubrics, strict=True)
+            ]
+            outputs = generate_batch(
+                model, tokenizer, messages, [0] * len(selected), temperature=0, max_new_tokens=16
+            )
+            for record, output in zip(raw, outputs, strict=True):
+                record[key] = output["response"]
+        for row, record, rubric in zip(selected, raw, rubrics, strict=True):
+            yield {
+                "id": row["id"],
+                "prompt_id": row["prompt_id"],
+                **interpret_upstream(record, rubric),
+            }
+        print(f"Judged {min(start + batch_size, len(rows))}/{len(rows)}", flush=True)
+
+
 def judge(
     root: Path,
     generations: Path,
@@ -251,7 +293,12 @@ def judge(
     limit=None,
     rubric="upstream",
     minimum_parse_rate=0.95,
+    batch_size=1,
 ) -> Path:
+    if batch_size < 1:
+        raise ValueError("Judge batch size must be positive")
+    if rubric != "upstream" and batch_size != 1:
+        raise ValueError("Batched judging currently uses the separate upstream numeric rubrics")
     rows = read_jsonl(generations)
     if limit:
         rows = rows[:limit]
@@ -264,6 +311,7 @@ def judge(
         "judge_method": "greedy_local_rating; differs from upstream GPT-4o token-probability mean",
         "rating_parser": "exact first nonempty line; trailing text preserved in raw_judge",
         "minimum_parse_rate": minimum_parse_rate,
+        "batch_size": batch_size,
         "generations": str(generations.resolve()),
     }
     if rubric not in {"upstream", "cgl_json"}:
@@ -280,7 +328,13 @@ def judge(
     ):
         model, tokenizer, _ = load_model(root, model_config)
         scored = []
-        for row in rows:
+        if batch_size > 1:
+            for record in batched_upstream_judgments(
+                model, tokenizer, rows, templates_by_question, batch_size
+            ):
+                append_jsonl(run.path / "scores.jsonl", record)
+                scored.append(record)
+        for row in [] if batch_size > 1 else rows:
             if rubric == "upstream":
                 templates = row.get("judge_prompts") or templates_by_question.get(row["question"])
                 if not templates:
@@ -364,9 +418,9 @@ def score_pairs(
         Run(root, "paired_scoring", config, {"panel_sha256": file_hash(panel)}) as run,
     ):
         model, tokenizer, _ = load_model(root, model_config, adapter)
-        basis = torch.from_numpy(np.load(basis_path)["basis"]) if basis_path else None
+        basis = torch.from_numpy(np.load(root / basis_path)["basis"]) if basis_path else None
         reference = (
-            torch.from_numpy(np.load(reference_basis_path)["basis"])
+            torch.from_numpy(np.load(root / reference_basis_path)["basis"])
             if reference_basis_path
             else None
         )

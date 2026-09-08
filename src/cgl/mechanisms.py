@@ -90,7 +90,7 @@ def discover(
             matrix = matrix - mean
         basis = orthonormalize(matrix.T)[:, :rank]
         if style_basis:
-            basis = residualize(basis, torch.from_numpy(np.load(style_basis)["basis"]))
+            basis = residualize(basis, torch.from_numpy(np.load(root / style_basis)["basis"]))
         if basis.shape[1] and torch.dot(basis[:, 0], mean) < 0:
             basis[:, 0] = -basis[:, 0]
         np.savez_compressed(

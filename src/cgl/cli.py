@@ -68,11 +68,22 @@ def generate(config: Path):
 
 
 @app.command()
-def judge(generations: Path, model: str = "Qwen/Qwen2.5-14B-Instruct", limit: int | None = None):
+def judge(
+    generations: Path,
+    model: str = "Qwen/Qwen2.5-14B-Instruct",
+    limit: int | None = None,
+    batch_size: int = 1,
+):
     from cgl.evaluation import judge as execute
 
     typer.echo(
-        execute(root(), generations, ModelConfig(repo_id=model, quantization="nf4"), limit=limit)
+        execute(
+            root(),
+            generations,
+            ModelConfig(repo_id=model, quantization="nf4"),
+            limit=limit,
+            batch_size=batch_size,
+        )
     )
 
 

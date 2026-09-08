@@ -1,0 +1,255 @@
+{
+  "definition": {
+    "id": "E001-seed0-continuation",
+    "jobs": [
+      {
+        "action": "import_run",
+        "args": {
+          "directory": "runs/training/20260908T000724-5e5638d4",
+          "expected_config": {
+            "dataset": "data/originals/D0.jsonl",
+            "limit": null,
+            "max_steps": -1,
+            "seed": 0
+          },
+          "experiment": "training"
+        },
+        "depends_on": [],
+        "id": "D0"
+      },
+      {
+        "action": "train",
+        "args": {
+          "dataset": "data/originals/D1.jsonl",
+          "effective_batch": 16,
+          "microbatch": 1,
+          "seed": 0
+        },
+        "depends_on": [],
+        "id": "D1"
+      },
+      {
+        "action": "generate",
+        "args": {
+          "adapter": null,
+          "batch_size": 8,
+          "max_new_tokens": 512,
+          "panel": "data/originals/primary.jsonl",
+          "samples": 10,
+          "seed": 0
+        },
+        "depends_on": [],
+        "id": "base-primary"
+      },
+      {
+        "action": "generate",
+        "args": {
+          "adapter": null,
+          "batch_size": 8,
+          "max_new_tokens": 512,
+          "panel": "data/originals/first_plot.jsonl",
+          "samples": 10,
+          "seed": 0
+        },
+        "depends_on": [],
+        "id": "base-first_plot"
+      },
+      {
+        "action": "generate",
+        "args": {
+          "adapter": "@D0/adapter",
+          "batch_size": 8,
+          "max_new_tokens": 512,
+          "panel": "data/originals/primary.jsonl",
+          "samples": 10,
+          "seed": 0
+        },
+        "depends_on": [
+          "D0"
+        ],
+        "id": "D0-primary"
+      },
+      {
+        "action": "generate",
+        "args": {
+          "adapter": "@D0/adapter",
+          "batch_size": 8,
+          "max_new_tokens": 512,
+          "panel": "data/originals/first_plot.jsonl",
+          "samples": 10,
+          "seed": 0
+        },
+        "depends_on": [
+          "D0"
+        ],
+        "id": "D0-first_plot"
+      },
+      {
+        "action": "generate",
+        "args": {
+          "adapter": "@D1/adapter",
+          "batch_size": 8,
+          "max_new_tokens": 512,
+          "panel": "data/originals/primary.jsonl",
+          "samples": 10,
+          "seed": 0
+        },
+        "depends_on": [
+          "D1"
+        ],
+        "id": "D1-primary"
+      },
+      {
+        "action": "generate",
+        "args": {
+          "adapter": "@D1/adapter",
+          "batch_size": 8,
+          "max_new_tokens": 512,
+          "panel": "data/originals/first_plot.jsonl",
+          "samples": 10,
+          "seed": 0
+        },
+        "depends_on": [
+          "D1"
+        ],
+        "id": "D1-first_plot"
+      },
+      {
+        "action": "judge",
+        "args": {
+          "generations": "@base-primary/generations.jsonl"
+        },
+        "depends_on": [
+          "base-primary"
+        ],
+        "id": "base-primary-judge"
+      },
+      {
+        "action": "judge",
+        "args": {
+          "generations": "@base-first_plot/generations.jsonl"
+        },
+        "depends_on": [
+          "base-first_plot"
+        ],
+        "id": "base-first_plot-judge"
+      },
+      {
+        "action": "judge",
+        "args": {
+          "generations": "@D0-primary/generations.jsonl"
+        },
+        "depends_on": [
+          "D0-primary"
+        ],
+        "id": "D0-primary-judge"
+      },
+      {
+        "action": "judge",
+        "args": {
+          "generations": "@D0-first_plot/generations.jsonl"
+        },
+        "depends_on": [
+          "D0-first_plot"
+        ],
+        "id": "D0-first_plot-judge"
+      },
+      {
+        "action": "judge",
+        "args": {
+          "generations": "@D1-primary/generations.jsonl"
+        },
+        "depends_on": [
+          "D1-primary"
+        ],
+        "id": "D1-primary-judge"
+      },
+      {
+        "action": "judge",
+        "args": {
+          "generations": "@D1-first_plot/generations.jsonl"
+        },
+        "depends_on": [
+          "D1-first_plot"
+        ],
+        "id": "D1-first_plot-judge"
+      },
+      {
+        "action": "utility",
+        "args": {
+          "adapter": null
+        },
+        "depends_on": [],
+        "id": "base-utility"
+      },
+      {
+        "action": "published_eval",
+        "args": {
+          "adapter": null,
+          "benchmark": "medqa"
+        },
+        "depends_on": [],
+        "id": "base-medical-competence"
+      },
+      {
+        "action": "utility",
+        "args": {
+          "adapter": "@D0/adapter"
+        },
+        "depends_on": [
+          "D0"
+        ],
+        "id": "D0-utility"
+      },
+      {
+        "action": "published_eval",
+        "args": {
+          "adapter": "@D0/adapter",
+          "benchmark": "medqa"
+        },
+        "depends_on": [
+          "D0"
+        ],
+        "id": "D0-medical-competence"
+      },
+      {
+        "action": "utility",
+        "args": {
+          "adapter": "@D1/adapter"
+        },
+        "depends_on": [
+          "D1"
+        ],
+        "id": "D1-utility"
+      },
+      {
+        "action": "published_eval",
+        "args": {
+          "adapter": "@D1/adapter",
+          "benchmark": "medqa"
+        },
+        "depends_on": [
+          "D1"
+        ],
+        "id": "D1-medical-competence"
+      }
+    ],
+    "purpose": "Complete paired original-data training, full panels, and independent capability measurements",
+    "scope": "discovery"
+  },
+  "definition_sha256": "093b928bbe98f59d332809021a68fe6bff79064c35c50439883fa7df943092a0",
+  "independent_training_uncertainty": "requires additional paired seeds",
+  "intended_contrasts": [
+    "D1 minus D0",
+    "D0 minus untouched",
+    "D1 minus untouched"
+  ],
+  "missing_judgments": "all-output lower/upper bounds; no silently conditional primary rate",
+  "primary_instrument": "uncalibrated local Qwen2.5-14B numeric upstream rubrics",
+  "sampling_uncertainty": "prompt clusters conditional on these fitted models",
+  "scope": "one independent training seed; full original paired datasets",
+  "utility": [
+    "ARC-Easy first 500 in pinned test order",
+    "MedQA complete 1273 test questions"
+  ]
+}
